@@ -1,7 +1,9 @@
 export type AppMode = "demo" | "live";
 
 const configuredMode = process.env.NEXT_PUBLIC_APP_MODE?.trim().toLowerCase();
-const mode: AppMode = configuredMode === "live" ? "live" : "demo";
+const mode: AppMode = configuredMode === "demo" || configuredMode === "live"
+  ? configuredMode
+  : process.env.NODE_ENV === "production" ? "live" : "demo";
 
 export const publicApiConfig = {
   mode,
