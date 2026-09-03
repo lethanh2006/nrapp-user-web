@@ -4,7 +4,7 @@ import { gatewayRequest } from "@/lib/api/server";
 import { jsonResponse, routeErrorResponse, validationResponse } from "@/lib/api/route-response";
 import { publicApiConfig } from "@/lib/api/config";
 import { clearPendingEmail, getPendingEmail, setSessionCookies } from "@/lib/auth/cookies";
-import { demoCredentials, demoGatewayUser, demoSessionTokens } from "@/lib/auth/demo";
+import { createDemoSessionTokens, demoCredentials, demoGatewayUser } from "@/lib/auth/demo";
 import { normalizeSessionUser } from "@/lib/auth/session-user";
 
 export const runtime = "nodejs";
@@ -33,7 +33,8 @@ export async function POST(request: Request) {
       }
       const user = normalizeSessionUser({ ...demoGatewayUser, email: pendingEmail });
       if (!user) return jsonResponse({ code: "FORBIDDEN_ROLE", message: "Tài khoản không có quyền truy cập cổng nhân viên." }, 403);
-      await setSessionCookies(demoSessionTokens.accessToken, demoSessionTokens.refreshToken);
+      const session = createDemoSessionTokens(pendingEmail);
+      await setSessionCookies(session.accessToken, session.refreshToken);
       await clearPendingEmail();
       return jsonResponse({ message: "Xác thực demo thành công.", user });
     }

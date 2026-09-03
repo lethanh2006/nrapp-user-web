@@ -14,7 +14,22 @@ export const demoGatewayUser: GatewayUser = {
   role: "user",
 };
 
-export const demoSessionTokens = {
-  accessToken: "nrapp-demo-access-token",
-  refreshToken: "nrapp-demo-refresh-token",
-} as const;
+const DEMO_ACCESS_PREFIX = "nrapp-demo-access-token.";
+export const demoRefreshToken = "nrapp-demo-refresh-token";
+
+export function createDemoSessionTokens(email: string) {
+  return {
+    accessToken: `${DEMO_ACCESS_PREFIX}${encodeURIComponent(email.trim().toLowerCase())}`,
+    refreshToken: demoRefreshToken,
+  };
+}
+
+export function getDemoEmail(accessToken: string | null) {
+  if (!accessToken?.startsWith(DEMO_ACCESS_PREFIX)) return null;
+  try {
+    const email = decodeURIComponent(accessToken.slice(DEMO_ACCESS_PREFIX.length));
+    return /^\S+@\S+\.\S+$/.test(email) ? email : null;
+  } catch {
+    return null;
+  }
+}

@@ -1,5 +1,3 @@
-import type { GatewayUser } from "@/lib/api/contracts";
-
 export const userAreaRoles = ["user", "vip"] as const;
 export type UserAreaRole = (typeof userAreaRoles)[number];
 
@@ -11,7 +9,12 @@ export type SessionUser = {
   role: UserAreaRole;
 };
 
-export function normalizeSessionUser(raw: GatewayUser): SessionUser | null {
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function normalizeSessionUser(raw: unknown): SessionUser | null {
+  if (!isObject(raw)) return null;
   const id = String(raw._id ?? "").trim();
   const email = String(raw.email ?? "").trim().toLowerCase();
   const role = String(raw.role ?? "").trim().toLowerCase();
