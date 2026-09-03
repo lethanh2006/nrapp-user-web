@@ -27,7 +27,9 @@ export class GatewayApiError extends Error {
   readonly errorId?: string;
 
   constructor(status: number, payload: unknown) {
-    super(getMessage(payload, `Gateway trả về lỗi ${status}.`));
+    super(status >= 500
+      ? "Gateway hiện không khả dụng. Vui lòng thử lại sau."
+      : getMessage(payload, `Gateway trả về lỗi ${status}.`));
     this.name = "GatewayApiError";
     this.status = status;
 
