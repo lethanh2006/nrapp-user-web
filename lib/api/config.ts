@@ -1,15 +1,11 @@
-const normalizedApiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/+$/, "") ?? "";
+export type AppMode = "demo" | "live";
+
+const configuredMode = process.env.NEXT_PUBLIC_APP_MODE?.trim().toLowerCase();
+const mode: AppMode = configuredMode === "live" ? "live" : "demo";
 
 export const publicApiConfig = {
-  baseUrl: normalizedApiBaseUrl,
-  timeoutMs: Number(process.env.NEXT_PUBLIC_API_TIMEOUT_MS ?? 10_000),
+  mode,
+  isDemo: mode === "demo",
   socketUrl: process.env.NEXT_PUBLIC_SOCKET_URL?.trim().replace(/\/+$/, "") ?? "",
   socketPath: process.env.NEXT_PUBLIC_SOCKET_PATH?.trim() || "/socket.io",
-};
-
-export function buildApiUrl(path: string) {
-  if (!publicApiConfig.baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_URL chưa được cấu hình.");
-  }
-  return `${publicApiConfig.baseUrl}/${path.replace(/^\/+/, "")}`;
-}
+} as const;
