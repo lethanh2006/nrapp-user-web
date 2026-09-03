@@ -1,0 +1,50 @@
+export const apiEndpoints = {
+  auth: {
+    register: "/auth/register",
+    login: "/auth/login",
+    verify: "/auth/verify",
+    refresh: "/auth/refresh",
+    myEmail: "/auth/me/email",
+    me: "/auth/me",
+  },
+  user: {
+    me: "/user/me",
+    all: "/user/user/all",
+    update: "/user/update/user",
+  },
+  todo: {
+    mine: "/todo/my-tasks",
+    status: (id: string) => `/todo/${id}/status`,
+  },
+  canteen: {
+    menu: "/canteen/menu",
+    search: "/canteen/menu/search",
+    orders: "/canteen/orders",
+    myOrders: "/canteen/orders/my-orders",
+    cancelOrder: (id: string) => `/canteen/orders/${id}/cancel`,
+  },
+  payment: {
+    createQr: "/payment/create-qr",
+    status: (id: string) => `/payment/payments/${id}`,
+    history: "/payment/history",
+  },
+  workschedule: {
+    policy: "/workschedule/policy",
+    mySchedules: "/workschedule/schedule/my",
+    createSchedule: "/workschedule/schedule/requests",
+    resubmitSchedule: (id: string) => `/workschedule/schedule/requests/${id}/resubmit`,
+    monthlyOverview: "/workschedule/schedule/monthly-overview",
+    myRequests: "/workschedule/requests/my",
+    requestStats: "/workschedule/requests/my/stats",
+    createRequest: "/workschedule/requests",
+    cancelRequest: (id: string) => `/workschedule/requests/${id}/cancel`,
+    myAttendance: "/workschedule/attendance/my",
+    scanAttendance: "/workschedule/attendance/scan",
+  },
+  chat: {
+    create: "/chat/chat/new",
+    all: "/chat/chat/all",
+    message: "/chat/message",
+    messages: (chatId: string) => `/chat/message/${chatId}`,
+  },
+} as const;

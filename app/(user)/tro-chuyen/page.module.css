@@ -1,0 +1,97 @@
+.page { width: 100%; }
+.chatShell { display: grid; height: clamp(590px, calc(100vh - 184px), 780px); min-height: 590px; grid-template-columns: minmax(275px, 330px) minmax(0, 1fr); overflow: hidden; border: 1px solid var(--slate-200); border-radius: 23px; background: white; box-shadow: 0 18px 50px rgba(15, 43, 78, .08); }
+
+.conversationPanel { display: flex; min-width: 0; flex-direction: column; border-right: 1px solid var(--slate-200); background: #fbfdff; }
+.panelHeading { display: flex; height: 72px; flex: 0 0 auto; align-items: center; justify-content: space-between; padding: 0 17px; }
+.panelHeading > div { display: flex; flex-direction: column; }
+.panelHeading span { color: var(--blue-700); font-size: 8px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.panelHeading strong { margin-top: 4px; color: var(--slate-900); font-size: 16px; font-weight: 900; letter-spacing: -.03em; }
+.panelHeading > button { display: grid; width: 34px; height: 34px; cursor: pointer; place-items: center; border-radius: 11px; background: transparent; color: var(--slate-400); }
+.panelHeading > button:hover { background: var(--slate-100); color: var(--slate-700); }
+.chatSearch { display: flex; height: 41px; flex: 0 0 auto; align-items: center; gap: 8px; margin: 0 13px 11px; border: 1px solid var(--slate-200); border-radius: 12px; padding: 0 10px; background: white; color: var(--slate-400); transition: border-color 160ms ease, box-shadow 160ms ease; }
+.chatSearch:focus-within { border-color: #93c5fd; box-shadow: 0 0 0 4px rgba(37, 99, 235, .06); }
+.chatSearch input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--slate-800); font-size: 11px; }
+.chatSearch input::placeholder { color: var(--slate-400); }
+.chatSearch button { display: grid; width: 25px; height: 25px; cursor: pointer; place-items: center; border-radius: 8px; background: transparent; color: var(--slate-400); }
+.quickStatus { display: flex; flex: 0 0 auto; align-items: center; gap: 9px; margin: 0 13px 9px; border: 1px solid #dbeafe; border-radius: 14px; padding: 9px; background: linear-gradient(105deg, var(--blue-50), white); }
+.quickStatus > div { min-width: 0; flex: 1; }
+.quickStatus strong { display: block; overflow: hidden; color: var(--slate-700); font-size: 10px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
+.quickStatus p { margin: 3px 0 0; color: var(--slate-400); font-size: 8px; }
+.conversationList { min-height: 0; flex: 1; overflow-y: auto; padding: 3px 7px 12px; }
+.conversationItem { display: flex; width: 100%; min-height: 66px; align-items: center; gap: 10px; cursor: pointer; border: 1px solid transparent; border-radius: 15px; padding: 9px; background: transparent; text-align: left; transition: background 160ms ease, border-color 160ms ease; }
+.conversationItem:hover { background: white; }
+.conversationActive { border-color: #dbeafe; background: var(--blue-50) !important; box-shadow: 0 5px 14px rgba(29, 95, 158, .06); }
+.conversationCopy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 6px; }
+.conversationCopy > span { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 7px; }
+.conversationCopy strong { overflow: hidden; color: var(--slate-800); font-size: 11px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
+.conversationActive .conversationCopy strong { color: var(--blue-800); }
+.conversationCopy time { flex: 0 0 auto; color: var(--slate-400); font-size: 8px; }
+.conversationCopy p { min-width: 0; margin: 0; overflow: hidden; color: var(--slate-500); font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.conversationCopy b { display: grid; min-width: 18px; height: 18px; flex: 0 0 auto; place-items: center; border-radius: 7px; background: var(--blue-700); color: white; font-size: 8px; font-weight: 900; }
+.noConversation { display: grid; min-height: 180px; place-items: center; align-content: center; color: var(--slate-300); }
+.noConversation p { margin: 8px 0 0; color: var(--slate-400); font-size: 9px; }
+.privateNote { display: flex; flex: 0 0 auto; align-items: center; gap: 7px; border-top: 1px solid var(--slate-100); padding: 11px 14px; color: var(--slate-400); font-size: 8px; line-height: 1.4; }
+.privateNote svg { flex: 0 0 auto; color: var(--blue-600); }
+
+.threadPanel { display: flex; min-width: 0; flex-direction: column; background: white; }
+.threadHeader { display: flex; height: 72px; flex: 0 0 auto; align-items: center; gap: 10px; border-bottom: 1px solid var(--slate-200); padding: 0 18px; }
+.backButton { display: none; width: 35px; height: 35px; cursor: pointer; place-items: center; border-radius: 11px; background: var(--slate-100); color: var(--slate-600); }
+.threadIdentity { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.threadIdentity strong { overflow: hidden; color: var(--slate-900); font-size: 12px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+.threadIdentity span { display: flex; align-items: center; gap: 5px; margin-top: 4px; color: #059669; font-size: 8px; font-weight: 750; }
+.threadActions { display: flex; gap: 5px; }
+.threadActions button { display: grid; width: 36px; height: 36px; cursor: pointer; place-items: center; border: 1px solid transparent; border-radius: 11px; background: transparent; color: var(--slate-500); }
+.threadActions button:hover { border-color: var(--slate-200); background: var(--slate-50); color: var(--blue-700); }
+
+.messageArea { min-height: 0; flex: 1; overflow-y: auto; padding: 12px 24px 22px; background: radial-gradient(circle at 90% 5%, rgba(219, 234, 254, .55), transparent 22%), linear-gradient(180deg, #fbfdff, #f8fbff); }
+.dayDivider { display: flex; align-items: center; justify-content: center; margin: 4px 0 14px; }
+.dayDivider::before, .dayDivider::after { height: 1px; flex: 1; background: var(--slate-200); content: ""; }
+.dayDivider span { padding: 0 11px; color: var(--slate-400); font-size: 8px; font-weight: 800; text-transform: uppercase; }
+.threadIntro { display: flex; align-items: center; flex-direction: column; margin-bottom: 22px; text-align: center; }
+.threadIntro strong { margin-top: 8px; color: var(--slate-800); font-size: 11px; font-weight: 900; }
+.threadIntro span { margin-top: 4px; color: var(--slate-400); font-size: 8px; }
+.messages { display: flex; flex-direction: column; gap: 13px; }
+.messageRow { display: flex; max-width: min(76%, 620px); align-items: flex-end; gap: 8px; }
+.myMessageRow { align-self: flex-end; justify-content: flex-end; }
+.messageGroup { min-width: 0; }
+.messageGroup p { margin: 0; border: 1px solid var(--slate-200); border-radius: 16px 16px 16px 5px; padding: 10px 13px; background: white; box-shadow: 0 5px 12px rgba(15, 23, 42, .04); color: var(--slate-700); font-size: 11px; line-height: 1.55; white-space: pre-wrap; }
+.messageGroup span { display: flex; align-items: center; gap: 4px; margin-top: 4px; color: var(--slate-400); font-size: 8px; }
+.myMessageRow .messageGroup p { border-color: var(--blue-700); border-radius: 16px 16px 5px; background: linear-gradient(135deg, var(--blue-700), #2874bb); color: white; box-shadow: 0 7px 17px rgba(29, 95, 158, .18); }
+.myMessageRow .messageGroup span { justify-content: flex-end; color: var(--blue-600); }
+
+.composer { display: flex; min-height: 76px; flex: 0 0 auto; align-items: flex-end; gap: 8px; border-top: 1px solid var(--slate-200); padding: 13px 17px; background: white; }
+.hiddenFile { display: none; }
+.composerIcon { display: grid; width: 42px; height: 42px; flex: 0 0 auto; cursor: pointer; place-items: center; border-radius: 13px; background: var(--slate-100); color: var(--slate-500); }
+.composerIcon:hover { color: var(--blue-700); }
+.messageInput { display: flex; min-height: 42px; flex: 1; align-items: flex-end; gap: 7px; border: 1px solid var(--slate-200); border-radius: 14px; padding: 5px 7px 5px 12px; background: var(--slate-50); }
+.messageInput:focus-within { border-color: #93c5fd; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, .06); }
+.messageInput textarea { min-width: 0; min-height: 30px; max-height: 90px; flex: 1; resize: none; border: 0; outline: 0; padding: 7px 0 4px; background: transparent; color: var(--slate-800); font-size: 11px; line-height: 1.4; }
+.messageInput textarea::placeholder { color: var(--slate-400); }
+.messageInput button { display: grid; width: 31px; height: 31px; flex: 0 0 auto; cursor: pointer; place-items: center; border-radius: 9px; background: transparent; color: var(--slate-400); }
+.messageInput button:hover { background: var(--slate-100); color: var(--blue-700); }
+.sendButton { display: grid; width: 42px; height: 42px; flex: 0 0 auto; cursor: pointer; place-items: center; border-radius: 13px; background: var(--blue-700); color: white; box-shadow: 0 8px 18px rgba(29, 95, 158, .22); }
+.sendButton:hover { background: var(--blue-800); }
+.sendButton:disabled { cursor: not-allowed; opacity: .42; box-shadow: none; }
+
+@media (max-width: 760px) {
+  .chatShell { position: relative; display: block; height: calc(100dvh - 238px); min-height: 520px; }
+  .conversationPanel, .threadPanel { position: absolute; inset: 0; }
+  .conversationPanel { border-right: 0; transition: transform 220ms ease, opacity 180ms ease; }
+  .threadPanel { visibility: hidden; opacity: 0; transform: translateX(100%); transition: transform 220ms ease, opacity 180ms ease, visibility 220ms; }
+  .mobileThreadOpen .conversationPanel { opacity: 0; pointer-events: none; transform: translateX(-24%); }
+  .mobileThreadOpen .threadPanel { visibility: visible; opacity: 1; transform: translateX(0); }
+  .backButton { display: grid; }
+  .quickStatus { display: none; }
+  .messageArea { padding-inline: 14px; }
+  .messageRow { max-width: 88%; }
+  .threadActions button:nth-child(1) { display: none; }
+}
+
+@media (max-width: 460px) {
+  .chatShell { height: calc(100dvh - 225px); min-height: 500px; border-radius: 19px; }
+  .threadHeader { height: 66px; padding: 0 11px; }
+  .threadActions button { width: 34px; }
+  .composer { min-height: 68px; gap: 6px; padding: 10px; }
+  .composerIcon, .sendButton { width: 39px; height: 39px; }
+  .threadIntro { margin-bottom: 16px; }
+}
