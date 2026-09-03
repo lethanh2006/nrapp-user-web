@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import {
   Bell,
@@ -25,17 +25,22 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
+import { getUserInitials } from "@/lib/auth/session-user";
 import { currentUser } from "@/lib/mock-data";
 import styles from "./ho-so.module.css";
 
 type PreferenceKey = "tasks" | "messages" | "schedule" | "announcements";
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState({ name: currentUser.name, email: currentUser.email, phone: currentUser.phone });
+  const router = useRouter();
+  const { user, logout } = useAuthSession();
+  const [profile, setProfile] = useState({ name: user?.name ?? currentUser.name, email: user?.email ?? currentUser.email, phone: currentUser.phone });
   const [draft, setDraft] = useState(profile);
   const [editing, setEditing] = useState(false);
   const [notice, setNotice] = useState("");
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [logoutPending, setLogoutPending] = useState(false);
   const [preferences, setPreferences] = useState<Record<PreferenceKey, boolean>>({ tasks: true, messages: true, schedule: true, announcements: false });
 
   function showNotice(message: string) {
@@ -56,6 +61,16 @@ export default function ProfilePage() {
     setEditing(false);
   }
 
+  async function handleLogout() {
+    if (logoutPending) return;
+    setLogoutPending(true);
+    await logout();
+    router.replace("/dang-nhap");
+    router.refresh();
+  }
+
+  const roleLabel = user?.role === "vip" ? "Khách VIP" : "Nhân viên";
+
   return (
     <div className={styles.page}>
       {notice ? <div className={styles.toast} role="status"><CheckCircle2 size={17} />{notice}</div> : null}
@@ -63,17 +78,17 @@ export default function ProfilePage() {
         eyebrow="Tài khoản cá nhân"
         title="Hồ sơ của tôi"
         description="Quản lý thông tin liên hệ, bảo mật và cách bạn nhận thông báo."
-        actions={<Link href="/dang-nhap" className="button-secondary"><LogOut size={16} /> Đăng xuất</Link>}
+        actions={<button type="button" className="button-secondary" onClick={() => void handleLogout()} disabled={logoutPending}><LogOut size={16} /> {logoutPending ? "Đang đăng xuất..." : "Đăng xuất"}</button>}
       />
 
       <section className={styles.profileHero}>
         <div className={styles.profileGlow} />
         <div className={styles.identity}>
-          <Avatar initials={currentUser.initials} size="xl" />
+          <Avatar initials={getUserInitials(profile.name)} size="xl" />
           <div>
             <p>Hồ sơ nhân viên</p>
             <h2>{profile.name}</h2>
-            <div><Badge tone="cyan" dot>{currentUser.role}</Badge><span>{currentUser.department}</span></div>
+            <div><Badge tone="cyan" dot>{roleLabel}</Badge><span>{currentUser.department}</span></div>
           </div>
         </div>
         <div className={styles.heroMeta}>
@@ -102,7 +117,7 @@ export default function ProfilePage() {
                 <div><span><UserRound size={17} /></span><p><small>Họ và tên</small><strong>{profile.name}</strong></p></div>
                 <div><span><Mail size={17} /></span><p><small>Email công việc</small><strong>{profile.email}</strong></p></div>
                 <div><span><Phone size={17} /></span><p><small>Số điện thoại</small><strong>{profile.phone}</strong></p></div>
-                <div><span><ShieldCheck size={17} /></span><p><small>Vai trò hệ thống</small><strong>User · {currentUser.department}</strong></p></div>
+                <div><span><ShieldCheck size={17} /></span><p><small>Vai trò hệ thống</small><strong>{roleLabel} · {currentUser.department}</strong></p></div>
               </div>
             )}
           </section>
@@ -150,7 +165,7 @@ export default function ProfilePage() {
             <span><Trash2 size={24} /></span>
             <h2 id="delete-title">Xóa tài khoản?</h2>
             <p>Bản demo sẽ không xóa dữ liệu thật. Khi tích hợp API, hành động này gọi endpoint xóa tài khoản cá nhân sau bước xác nhận.</p>
-            <div><button className="button-secondary" onClick={() => setDeleteOpen(false)} autoFocus>Giữ tài khoản</button><Link href="/dang-nhap" className="button-danger"><Trash2 size={15} /> Xác nhận demo</Link></div>
+            <div><button className="button-secondary" onClick={() => setDeleteOpen(false)} autoFocus>Giữ tài khoản</button><button className="button-danger" onClick={() => { setDeleteOpen(false); showNotice("Bản demo không xóa dữ liệu tài khoản."); }}><Trash2 size={15} /> Xác nhận demo</button></div>
           </section>
         </div>
       ) : null}

@@ -25,6 +25,7 @@
 .authSwitch { margin: 22px 0 0; color: var(--slate-500); font-size: 10px; text-align: center; }
 .authSwitch a { color: var(--blue-700); font-weight: 900; }
 .error { display: flex; align-items: flex-start; gap: 7px; border: 1px solid #fecdd3; border-radius: 12px; padding: 10px; background: #fff1f2; color: #be123c; font-size: 9px; line-height: 1.45; }
+.notice { display: flex; align-items: flex-start; gap: 7px; border: 1px solid #a7f3d0; border-radius: 12px; padding: 10px; background: #ecfdf5; color: #047857; font-size: 9px; line-height: 1.45; }
 .otpRow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
 .otpRow input { width: 100%; min-width: 0; height: 54px; border: 1px solid var(--slate-200); border-radius: 14px; outline: none; background: var(--slate-50); color: var(--slate-900); font-size: 20px; font-weight: 900; text-align: center; }
 .otpRow input:focus { border-color: var(--blue-500); background: white; box-shadow: 0 0 0 4px rgba(40,116,187,.08); }
@@ -34,7 +35,7 @@
 .emailCard small { display: block; color: var(--slate-400); font-size: 8px; }
 .emailCard strong { display: block; margin-top: 2px; overflow: hidden; color: var(--slate-700); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .resend { display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--slate-500); font-size: 9px; }
-.resend button { cursor: pointer; background: transparent; color: var(--blue-700); font-size: inherit; font-weight: 900; }
+.resend button, .resend a { display: inline-flex; align-items: center; gap: 3px; cursor: pointer; background: transparent; color: var(--blue-700); font-size: inherit; font-weight: 900; }
 .backLink { display: inline-flex; align-items: center; gap: 5px; margin-top: 18px; color: var(--slate-500); font-size: 9px; font-weight: 800; }
 .success { display: grid; place-items: center; padding: 20px 0 5px; text-align: center; }
 .success > span { display: grid; width: 58px; height: 58px; place-items: center; border-radius: 18px; background: #ecfdf5; color: #059669; }

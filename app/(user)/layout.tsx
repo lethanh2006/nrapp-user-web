@@ -1,5 +1,6 @@
+import { AuthGate } from "@/components/features/auth-gate";
 import { UserShell } from "@/components/layout/user-shell";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
-  return <UserShell>{children}</UserShell>;
+  return <AuthGate><UserShell>{children}</UserShell></AuthGate>;
 }

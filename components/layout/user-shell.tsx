@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
   CalendarCheck2,
@@ -21,8 +21,9 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { currentUser } from "@/lib/mock-data";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { pageTitles, userNavigation } from "@/lib/navigation";
+import { getUserInitials, type SessionUser } from "@/lib/auth/session-user";
 import { Avatar } from "@/components/ui/avatar";
 import styles from "./user-shell.module.css";
 
@@ -31,12 +32,21 @@ function SidebarContent({
   collapsed,
   onCollapse,
   onNavigate,
+  user,
+  logoutPending,
+  onLogout,
 }: {
   pathname: string;
   collapsed: boolean;
   onCollapse: () => void;
   onNavigate?: () => void;
+  user: SessionUser;
+  logoutPending: boolean;
+  onLogout: () => void;
 }) {
+  const roleLabel = user.role === "vip" ? "Khách VIP" : "Nhân viên";
+  const initials = getUserInitials(user.name);
+
   return (
     <>
       <div className={styles.brandRow}>
@@ -91,17 +101,17 @@ function SidebarContent({
 
       <div className={styles.sidebarFooter}>
         <Link href="/ho-so" className={`${styles.userCard} ${pathname === "/ho-so" ? styles.userCardActive : ""}`} onClick={onNavigate}>
-          <Avatar initials={currentUser.initials} size="sm" />
+          <Avatar initials={initials} size="sm" />
           <span className={styles.userCopy}>
-            <strong>{currentUser.name}</strong>
-            <small>{currentUser.department}</small>
+            <strong>{user.name}</strong>
+            <small>{roleLabel}</small>
           </span>
           <Settings className={styles.userSettings} size={16} />
         </Link>
-        <Link href="/dang-nhap" className={styles.logoutButton} title="Đăng xuất" aria-label="Đăng xuất">
+        <button type="button" className={styles.logoutButton} title="Đăng xuất" aria-label="Đăng xuất" onClick={onLogout} disabled={logoutPending}>
           <LogOut size={18} />
-          <span>Đăng xuất</span>
-        </Link>
+          <span>{logoutPending ? "Đang đăng xuất..." : "Đăng xuất"}</span>
+        </button>
       </div>
     </>
   );
@@ -109,6 +119,8 @@ function SidebarContent({
 
 export function UserShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuthSession();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileDialogRef = useRef<HTMLElement>(null);
   const qrDialogRef = useRef<HTMLElement>(null);
@@ -119,6 +131,7 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   const [qrOpen, setQrOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
+  const [logoutPending, setLogoutPending] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen || qrOpen ? "hidden" : "";
@@ -168,17 +181,31 @@ export function UserShell({ children }: { children: React.ReactNode }) {
 
   const title = pageTitles[pathname] ?? "HDG WorkSpace";
 
+  async function handleLogout() {
+    if (logoutPending) return;
+    setLogoutPending(true);
+    try {
+      await logout();
+      router.replace("/dang-nhap");
+      router.refresh();
+    } finally {
+      setLogoutPending(false);
+    }
+  }
+
+  if (!user) return null;
+
   return (
     <div className={`${styles.shell} ${collapsed ? styles.shellCollapsed : ""}`}>
       <aside className={styles.sidebar}>
-        <SidebarContent pathname={pathname} collapsed={collapsed} onCollapse={() => setCollapsed((value) => !value)} />
+        <SidebarContent pathname={pathname} collapsed={collapsed} onCollapse={() => setCollapsed((value) => !value)} user={user} logoutPending={logoutPending} onLogout={() => void handleLogout()} />
       </aside>
 
       {mobileOpen ? (
         <div className={styles.mobileOverlay} onMouseDown={() => setMobileOpen(false)}>
           <aside ref={mobileDialogRef} className={styles.mobileSidebar} onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label="Điều hướng nhân viên">
             <button className={styles.mobileClose} onClick={() => setMobileOpen(false)} aria-label="Đóng điều hướng" autoFocus><X size={19} /></button>
-            <SidebarContent pathname={pathname} collapsed={false} onCollapse={() => setMobileOpen(false)} onNavigate={() => setMobileOpen(false)} />
+            <SidebarContent pathname={pathname} collapsed={false} onCollapse={() => setMobileOpen(false)} onNavigate={() => setMobileOpen(false)} user={user} logoutPending={logoutPending} onLogout={() => void handleLogout()} />
           </aside>
         </div>
       ) : null}
@@ -235,7 +262,7 @@ export function UserShell({ children }: { children: React.ReactNode }) {
               ) : null}
             </div>
 
-            <Link href="/ho-so" className={styles.topbarAvatar} aria-label="Mở hồ sơ"><Avatar initials={currentUser.initials} size="sm" /></Link>
+            <Link href="/ho-so" className={styles.topbarAvatar} aria-label="Mở hồ sơ"><Avatar initials={getUserInitials(user.name)} size="sm" /></Link>
           </div>
         </header>
 

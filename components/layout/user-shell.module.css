@@ -30,8 +30,9 @@
 .userCopy strong { overflow: hidden; font-size: 11px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
 .userCopy small { margin-top: 2px; color: rgba(255,255,255,.5); font-size: 9px; white-space: nowrap; }
 .userSettings { color: rgba(255,255,255,.42); }
-.logoutButton { display: flex; height: 37px; align-items: center; gap: 11px; border-radius: 11px; padding: 0 11px; color: rgba(219,234,254,.58); font-size: 11px; font-weight: 750; white-space: nowrap; }
+.logoutButton { display: flex; width: 100%; height: 37px; align-items: center; gap: 11px; border-radius: 11px; padding: 0 11px; cursor: pointer; background: transparent; color: rgba(219,234,254,.58); font-size: 11px; font-weight: 750; text-align: left; white-space: nowrap; }
 .logoutButton:hover { background: rgba(255,255,255,.07); color: #bfdbfe; }
+.logoutButton:disabled { cursor: wait; opacity: .7; }
 .shellCollapsed .brandCopy, .shellCollapsed .workspaceCard > div, .shellCollapsed .workspaceCard > svg, .shellCollapsed .navLabel, .shellCollapsed .navText, .shellCollapsed .navBadge, .shellCollapsed .userCopy, .shellCollapsed .userSettings, .shellCollapsed .logoutButton span { display: none; }
 .shellCollapsed .brandRow { justify-content: center; padding: 0; }
 .shellCollapsed .brand { display: none; }
