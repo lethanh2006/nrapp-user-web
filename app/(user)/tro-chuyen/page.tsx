@@ -21,7 +21,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { conversations, currentUser, people } from "@/lib/mock-data";
-import type { ChatMessage } from "@/lib/types";
+import type { ChatMessage, Conversation } from "@/lib/types";
 import styles from "./page.module.css";
 
 const initialMessages: Record<string, ChatMessage[]> = Object.fromEntries(
@@ -31,23 +31,36 @@ const initialMessages: Record<string, ChatMessage[]> = Object.fromEntries(
 function ConversationWorkspace() {
   const searchParams = useSearchParams();
   const requestedPersonId = searchParams.get("person");
-  const requestedConversation = conversations.find((item) => item.personId === requestedPersonId);
-  const [selectedId, setSelectedId] = useState(requestedConversation?.id ?? conversations[0].id);
+  const requestedPerson = people.find((person) => person.id === requestedPersonId);
+  const existingRequestedConversation = conversations.find((item) => item.personId === requestedPersonId);
+  const [conversationList] = useState<Conversation[]>(() => {
+    if (existingRequestedConversation || !requestedPerson) return conversations;
+    return [{
+      id: `new-${requestedPerson.id}`,
+      personId: requestedPerson.id,
+      preview: "Bắt đầu cuộc trò chuyện",
+      time: "Mới",
+      messages: [],
+    }, ...conversations];
+  });
+  const initialSelectedId = existingRequestedConversation?.id
+    ?? (requestedPerson ? `new-${requestedPerson.id}` : conversations[0].id);
+  const [selectedId, setSelectedId] = useState(initialSelectedId);
   const [messagesByConversation, setMessagesByConversation] = useState(initialMessages);
   const [unreadByConversation, setUnreadByConversation] = useState<Record<string, number>>(
     Object.fromEntries(conversations.map((item) => [item.id, item.unread ?? 0])),
   );
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
-  const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(requestedConversation));
+  const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(requestedPerson));
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const rows = useMemo(
-    () => conversations.map((conversation) => ({
+    () => conversationList.map((conversation) => ({
       conversation,
       person: people.find((person) => person.id === conversation.personId) ?? people[0],
     })),
-    [],
+    [conversationList],
   );
 
   const filteredRows = useMemo(() => {
@@ -61,12 +74,13 @@ function ConversationWorkspace() {
     );
   }, [query, rows]);
 
-  const selectedConversation = conversations.find((item) => item.id === selectedId) ?? conversations[0];
+  const selectedConversation = conversationList.find((item) => item.id === selectedId) ?? conversationList[0];
   const selectedPerson = people.find((person) => person.id === selectedConversation.personId) ?? people[0];
   const selectedMessages = messagesByConversation[selectedConversation.id] ?? selectedConversation.messages;
 
   function selectConversation(conversationId: string) {
     setSelectedId(conversationId);
+    setDraft("");
     setUnreadByConversation((value) => ({ ...value, [conversationId]: 0 }));
     setMobileThreadOpen(true);
   }
