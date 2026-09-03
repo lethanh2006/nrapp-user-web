@@ -23,7 +23,9 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { pageTitles, userNavigation } from "@/lib/navigation";
+import { publicApiConfig } from "@/lib/api/config";
 import { getUserInitials, type SessionUser } from "@/lib/auth/session-user";
+import { demoReference } from "@/lib/mock-data";
 import { Avatar } from "@/components/ui/avatar";
 import styles from "./user-shell.module.css";
 
@@ -244,7 +246,7 @@ export function UserShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <time className={styles.today} suppressHydrationWarning>
-              {new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }).format(new Date())}
+              {new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }).format(publicApiConfig.isDemo ? new Date(demoReference.isoDate) : new Date())}
             </time>
 
             <button className={styles.scanTopButton} onClick={() => setQrOpen(true)} aria-label="Quét mã chấm công"><ScanLine size={18} /><span>Chấm công</span></button>

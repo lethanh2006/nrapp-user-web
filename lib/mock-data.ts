@@ -5,6 +5,11 @@ import type {
   UserTask,
 } from "@/lib/types";
 
+export const demoReference = {
+  isoDate: "2026-09-03T09:42:00+07:00",
+  scheduleIndex: 3,
+} as const;
+
 export const currentUser = {
   id: "user-minh-anh",
   name: "Lê Minh Anh",

@@ -19,7 +19,7 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { announcements, currentUser, tasks, weekSchedule } from "@/lib/mock-data";
+import { announcements, currentUser, demoReference, tasks, weekSchedule } from "@/lib/mock-data";
 import styles from "./trang-chu.module.css";
 
 const shortcuts = [
@@ -34,8 +34,8 @@ const newsIcons = { Gamepad2, Footprints, CalendarHeart };
 export default function HomePage() {
   const activeTasks = tasks.filter((task) => task.status !== "done");
   const completed = tasks.filter((task) => task.status === "done").length;
-  const todaySchedule = weekSchedule[2];
-  const tomorrowSchedule = weekSchedule[3];
+  const todaySchedule = weekSchedule[demoReference.scheduleIndex];
+  const tomorrowSchedule = weekSchedule[demoReference.scheduleIndex + 1];
 
   return (
     <div className={styles.page}>
@@ -60,7 +60,7 @@ export default function HomePage() {
 
         <div className={styles.todayCard}>
           <div className={styles.todayTop}>
-            <div><p>Hôm nay · 02/09</p><strong>Thứ tư</strong></div>
+            <div><p>Hôm nay · {todaySchedule.date}</p><strong>{todaySchedule.day}</strong></div>
             <span><CalendarCheck2 size={20} /></span>
           </div>
           <div className={styles.workMode}>
@@ -70,7 +70,7 @@ export default function HomePage() {
           </div>
           <div className={styles.todayMeta}>
             <span><Clock3 size={15} /> {todaySchedule.time}</span>
-            <span><MapPin size={15} /> Daily lúc 09:00</span>
+            <span><MapPin size={15} /> {todaySchedule.note}</span>
           </div>
         </div>
       </section>
@@ -137,7 +137,7 @@ export default function HomePage() {
           <section>
             <SectionHeading title="Lịch sắp tới" href="/lich-lam" linkLabel="Mở lịch" />
             <div className={`surface-card ${styles.scheduleCard}`}>
-              <div className={styles.scheduleDate}><span>03</span><small>THÁNG 09</small></div>
+              <div className={styles.scheduleDate}><span>{tomorrowSchedule.date.slice(0, 2)}</span><small>THÁNG {tomorrowSchedule.date.slice(3)}</small></div>
               <div className={styles.scheduleInfo}><Badge tone="blue">{tomorrowSchedule.label}</Badge><strong>{tomorrowSchedule.time}</strong><p><MapPin size={13} /> {tomorrowSchedule.note}</p></div>
               <div className={styles.scheduleDivider} />
               <div className={styles.scheduleHint}><CalendarClock size={16} /><p>Lịch tuần sau đang mở đăng ký đến <strong>17:00 thứ Sáu</strong>.</p></div>

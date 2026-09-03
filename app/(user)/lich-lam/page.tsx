@@ -22,7 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { weekSchedule } from "@/lib/mock-data";
+import { demoReference, weekSchedule } from "@/lib/mock-data";
 import type { BadgeTone } from "@/lib/types";
 import styles from "./lich-lam.module.css";
 
@@ -116,7 +116,7 @@ export default function WorkSchedulePage() {
     const nextOffset = Math.max(0, Math.min(4, weekOffset + direction));
     if (nextOffset === weekOffset) return;
     setWeekOffset(nextOffset);
-    setSelectedDayIndex(nextOffset === 0 ? 2 : 0);
+    setSelectedDayIndex(nextOffset === 0 ? demoReference.scheduleIndex : 0);
   };
 
   const updateSelectedDay = (updates: Partial<ScheduleDay>) => {
@@ -209,7 +209,7 @@ export default function WorkSchedulePage() {
               className={styles.currentWeekButton}
               onClick={() => {
                 setWeekOffset(0);
-                setSelectedDayIndex(2);
+                setSelectedDayIndex(demoReference.scheduleIndex);
               }}
             >
               Tuần này
@@ -256,7 +256,7 @@ export default function WorkSchedulePage() {
                 >
                   <span className={styles.dayTop}>
                     <span>{item.day}</span>
-                    {weekOffset === 0 && index === 2 ? <em>Hôm nay</em> : null}
+                    {weekOffset === 0 && index === demoReference.scheduleIndex ? <em>Hôm nay</em> : null}
                   </span>
                   <strong>{item.date.slice(0, 2)}</strong>
                   <span className={styles.dayTypeIcon}><Icon size={17} /></span>

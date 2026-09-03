@@ -42,9 +42,9 @@ const requestTypes: Array<{ value: RequestType; label: string; description: stri
 ];
 
 const attendance = [
-  { date: "02/09", day: "Hôm nay", type: "Làm từ xa", checkIn: "08:27", checkOut: "—", source: "Theo lịch", tone: "violet" as BadgeTone },
+  { date: "03/09", day: "Hôm nay", type: "Văn phòng", checkIn: "08:26", checkOut: "—", source: "QR", tone: "blue" as BadgeTone },
+  { date: "02/09", day: "Thứ tư", type: "Làm từ xa", checkIn: "08:27", checkOut: "17:34", source: "Theo lịch", tone: "violet" as BadgeTone },
   { date: "01/09", day: "Thứ ba", type: "Văn phòng", checkIn: "08:24", checkOut: "17:41", source: "QR", tone: "blue" as BadgeTone },
-  { date: "31/08", day: "Thứ hai", type: "Văn phòng", checkIn: "08:31", checkOut: "17:36", source: "QR", tone: "blue" as BadgeTone },
 ];
 
 export default function UtilitiesPage() {
@@ -126,7 +126,7 @@ export default function UtilitiesPage() {
           <SectionHeading title="Chấm công gần đây" description="Dữ liệu ghi nhận trong ba ngày gần nhất" />
           <div className={`surface-card ${styles.attendanceCard}`}>
             <div className={styles.attendanceHeader}>
-              <div><span className={styles.liveDot} /><strong>Đang trong ca làm</strong><p>Hôm nay hệ thống ghi nhận làm từ xa theo lịch đã duyệt.</p></div>
+              <div><span className={styles.liveDot} /><strong>Đang trong ca làm</strong><p>Hôm nay hệ thống ghi nhận làm tại văn phòng theo lịch đã duyệt.</p></div>
               <Badge tone="emerald">Đúng giờ</Badge>
             </div>
             <div className={styles.attendanceRows}>
