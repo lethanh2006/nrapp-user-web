@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -7,8 +9,6 @@ import {
   CheckCircle2,
   CheckSquare2,
   Clock3,
-  Footprints,
-  Gamepad2,
   MapPin,
   MessageCircle,
   ScanLine,
@@ -19,23 +19,73 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { announcements, currentUser, demoReference, tasks, weekSchedule } from "@/lib/mock-data";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
+import { gatewayApi } from "@/lib/api/gateway";
+import { unwrapData, type ApiScheduleRequest, type ApiTask, type ApiTaskPage } from "@/lib/api/domain";
+import { getUserInitials } from "@/lib/auth/session-user";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./trang-chu.module.css";
 
 const shortcuts = [
-  { href: "/tro-chuyen", label: "Trò chuyện", helper: "2 tin nhắn mới", icon: MessageCircle, tone: "blue" },
-  { href: "/cong-viec", label: "Công việc", helper: "3 việc cần làm", icon: CheckSquare2, tone: "emerald" },
+  { href: "/tro-chuyen", label: "Trò chuyện", helper: "Tin nhắn nội bộ", icon: MessageCircle, tone: "blue" },
+  { href: "/cong-viec", label: "Công việc", helper: "Việc được giao", icon: CheckSquare2, tone: "emerald" },
   { href: "/can-tin", label: "Căn tin", helper: "Đặt bữa trưa", icon: Soup, tone: "amber" },
   { href: "/tien-ich", label: "Đơn từ", helper: "Tạo yêu cầu mới", icon: CalendarHeart, tone: "violet" },
 ] as const;
 
-const newsIcons = { Gamepad2, Footprints, CalendarHeart };
+type ScheduleSummary = { date: string; day: string; label: string; time: string; note: string; status: string };
+
+function scheduleForDate(requests: ApiScheduleRequest[], date: Date): ScheduleSummary | null {
+  const iso = date.toISOString().slice(0, 10);
+  for (const request of requests) {
+    const entry = request.entries?.find((item) => item.date.slice(0, 10) === iso);
+    if (!entry) continue;
+    const label = entry.type === "office" ? "Tại văn phòng" : entry.type === "remote" ? "Làm từ xa" : entry.type === "leave" ? "Nghỉ phép" : "Không đăng ký";
+    return {
+      date: new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit" }).format(date),
+      day: new Intl.DateTimeFormat("vi-VN", { weekday: "long" }).format(date),
+      label,
+      time: entry.period === "morning" ? "Buổi sáng" : entry.period === "afternoon" ? "Buổi chiều" : "Cả ngày",
+      note: entry.note?.trim() || "Không có ghi chú",
+      status: request.status,
+    };
+  }
+  return null;
+}
 
 export default function HomePage() {
+  const { user } = useAuthSession();
+  const [tasks, setTasks] = useState<ApiTask[]>([]);
+  const [scheduleRequests, setScheduleRequests] = useState<ApiScheduleRequest[]>([]);
+
+  const loadOverview = useCallback(async () => {
+    try {
+      const [taskResponse, scheduleResponse] = await Promise.all([
+        gatewayApi<ApiTaskPage>("todo/my-tasks?limit=100"),
+        gatewayApi<ApiScheduleRequest[] | { data: ApiScheduleRequest[] }>("workschedule/schedule/my"),
+      ]);
+      setTasks((Array.isArray(taskResponse.tasks) ? taskResponse.tasks : []).filter((task) => task.status !== "cancelled"));
+      const schedules = unwrapData(scheduleResponse);
+      setScheduleRequests(Array.isArray(schedules) ? schedules : []);
+    } catch {
+      setTasks([]);
+      setScheduleRequests([]);
+    }
+  }, []);
+
+  useEffect(() => { void Promise.resolve().then(loadOverview); }, [loadOverview]);
+
   const activeTasks = tasks.filter((task) => task.status !== "done");
   const completed = tasks.filter((task) => task.status === "done").length;
-  const todaySchedule = weekSchedule[demoReference.scheduleIndex];
-  const tomorrowSchedule = weekSchedule[demoReference.scheduleIndex + 1];
+  const inProgress = tasks.filter((task) => task.status === "in_progress").length;
+  const todo = tasks.filter((task) => task.status === "todo").length;
+  const completion = Math.round((completed / Math.max(tasks.length, 1)) * 100);
+  const today = useMemo(() => new Date(), []);
+  const tomorrow = useMemo(() => { const value = new Date(today); value.setDate(value.getDate() + 1); return value; }, [today]);
+  const todaySchedule = scheduleForDate(scheduleRequests, today);
+  const tomorrowSchedule = scheduleForDate(scheduleRequests, tomorrow);
+  const shortcutItems = shortcuts.map((item) => item.href === "/cong-viec" ? { ...item, helper: `${activeTasks.length} việc đang mở` } : item);
+  const greeting = new Date().getHours() < 12 ? "Chào buổi sáng" : new Date().getHours() < 18 ? "Chào buổi chiều" : "Chào buổi tối";
 
   return (
     <div className={styles.page}>
@@ -45,10 +95,10 @@ export default function HomePage() {
         <div className={styles.heroPattern} />
         <div className={styles.heroContent}>
           <div className={styles.greetingRow}>
-            <Avatar initials={currentUser.initials} size="lg" />
+            <Avatar initials={getUserInitials(user?.name ?? "Người dùng")} size="lg" />
             <div>
-              <p>Chào buổi sáng,</p>
-              <h1>{currentUser.name}</h1>
+              <p>{greeting},</p>
+              <h1>{user?.name ?? "Người dùng"}</h1>
             </div>
           </div>
           <p className={styles.heroLead}>Một ngày làm việc hiệu quả bắt đầu từ những việc nhỏ. Hôm nay bạn có <strong>{activeTasks.length} công việc</strong> đang chờ.</p>
@@ -60,17 +110,17 @@ export default function HomePage() {
 
         <div className={styles.todayCard}>
           <div className={styles.todayTop}>
-            <div><p>Hôm nay · {todaySchedule.date}</p><strong>{todaySchedule.day}</strong></div>
+            <div><p>Hôm nay · {todaySchedule?.date ?? new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit" }).format(today)}</p><strong>{todaySchedule?.day ?? new Intl.DateTimeFormat("vi-VN", { weekday: "long" }).format(today)}</strong></div>
             <span><CalendarCheck2 size={20} /></span>
           </div>
           <div className={styles.workMode}>
             <span><Sparkles size={16} /></span>
-            <div><small>Hình thức làm việc</small><strong>{todaySchedule.label}</strong></div>
-            <Badge tone="cyan" dot>Đã duyệt</Badge>
+            <div><small>Hình thức làm việc</small><strong>{todaySchedule?.label ?? "Chưa đăng ký"}</strong></div>
+            <Badge tone={todaySchedule?.status === "approved" ? "emerald" : "amber"} dot>{todaySchedule?.status === "approved" ? "Đã duyệt" : todaySchedule?.status === "pending" ? "Chờ duyệt" : "Chưa có lịch"}</Badge>
           </div>
           <div className={styles.todayMeta}>
-            <span><Clock3 size={15} /> {todaySchedule.time}</span>
-            <span><MapPin size={15} /> {todaySchedule.note}</span>
+            <span><Clock3 size={15} /> {todaySchedule?.time ?? "—"}</span>
+            <span><MapPin size={15} /> {todaySchedule?.note ?? "Chưa có dữ liệu"}</span>
           </div>
         </div>
       </section>
@@ -78,7 +128,7 @@ export default function HomePage() {
       <section className={styles.shortcutSection}>
         <SectionHeading title="Truy cập nhanh" description="Những công cụ bạn thường dùng mỗi ngày" />
         <div className={styles.shortcutGrid}>
-          {shortcuts.map((item) => {
+          {shortcutItems.map((item) => {
             const Icon = item.icon;
             return (
               <Link href={item.href} className={styles.shortcutCard} key={item.href}>
@@ -97,11 +147,11 @@ export default function HomePage() {
             <SectionHeading title="Công việc ưu tiên" description="Tập trung vào những đầu việc gần hạn nhất" href="/cong-viec" />
             <div className={`surface-card ${styles.taskCard}`}>
               {activeTasks.slice(0, 3).map((task, index) => (
-                <article className={styles.taskRow} key={task.id}>
+                <article className={styles.taskRow} key={task._id}>
                   <span className={`${styles.taskIndex} ${task.priority === "high" ? styles.taskIndexHigh : ""}`}>{String(index + 1).padStart(2, "0")}</span>
                   <div className={styles.taskCopy}>
                     <div><strong>{task.title}</strong><Badge tone={task.priority === "high" ? "rose" : task.priority === "medium" ? "amber" : "slate"}>{task.priority === "high" ? "Ưu tiên cao" : task.priority === "medium" ? "Trung bình" : "Ưu tiên thấp"}</Badge></div>
-                    <p>{task.category} · {task.dueLabel}</p>
+                    <p>{task.description?.trim() || "Không có mô tả"} · {task.deadline ? new Intl.DateTimeFormat("vi-VN").format(new Date(task.deadline)) : "Chưa đặt hạn"}</p>
                   </div>
                   <span className={styles.taskArrow}><ArrowRight size={16} /></span>
                 </article>
@@ -110,21 +160,20 @@ export default function HomePage() {
           </section>
 
           <section>
-            <SectionHeading title="Tin tức HDG" description="Cập nhật mới nhất từ công ty và các đội ngũ" />
+            <SectionHeading title="Cập nhật công việc" description="Dữ liệu mới nhất từ hệ thống công việc" />
             <div className={styles.newsGrid}>
-              {announcements.map((item, index) => {
-                const Icon = newsIcons[item.icon];
+              {tasks.slice(0, 3).map((item, index) => {
                 return (
-                  <article className={`${styles.newsCard} ${index === 0 ? styles.newsFeatured : ""}`} key={item.id}>
-                    <div className={`${styles.newsVisual} ${styles[`news_${item.tone}`]}`}>
-                      <Icon size={index === 0 ? 36 : 25} />
-                      <span>{item.category}</span>
+                  <article className={`${styles.newsCard} ${index === 0 ? styles.newsFeatured : ""}`} key={item._id}>
+                    <div className={`${styles.newsVisual} ${styles.news_blue}`}>
+                      <CheckSquare2 size={index === 0 ? 36 : 25} />
+                      <span>{item.status === "done" ? "Đã hoàn thành" : item.status === "in_progress" ? "Đang làm" : "Cần làm"}</span>
                     </div>
                     <div className={styles.newsCopy}>
-                      <small>{item.date}</small>
+                      <small>{item.updatedAt ? new Intl.DateTimeFormat("vi-VN").format(new Date(item.updatedAt)) : "Mới cập nhật"}</small>
                       <h3>{item.title}</h3>
-                      <p>{item.description}</p>
-                      <button>Đọc thêm <ArrowRight size={14} /></button>
+                      <p>{item.description?.trim() || "Không có mô tả."}</p>
+                      <Link href="/cong-viec">Xem công việc <ArrowRight size={14} /></Link>
                     </div>
                   </article>
                 );
@@ -137,10 +186,10 @@ export default function HomePage() {
           <section>
             <SectionHeading title="Lịch sắp tới" href="/lich-lam" linkLabel="Mở lịch" />
             <div className={`surface-card ${styles.scheduleCard}`}>
-              <div className={styles.scheduleDate}><span>{tomorrowSchedule.date.slice(0, 2)}</span><small>THÁNG {tomorrowSchedule.date.slice(3)}</small></div>
-              <div className={styles.scheduleInfo}><Badge tone="blue">{tomorrowSchedule.label}</Badge><strong>{tomorrowSchedule.time}</strong><p><MapPin size={13} /> {tomorrowSchedule.note}</p></div>
+              <div className={styles.scheduleDate}><span>{(tomorrowSchedule?.date ?? new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit" }).format(tomorrow)).slice(0, 2)}</span><small>THÁNG {(tomorrowSchedule?.date ?? new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit" }).format(tomorrow)).slice(3)}</small></div>
+              <div className={styles.scheduleInfo}><Badge tone="blue">{tomorrowSchedule?.label ?? "Chưa đăng ký"}</Badge><strong>{tomorrowSchedule?.time ?? "—"}</strong><p><MapPin size={13} /> {tomorrowSchedule?.note ?? "Chưa có dữ liệu"}</p></div>
               <div className={styles.scheduleDivider} />
-              <div className={styles.scheduleHint}><CalendarClock size={16} /><p>Lịch tuần sau đang mở đăng ký đến <strong>17:00 thứ Sáu</strong>.</p></div>
+              <div className={styles.scheduleHint}><CalendarClock size={16} /><p>Lịch hiển thị được đồng bộ trực tiếp từ <strong>NRApp Gateway</strong>.</p></div>
               <Link href="/lich-lam" className="button-secondary">Đăng ký lịch tuần sau <ArrowRight size={15} /></Link>
             </div>
           </section>
@@ -148,12 +197,12 @@ export default function HomePage() {
           <section>
             <SectionHeading title="Tiến độ tuần" />
             <div className={`surface-card ${styles.progressCard}`}>
-              <div className={styles.progressRing} style={{ "--progress": "72%" } as React.CSSProperties}><span>72<small>%</small></span></div>
-              <div className={styles.progressCopy}><strong>Bạn đang làm rất tốt!</strong><p>{completed} công việc đã hoàn thành trong tuần này.</p></div>
+              <div className={styles.progressRing} style={{ "--progress": `${completion}%` } as React.CSSProperties}><span>{completion}<small>%</small></span></div>
+              <div className={styles.progressCopy}><strong>{completion >= 80 ? "Tiến độ đang rất tốt" : "Tiếp tục hoàn thành công việc"}</strong><p>{completed} trên {tasks.length} công việc đã hoàn thành.</p></div>
               <div className={styles.progressStats}>
-                <div><span className={styles.dotBlue} /><strong>3</strong><small>Đang làm</small></div>
+                <div><span className={styles.dotBlue} /><strong>{inProgress}</strong><small>Đang làm</small></div>
                 <div><span className={styles.dotGreen} /><strong>{completed}</strong><small>Hoàn thành</small></div>
-                <div><span className={styles.dotSlate} /><strong>1</strong><small>Sắp tới</small></div>
+                <div><span className={styles.dotSlate} /><strong>{todo}</strong><small>Cần làm</small></div>
               </div>
             </div>
           </section>

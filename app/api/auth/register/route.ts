@@ -2,7 +2,6 @@ import { apiEndpoints } from "@/lib/api/endpoints";
 import type { RegisterResponse } from "@/lib/api/contracts";
 import { gatewayRequest } from "@/lib/api/server";
 import { jsonResponse, routeErrorResponse, validationResponse } from "@/lib/api/route-response";
-import { publicApiConfig } from "@/lib/api/config";
 
 export const runtime = "nodejs";
 
@@ -24,10 +23,6 @@ export async function POST(request: Request) {
       ...(password.length < 6 || password.length > 128 ? ["password"] : []),
     ];
     if (invalidFields.length) return validationResponse(invalidFields);
-
-    if (publicApiConfig.isDemo) {
-      return jsonResponse({ message: "Tài khoản demo đã được tạo. Bạn có thể đăng nhập ngay.", userId: "demo-user" }, 201);
-    }
 
     const result = await gatewayRequest<RegisterResponse>(apiEndpoints.auth.register, {
       method: "POST",

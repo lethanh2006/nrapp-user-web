@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
   ArrowRight,
@@ -21,7 +21,10 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
-import { tasks as initialTasks } from "@/lib/mock-data";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
+import { gatewayApi } from "@/lib/api/gateway";
+import type { ApiTask, ApiTaskPage } from "@/lib/api/domain";
+import { getUserInitials } from "@/lib/auth/session-user";
 import type { BadgeTone, TaskPriority, TaskStatus, UserTask } from "@/lib/types";
 import styles from "./cong-viec.module.css";
 
@@ -63,14 +66,50 @@ const priorityMeta: Record<
   low: { label: "Ưu tiên thấp", tone: "slate", order: 2 },
 };
 
+function formatDeadline(value?: string) {
+  if (!value) return "Chưa đặt hạn";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Chưa đặt hạn";
+  return new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(date);
+}
+
+function toUserTask(task: ApiTask): UserTask | null {
+  if (task.status === "cancelled") return null;
+  return {
+    id: task._id,
+    title: task.title,
+    description: task.description?.trim() || "Không có mô tả.",
+    status: task.status,
+    priority: task.priority,
+    dueLabel: formatDeadline(task.deadline),
+    category: "Công việc được giao",
+  };
+}
+
 export default function MyTasksPage() {
-  const [taskItems, setTaskItems] = useState<UserTask[]>(() =>
-    initialTasks.map((item) => ({ ...item })),
-  );
+  const { user } = useAuthSession();
+  const [taskItems, setTaskItems] = useState<UserTask[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [notice, setNotice] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const loadTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await gatewayApi<ApiTaskPage>("todo/my-tasks?limit=100");
+      setTaskItems((Array.isArray(result.tasks) ? result.tasks : []).map(toUserTask).filter((task): task is UserTask => task !== null));
+      return true;
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Không thể tải công việc.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { void Promise.resolve().then(loadTasks); }, [loadTasks]);
 
   const counts = useMemo(
     () => ({
@@ -105,26 +144,24 @@ export default function MyTasksPage() {
     window.setTimeout(() => setNotice(""), 2400);
   };
 
-  const advanceTask = (task: UserTask) => {
+  const advanceTask = async (task: UserTask) => {
     const nextStatus: TaskStatus | null =
       task.status === "todo" ? "in_progress" : task.status === "in_progress" ? "done" : null;
     if (!nextStatus) return;
-    setTaskItems((current) =>
-      current.map((item) => (item.id === task.id ? { ...item, status: nextStatus } : item)),
-    );
-    showNotice(
-      nextStatus === "done"
-        ? `Đã hoàn thành “${task.title}”.`
-        : `Đã bắt đầu “${task.title}”.`,
-    );
+    try {
+      await gatewayApi(`todo/${encodeURIComponent(task.id)}/status`, { method: "PATCH", json: { status: nextStatus } });
+      setTaskItems((current) => current.map((item) => (item.id === task.id ? { ...item, status: nextStatus } : item)));
+      showNotice(nextStatus === "done" ? `Đã hoàn thành “${task.title}”.` : `Đã bắt đầu “${task.title}”.`);
+    } catch (error) {
+      showNotice(error instanceof Error ? error.message : "Không thể cập nhật công việc.");
+    }
   };
 
-  const resetDemo = () => {
-    setTaskItems(initialTasks.map((item) => ({ ...item })));
+  const refreshTasks = async () => {
     setSearch("");
     setStatusFilter("all");
     setPriorityFilter("all");
-    showNotice("Đã khôi phục danh sách công việc mẫu.");
+    if (await loadTasks()) showNotice("Đã đồng bộ danh sách công việc từ máy chủ.");
   };
 
   return (
@@ -141,8 +178,8 @@ export default function MyTasksPage() {
         title="Công việc của tôi"
         description="Theo dõi ưu tiên, cập nhật tiến độ và tập trung vào những đầu việc quan trọng nhất."
         actions={
-          <button className="button-secondary" onClick={resetDemo}>
-            <RotateCcw size={16} /> Khôi phục demo
+          <button className="button-secondary" onClick={() => void refreshTasks()} disabled={loading}>
+            <RotateCcw size={16} /> {loading ? "Đang tải..." : "Làm mới"}
           </button>
         }
       />
@@ -266,10 +303,10 @@ export default function MyTasksPage() {
                     </div>
 
                     <div className={styles.taskFooter}>
-                      <span className={styles.ownerAvatar}>MA</span>
-                      <span className={styles.ownerCopy}><small>Phụ trách</small><strong>Lê Minh Anh</strong></span>
+                      <span className={styles.ownerAvatar}>{getUserInitials(user?.name ?? "Người dùng")}</span>
+                      <span className={styles.ownerCopy}><small>Phụ trách</small><strong>{user?.name ?? "Người dùng"}</strong></span>
                       {task.status !== "done" ? (
-                        <button onClick={() => advanceTask(task)}>
+                        <button onClick={() => void advanceTask(task)}>
                           {task.status === "todo" ? <Play size={14} /> : <Check size={14} />}
                           {task.status === "todo" ? "Bắt đầu" : "Hoàn thành"}
                           <ChevronRight size={13} />
@@ -296,7 +333,7 @@ export default function MyTasksPage() {
 
       <section className={styles.flowHint}>
         <span><Flag size={17} /></span>
-        <p><strong>Cách cập nhật:</strong> Công việc đi theo luồng Cần làm <ArrowRight size={13} /> Đang làm <ArrowRight size={13} /> Hoàn tất. Mọi thay đổi hiện chỉ được lưu trong phiên demo.</p>
+        <p><strong>Cách cập nhật:</strong> Công việc đi theo luồng Cần làm <ArrowRight size={13} /> Đang làm <ArrowRight size={13} /> Hoàn tất. Mọi thay đổi được đồng bộ ngay với NRApp Gateway.</p>
       </section>
     </div>
   );

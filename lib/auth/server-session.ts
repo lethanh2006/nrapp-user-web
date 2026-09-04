@@ -4,10 +4,8 @@ import { createHash } from "node:crypto";
 import type { GatewaySessionResponse, UserProfileResponse } from "@/lib/api/contracts";
 import { apiEndpoints } from "@/lib/api/endpoints";
 import { GatewayApiError } from "@/lib/api/errors";
-import { gatewayRequest } from "@/lib/api/server";
-import { publicApiConfig } from "@/lib/api/config";
+import { gatewayRequest, type GatewayRequestOptions } from "@/lib/api/server";
 import { clearSessionCookies, getSessionTokens, setSessionCookies } from "@/lib/auth/cookies";
-import { createDemoSessionTokens, demoGatewayUser, demoRefreshToken, getDemoEmail } from "@/lib/auth/demo";
 import { normalizeSessionUser, type SessionUser } from "@/lib/auth/session-user";
 
 export class SessionError extends Error {
@@ -84,27 +82,8 @@ async function requestProfile(accessToken: string) {
   return user;
 }
 
-async function getDemoSession(accessToken: string | null, refreshToken: string | null) {
-  let email = getDemoEmail(accessToken);
-  if (!email && refreshToken === demoRefreshToken) {
-    email = demoGatewayUser.email;
-    const session = createDemoSessionTokens(email);
-    await setSessionCookies(session.accessToken, session.refreshToken);
-  }
-  if (!email) {
-    await clearSessionCookies();
-    throw unauthorized();
-  }
-
-  const user = normalizeSessionUser({ ...demoGatewayUser, email });
-  if (!user) throw forbidden();
-  return user;
-}
-
 export async function getCurrentSessionUser(): Promise<SessionUser> {
   const { accessToken, refreshToken } = await getSessionTokens();
-  if (publicApiConfig.isDemo) return getDemoSession(accessToken, refreshToken);
-
   if (!accessToken && !refreshToken) throw unauthorized();
 
   let activeAccessToken = accessToken;
@@ -133,4 +112,25 @@ export async function getCurrentSessionUser(): Promise<SessionUser> {
     }
     throw error;
   }
+}
+
+export async function sessionGatewayRequest<T>(
+  path: string,
+  options: Omit<GatewayRequestOptions, "accessToken"> = {},
+): Promise<T> {
+  const { accessToken, refreshToken } = await getSessionTokens();
+  if (!accessToken && !refreshToken) throw unauthorized();
+
+  let activeAccessToken = accessToken;
+  if (!activeAccessToken && refreshToken) activeAccessToken = await refreshSession(refreshToken);
+  if (!activeAccessToken) throw unauthorized();
+
+  try {
+    return await gatewayRequest<T>(path, { ...options, accessToken: activeAccessToken });
+  } catch (error) {
+    if (!(error instanceof GatewayApiError) || error.status !== 401 || !refreshToken) throw error;
+  }
+
+  const renewedAccessToken = await refreshSession(refreshToken);
+  return gatewayRequest<T>(path, { ...options, accessToken: renewedAccessToken });
 }

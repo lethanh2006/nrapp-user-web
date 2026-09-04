@@ -1,23 +1,8 @@
 # NRApp User Web
 
-Cổng nhân viên độc lập được xây dựng từ các luồng user của `Nrapp`, sử dụng Next.js 16, React 19 và TypeScript. Ứng dụng có giao diện responsive cho desktop/mobile và không import source trực tiếp từ `Nrapp` hay `nrapp-admin-web`.
+Cổng nhân viên độc lập xây dựng bằng Next.js 16, React 19 và TypeScript. Các phân hệ sử dụng NRApp Gateway làm nguồn dữ liệu thật và không còn phụ thuộc vào dữ liệu tĩnh cục bộ.
 
-## Trạng thái triển khai
-
-Luồng xác thực đã kết nối theo đúng hợp đồng của NRApp:
-
-```text
-Trình duyệt → Next.js /api/auth/* → NRApp Gateway
-```
-
-- Đăng ký, đăng nhập, xác thực OTP, khôi phục phiên và đăng xuất đã có API BFF.
-- Email đang chờ OTP được giữ trong cookie `HttpOnly` trong 5 phút, không xuất hiện trên URL.
-- Access token và refresh token chỉ nằm trong cookie `HttpOnly`; JavaScript phía trình duyệt không đọc được token.
-- Access token hết hạn sẽ được refresh đúng một lần và token refresh mới được lưu sau khi Gateway xoay vòng.
-- Chỉ role `user` và `vip` được vào khu vực nhân viên.
-- Các module công việc, lịch làm, căn tin, danh bạ, chat, tiện ích và hồ sơ hiện vẫn dùng dữ liệu demo; chúng được tách để nối API ở các lát cắt tiếp theo.
-
-## Chạy chế độ demo
+## Khởi chạy
 
 Yêu cầu Node.js 20.9 trở lên.
 
@@ -27,69 +12,45 @@ npm ci
 npm run dev
 ```
 
-Mặc định ứng dụng mở tại [http://localhost:3000](http://localhost:3000). Nếu NRApp Gateway cũng đang chạy ở cổng `3000`, hãy dùng cổng khác cho web:
+Mở [http://localhost:3000](http://localhost:3000) và đăng nhập bằng tài khoản NRApp có vai trò `user` hoặc `vip`. Nếu một dịch vụ khác đang dùng cổng 3000, có thể chạy web bằng `npm run dev -- --port 3100`.
 
-```bash
-npm run dev -- --port 3100
+Mặc định BFF kết nối tới `https://api.thanhlelmtp2006.id.vn/api`. Có thể đổi bằng biến môi trường `NRAPP_API_URL`; tài liệu endpoint nằm tại [NRApp Swagger](https://api.thanhlelmtp2006.id.vn/api-docs).
+
+## Kiến trúc xác thực và API
+
+```text
+Trình duyệt → Next.js /api/auth/* hoặc /api/gateway/* → NRApp Gateway
 ```
 
-Tài khoản mẫu đã được điền sẵn:
+- Đăng ký, đăng nhập, xác thực OTP, khôi phục phiên và đăng xuất đi qua các route BFF cùng origin.
+- Email chờ OTP, access token và refresh token chỉ nằm trong cookie `HttpOnly`; JavaScript phía trình duyệt không đọc được token.
+- Khi access token hết hạn, BFF làm mới phiên một lần và lưu refresh token mới sau khi Gateway xoay vòng.
+- Proxy chỉ cho phép các nhóm API đã khai báo: auth, user, todo, workschedule, canteen, payment và chat.
+- Chỉ vai trò `user` và `vip` được vào khu vực nhân viên.
 
-- Email: `minhanh@hdg.vn`
-- Mật khẩu: `HDG@2026`
-- OTP: `123456`
+## Các route chính
 
-Truy cập `/trang-chu` khi chưa có phiên sẽ tự chuyển về `/dang-nhap`. Sau khi xác thực OTP, người dùng được đưa trở lại đường dẫn ban đầu.
+- `/dang-nhap`, `/dang-ky`, `/xac-thuc`: xác thực email, mật khẩu và OTP với NRApp.
+- `/trang-chu`: tổng hợp công việc và lịch làm gần nhất.
+- `/lich-lam`: đọc lịch, tạo/lưu lại và gửi đăng ký lịch tuần.
+- `/cong-viec`: đọc, lọc và cập nhật trạng thái công việc của người dùng.
+- `/can-tin`: đọc thực đơn, tạo đơn, tạo VietQR, kiểm tra thanh toán và xem lịch sử đơn.
+- `/danh-ba`: đọc danh bạ tài khoản và mở hội thoại.
+- `/tro-chuyen`: đọc hội thoại, tải lịch sử và gửi tin nhắn văn bản.
+- `/tien-ich`: tổng quan tháng, chấm công và tạo/hủy đơn nhân sự.
+- `/ho-so`: cập nhật tên/email, đăng xuất và xóa tài khoản.
 
-## Kết nối Gateway thật
+Những khả năng backend chưa có endpoint tương ứng (đổi mật khẩu, số điện thoại, tải avatar, gọi thoại/video và gửi ảnh qua proxy JSON) được vô hiệu hóa hoặc ghi chú rõ trên giao diện.
 
-Đặt các biến sau trong `.env.local` hoặc phần Environment Variables của nền tảng triển khai:
+## Biến môi trường
 
 ```env
-NEXT_PUBLIC_APP_MODE=live
-NRAPP_API_URL=https://gateway.example.com/api
+NRAPP_API_URL=https://api.thanhlelmtp2006.id.vn/api
 NRAPP_API_TIMEOUT_MS=10000
+NRAPP_COOKIE_SECURE=false
 ```
 
-`NRAPP_API_URL` là biến phía máy chủ, không dùng tiền tố `NEXT_PUBLIC_`. Ở production, cookie tự bật cờ `Secure`, vì vậy website cần chạy qua HTTPS. Chỉ đặt `NRAPP_COOKIE_SECURE=false` khi kiểm thử `next start` cục bộ qua HTTP.
-
-Nếu không khai báo `NEXT_PUBLIC_APP_MODE`, development dùng `demo` còn production mặc định dùng `live` để tránh vô tình phát hành tài khoản mẫu.
-
-Các endpoint Next.js đang cung cấp:
-
-| Endpoint | Mục đích |
-| --- | --- |
-| `POST /api/auth/register` | Tạo tài khoản |
-| `POST /api/auth/login` | Kiểm tra mật khẩu và yêu cầu Gateway gửi OTP |
-| `POST /api/auth/verify` | Xác thực OTP và tạo cookie phiên |
-| `GET /api/auth/session` | Lấy người dùng hiện tại, tự refresh một lần khi cần |
-| `POST /api/auth/logout` | Xóa phiên trên thiết bị hiện tại |
-
-Backend hiện chưa có endpoint gửi lại OTP riêng hoặc thu hồi phiên khi logout. Người dùng cần quay lại trang đăng nhập để yêu cầu OTP mới; logout trên web chỉ xóa cookie của thiết bị hiện tại.
-
-## Route chính
-
-| Route | Nội dung |
-| --- | --- |
-| `/dang-nhap`, `/dang-ky`, `/xac-thuc` | Xác thực hai bước theo Gateway NRApp |
-| `/trang-chu` | Lịch hôm nay, truy cập nhanh, công việc và tin tức nội bộ |
-| `/lich-lam` | Chọn tuần, văn phòng/remote, lưu nháp và gửi duyệt demo |
-| `/cong-viec` | Tìm/lọc và chuyển trạng thái `todo → in_progress → done` |
-| `/can-tin` | Thực đơn, giỏ hàng, giờ nhận, tiền mặt/VietQR mô phỏng |
-| `/danh-ba` | Tìm kiếm, lọc phòng ban, liên hệ và mở cuộc trò chuyện |
-| `/tro-chuyen` | Danh sách hội thoại và gửi tin nhắn cục bộ |
-| `/tien-ich` | Chấm công, tổng quan tháng, lịch sử và tạo đơn nhân sự |
-| `/ho-so` | Hồ sơ, thông báo, bảo mật và phiên đăng nhập |
-
-Hai alias `/dashboard` và `/nhan-su` lần lượt chuyển tới `/trang-chu` và `/danh-ba`.
-
-## Build production
-
-```bash
-npm ci
-npm run build
-npm run start
-```
+`NRAPP_API_URL` là biến phía máy chủ, không dùng tiền tố `NEXT_PUBLIC_`. Ở production, cookie tự bật cờ `Secure`; chỉ đặt `NRAPP_COOKIE_SECURE=false` khi chạy HTTP cục bộ.
 
 ## Kiểm tra chất lượng
 

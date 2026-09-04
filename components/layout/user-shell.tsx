@@ -4,8 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
-  CalendarCheck2,
-  CheckCircle2,
   ChevronRight,
   CircleHelp,
   LogOut,
@@ -23,9 +21,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { pageTitles, userNavigation } from "@/lib/navigation";
-import { publicApiConfig } from "@/lib/api/config";
+import { gatewayApi } from "@/lib/api/gateway";
 import { getUserInitials, type SessionUser } from "@/lib/auth/session-user";
-import { demoReference } from "@/lib/mock-data";
 import { Avatar } from "@/components/ui/avatar";
 import styles from "./user-shell.module.css";
 
@@ -129,11 +126,13 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [hasUnread, setHasUnread] = useState(true);
   const [qrOpen, setQrOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [logoutPending, setLogoutPending] = useState(false);
+  const [qrToken, setQrToken] = useState("");
+  const [scanPending, setScanPending] = useState(false);
+  const [scanNotice, setScanNotice] = useState("");
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen || qrOpen ? "hidden" : "";
@@ -195,6 +194,21 @@ export function UserShell({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function submitAttendance() {
+    if (!qrToken.trim() || scanPending) return;
+    setScanPending(true);
+    setScanNotice("");
+    try {
+      const result = await gatewayApi<{ message?: string }>("workschedule/attendance/scan", { method: "POST", json: { token: qrToken.trim() } });
+      setScanNotice(result.message || "Chấm công thành công.");
+      setQrToken("");
+    } catch (error) {
+      setScanNotice(error instanceof Error ? error.message : "Không thể chấm công.");
+    } finally {
+      setScanPending(false);
+    }
+  }
+
   if (!user) return null;
 
   return (
@@ -246,20 +260,19 @@ export function UserShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <time className={styles.today} suppressHydrationWarning>
-              {new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }).format(publicApiConfig.isDemo ? new Date(demoReference.isoDate) : new Date())}
+              {new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }).format(new Date())}
             </time>
 
             <button className={styles.scanTopButton} onClick={() => setQrOpen(true)} aria-label="Quét mã chấm công"><ScanLine size={18} /><span>Chấm công</span></button>
 
             <div className={styles.notificationWrap}>
               <button className={styles.iconButton} onClick={() => setNotificationsOpen((value) => !value)} aria-label="Thông báo" aria-expanded={notificationsOpen}>
-                <Bell size={18} />{hasUnread ? <span className={styles.notificationDot} /> : null}
+                <Bell size={18} />
               </button>
               {notificationsOpen ? (
                 <div className={styles.notifications}>
-                  <div className={styles.notificationHeader}><strong>Thông báo</strong><button onClick={() => setHasUnread(false)}>Đánh dấu đã đọc</button></div>
-                  <div className={styles.notificationItem}><span className={`${styles.notificationIcon} ${styles.iconGreen}`}><CheckCircle2 size={17} /></span><div><strong>Đơn làm từ xa đã được duyệt</strong><p>Đơn ngày 02/09/2026 đã được phòng Nhân sự xác nhận.</p><small>12 phút trước</small></div></div>
-                  <div className={styles.notificationItem}><span className={`${styles.notificationIcon} ${styles.iconBlue}`}><CalendarCheck2 size={17} /></span><div><strong>Sắp đến hạn đăng ký lịch</strong><p>Hãy gửi lịch làm tuần 07/09 trước 17:00 thứ Sáu.</p><small>1 giờ trước</small></div></div>
+                  <div className={styles.notificationHeader}><strong>Thông báo</strong></div>
+                  <div className={styles.notificationItem}><span className={`${styles.notificationIcon} ${styles.iconBlue}`}><CircleHelp size={17} /></span><div><strong>Chưa có API thông báo riêng</strong><p>Các cập nhật thật đang hiển thị trong Công việc, Lịch làm và Trò chuyện.</p><small>NRApp Gateway</small></div></div>
                 </div>
               ) : null}
             </div>
@@ -285,14 +298,12 @@ export function UserShell({ children }: { children: React.ReactNode }) {
               <span className={styles.qrModalIcon}><QrCode size={23} /></span>
               <p className={styles.qrEyebrow}>Chấm công nhanh</p>
               <h2 id="scan-title">Đưa mã QR vào khung</h2>
-              <p>Bản khởi tạo đang mô phỏng camera. Khi nối Gateway, mã hợp lệ sẽ được gửi đến endpoint chấm công của NRApp.</p>
-              <div className={styles.qrFrame} aria-label="Khung mô phỏng quét QR">
-                <span className={styles.cornerOne} /><span className={styles.cornerTwo} /><span className={styles.cornerThree} /><span className={styles.cornerFour} />
-                <QrCode size={92} strokeWidth={1.1} />
-                <span className={styles.scanningLine} />
-              </div>
-              <div className={styles.qrHint}><CircleHelp size={15} /><span>Cho phép camera khi trình duyệt yêu cầu quyền truy cập.</span></div>
-              <button className="button-secondary" onClick={() => setQrOpen(false)}>Đóng trình quét</button>
+              <p>Nhập token được mã QR chấm công cung cấp để gửi trực tiếp đến NRApp Gateway.</p>
+              <label className="form-label" htmlFor="attendance-token">Token chấm công</label>
+              <input id="attendance-token" className="field" value={qrToken} onChange={(event) => setQrToken(event.target.value)} placeholder="qr-token-string-here" autoComplete="off" />
+              {scanNotice ? <div className={styles.qrHint}><CircleHelp size={15} /><span>{scanNotice}</span></div> : null}
+              <button className="button-primary" onClick={() => void submitAttendance()} disabled={!qrToken.trim() || scanPending}>{scanPending ? "Đang chấm công..." : "Xác nhận chấm công"}</button>
+              <button className="button-secondary" onClick={() => setQrOpen(false)}>Đóng</button>
             </div>
           </section>
         </div>

@@ -15,52 +15,104 @@ import {
   Video,
   X,
 } from "lucide-react";
-import { FormEvent, Suspense, useMemo, useRef, useState } from "react";
+import { FormEvent, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
-import { conversations, currentUser, people } from "@/lib/mock-data";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
+import { gatewayApi } from "@/lib/api/gateway";
+import { apiUserName, type ApiChatListItem, type ApiMessage, type ApiUser } from "@/lib/api/domain";
+import { getUserInitials } from "@/lib/auth/session-user";
 import type { ChatMessage, Conversation } from "@/lib/types";
+import type { DirectoryPerson } from "@/lib/types";
 import styles from "./page.module.css";
 
-const initialMessages: Record<string, ChatMessage[]> = Object.fromEntries(
-  conversations.map((conversation) => [conversation.id, conversation.messages]),
-);
+const tones: DirectoryPerson["tone"][] = ["blue", "violet", "amber", "rose", "cyan", "emerald"];
+
+function toPerson(raw: ApiUser, index: number): DirectoryPerson {
+  const name = apiUserName(raw);
+  return { id: raw._id, name, initials: getUserInitials(name), role: raw.role ?? "Thành viên", department: "NRApp", email: raw.email ?? "", phone: "", tone: tones[index % tones.length] };
+}
 
 function ConversationWorkspace() {
+  const { user } = useAuthSession();
   const searchParams = useSearchParams();
   const requestedPersonId = searchParams.get("person");
-  const requestedPerson = people.find((person) => person.id === requestedPersonId);
-  const existingRequestedConversation = conversations.find((item) => item.personId === requestedPersonId);
-  const [conversationList] = useState<Conversation[]>(() => {
-    if (existingRequestedConversation || !requestedPerson) return conversations;
-    return [{
-      id: `new-${requestedPerson.id}`,
-      personId: requestedPerson.id,
-      preview: "Bắt đầu cuộc trò chuyện",
-      time: "Mới",
-      messages: [],
-    }, ...conversations];
-  });
-  const initialSelectedId = existingRequestedConversation?.id
-    ?? (requestedPerson ? `new-${requestedPerson.id}` : conversations[0].id);
-  const [selectedId, setSelectedId] = useState(initialSelectedId);
-  const [messagesByConversation, setMessagesByConversation] = useState(initialMessages);
-  const [unreadByConversation, setUnreadByConversation] = useState<Record<string, number>>(
-    Object.fromEntries(conversations.map((item) => [item.id, item.unread ?? 0])),
-  );
+  const [people, setPeople] = useState<DirectoryPerson[]>([]);
+  const [conversationList, setConversationList] = useState<Conversation[]>([]);
+  const [selectedId, setSelectedId] = useState("");
+  const [messagesByConversation, setMessagesByConversation] = useState<Record<string, ChatMessage[]>>({});
+  const [unreadByConversation, setUnreadByConversation] = useState<Record<string, number>>({});
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
-  const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(requestedPerson));
+  const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(requestedPersonId));
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const creatingChatRef = useRef(false);
+
+  const loadChats = useCallback(async () => {
+    try {
+      const [userResult, chatResult] = await Promise.all([
+        gatewayApi<{ users: ApiUser[] }>("user/user/all"),
+        gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all"),
+      ]);
+      const directory = (Array.isArray(userResult.users) ? userResult.users : []).map(toPerson);
+      const chats = (Array.isArray(chatResult.chats) ? chatResult.chats : []).map(({ chat, user: wrapper }) => {
+        const raw = (wrapper as { user?: ApiUser }).user ?? wrapper as ApiUser;
+        const personId = raw?._id ?? chat.users.find((id) => id !== user?.id) ?? "";
+        const updated = new Date(chat.updatedAt);
+        return {
+          id: chat._id,
+          personId,
+          preview: chat.latestMessage?.text || "Bắt đầu cuộc trò chuyện",
+          time: Number.isNaN(updated.getTime()) ? "" : new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(updated),
+          unread: chat.unseenCount,
+          messages: [],
+        } satisfies Conversation;
+      });
+      setPeople(directory);
+      setConversationList(chats);
+      setUnreadByConversation(Object.fromEntries(chats.map((item) => [item.id, item.unread ?? 0])));
+      setSelectedId((current) => {
+        const requested = chats.find((item) => item.personId === requestedPersonId)?.id;
+        return requested || (chats.some((item) => item.id === current) ? current : chats[0]?.id ?? "");
+      });
+    } catch {
+      setConversationList([]);
+    }
+  }, [requestedPersonId, user?.id]);
+
+  useEffect(() => { void Promise.resolve().then(loadChats); }, [loadChats]);
+
+  useEffect(() => {
+    if (!requestedPersonId || creatingChatRef.current || conversationList.some((item) => item.personId === requestedPersonId) || !people.some((person) => person.id === requestedPersonId)) return;
+    creatingChatRef.current = true;
+    void gatewayApi<{ chatId: string }>("chat/chat/new", { method: "POST", json: { otherUserId: requestedPersonId } })
+      .then(() => loadChats())
+      .finally(() => { creatingChatRef.current = false; });
+  }, [conversationList, loadChats, people, requestedPersonId]);
+
+  useEffect(() => {
+    if (!selectedId) return;
+    void gatewayApi<{ messages: ApiMessage[] }>(`chat/message/${encodeURIComponent(selectedId)}`)
+      .then((result) => {
+        const messages = (Array.isArray(result.messages) ? result.messages : []).map((message) => ({
+          id: message._id,
+          body: message.text?.trim() || (message.messageType === "image" ? "[Hình ảnh]" : ""),
+          time: new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(new Date(message.createdAt)),
+          mine: message.sender === user?.id,
+        }));
+        setMessagesByConversation((current) => ({ ...current, [selectedId]: messages }));
+      })
+      .catch(() => setMessagesByConversation((current) => ({ ...current, [selectedId]: [] })));
+  }, [selectedId, user?.id]);
 
   const rows = useMemo(
     () => conversationList.map((conversation) => ({
       conversation,
       person: people.find((person) => person.id === conversation.personId) ?? people[0],
     })),
-    [conversationList],
+    [conversationList, people],
   );
 
   const filteredRows = useMemo(() => {
@@ -74,8 +126,8 @@ function ConversationWorkspace() {
     );
   }, [query, rows]);
 
-  const selectedConversation = conversationList.find((item) => item.id === selectedId) ?? conversationList[0];
-  const selectedPerson = people.find((person) => person.id === selectedConversation.personId) ?? people[0];
+  const selectedConversation = conversationList.find((item) => item.id === selectedId) ?? conversationList[0] ?? { id: "", personId: "", preview: "", time: "", messages: [] };
+  const selectedPerson = people.find((person) => person.id === selectedConversation.personId) ?? { id: "", name: "Chưa chọn cuộc trò chuyện", initials: "—", role: "", department: "", email: "", phone: "", tone: "slate" as const };
   const selectedMessages = messagesByConversation[selectedConversation.id] ?? selectedConversation.messages;
 
   function selectConversation(conversationId: string) {
@@ -85,23 +137,19 @@ function ConversationWorkspace() {
     setMobileThreadOpen(true);
   }
 
-  function sendMessage(event: FormEvent<HTMLFormElement>) {
+  async function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const body = draft.trim();
-    if (!body) return;
-
-    const sentAt = new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(new Date());
-    const message: ChatMessage = {
-      id: `local-${selectedConversation.id}-${Date.now()}`,
-      body,
-      time: sentAt,
-      mine: true,
-    };
-    setMessagesByConversation((value) => ({
-      ...value,
-      [selectedConversation.id]: [...(value[selectedConversation.id] ?? []), message],
-    }));
-    setDraft("");
+    if (!body || !selectedConversation.id) return;
+    try {
+      const result = await gatewayApi<{ message: ApiMessage }>("chat/message", { method: "POST", json: { chatId: selectedConversation.id, text: body } });
+      const message: ChatMessage = { id: result.message._id, body: result.message.text ?? body, time: new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(new Date(result.message.createdAt)), mine: true };
+      setMessagesByConversation((value) => ({ ...value, [selectedConversation.id]: [...(value[selectedConversation.id] ?? []), message] }));
+      setConversationList((current) => current.map((item) => item.id === selectedConversation.id ? { ...item, preview: body, time: message.time } : item));
+      setDraft("");
+    } catch {
+      return;
+    }
   }
 
   return (
@@ -131,8 +179,8 @@ function ConversationWorkspace() {
           </label>
 
           <div className={styles.quickStatus}>
-            <span><Avatar initials={currentUser.initials} size="sm" online /></span>
-            <div><strong>{currentUser.name}</strong><p>Bạn đang hoạt động</p></div>
+            <span><Avatar initials={getUserInitials(user?.name ?? "Người dùng")} size="sm" online /></span>
+            <div><strong>{user?.name ?? "Người dùng"}</strong><p>Bạn đang hoạt động</p></div>
             <Badge tone="emerald">Online</Badge>
           </div>
 
@@ -200,9 +248,9 @@ function ConversationWorkspace() {
             </div>
           </div>
 
-          <form className={styles.composer} onSubmit={sendMessage}>
+          <form className={styles.composer} onSubmit={(event) => void sendMessage(event)}>
             <input ref={fileInputRef} className={styles.hiddenFile} type="file" aria-label="Đính kèm tệp" />
-            <button type="button" className={styles.composerIcon} onClick={() => fileInputRef.current?.click()} aria-label="Đính kèm tệp"><Paperclip size={18} /></button>
+            <button type="button" className={styles.composerIcon} disabled title="Web hiện chỉ gửi tin nhắn văn bản" aria-label="Đính kèm tệp"><Paperclip size={18} /></button>
             <label className={styles.messageInput}>
               <span className="sr-only">Soạn tin nhắn</span>
               <textarea rows={1} value={draft} onChange={(event) => setDraft(event.target.value)} placeholder={`Nhắn tin cho ${selectedPerson.name}...`} />

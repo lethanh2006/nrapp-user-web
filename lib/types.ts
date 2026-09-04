@@ -29,6 +29,8 @@ export type MenuItem = {
   accent: BadgeTone;
   icon: string;
   popular?: boolean;
+  imageUrl?: string;
+  options?: Array<{ name: string; price: number }>;
 };
 
 export type DirectoryPerson = {

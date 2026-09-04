@@ -20,7 +20,7 @@ export class ApiClientError extends Error {
   }
 }
 
-type ApiRequestOptions = Omit<RequestInit, "body"> & {
+export type ApiRequestOptions = Omit<RequestInit, "body"> & {
   json?: unknown;
 };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,8 +21,9 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { menuItems } from "@/lib/mock-data";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { gatewayApi } from "@/lib/api/gateway";
+import type { ApiMenuGroup, ApiOrder, ApiPayment } from "@/lib/api/domain";
 import type { MenuItem } from "@/lib/types";
 import styles from "./can-tin.module.css";
 
@@ -36,6 +38,8 @@ const currency = new Intl.NumberFormat("vi-VN", {
 });
 
 const pickupSlots = ["11:30", "11:45", "12:00", "12:15"];
+const accents: MenuItem["accent"][] = ["amber", "rose", "cyan", "emerald", "violet", "blue"];
+const foodIcons = ["🍲", "🍚", "🍜", "🥗", "🍝", "☕"];
 
 function normalizeText(value: string) {
   return value
@@ -60,6 +64,8 @@ export function CanteenExperience() {
   const dialogRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [query, setQuery] = useState("");
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [recentOrders, setRecentOrders] = useState<ApiOrder[]>([]);
   const [category, setCategory] = useState("Tất cả");
   const [cart, setCart] = useState<Cart>({});
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -69,12 +75,41 @@ export function CanteenExperience() {
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState("");
-  const [orderNumber, setOrderNumber] = useState("HDG-0902-028");
+  const [orderNumber, setOrderNumber] = useState("");
   const [confirmedTotal, setConfirmedTotal] = useState(0);
+  const [payment, setPayment] = useState<ApiPayment | null>(null);
+
+  const loadCanteen = useCallback(async () => {
+    try {
+      const [groups, orders] = await Promise.all([
+        gatewayApi<ApiMenuGroup[]>("canteen/menu"),
+        gatewayApi<ApiOrder[]>("canteen/orders/my-orders"),
+      ]);
+      const mapped = (Array.isArray(groups) ? groups : []).flatMap((group, groupIndex) =>
+        (group.items ?? []).filter((item) => item.isAvailable).map((item, index) => ({
+          id: item._id,
+          name: item.name,
+          description: item.description?.trim() || group.category.description?.trim() || "Món đang mở bán.",
+          price: item.price,
+          category: group.category.name,
+          accent: accents[(groupIndex + index) % accents.length],
+          icon: foodIcons[(groupIndex + index) % foodIcons.length],
+          imageUrl: item.imageUrl,
+          options: item.options,
+        })),
+      );
+      setMenuItems(mapped);
+      setRecentOrders(Array.isArray(orders) ? orders : []);
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Không thể tải dữ liệu căn tin.");
+    }
+  }, []);
+
+  useEffect(() => { void Promise.resolve().then(loadCanteen); }, [loadCanteen]);
 
   const categories = useMemo(
     () => ["Tất cả", ...Array.from(new Set(menuItems.map((item) => item.category)))],
-    [],
+    [menuItems],
   );
 
   const filteredItems = useMemo(() => {
@@ -84,14 +119,14 @@ export function CanteenExperience() {
       const searchable = normalizeText(`${item.name} ${item.description} ${item.category}`);
       return matchesCategory && (!normalizedQuery || searchable.includes(normalizedQuery));
     });
-  }, [category, query]);
+  }, [category, menuItems, query]);
 
   const cartLines = useMemo(
     () =>
       menuItems
         .filter((item) => cart[item.id])
         .map((item) => ({ item, quantity: cart[item.id] })),
-    [cart],
+    [cart, menuItems],
   );
 
   const itemCount = cartLines.reduce((sum, line) => sum + line.quantity, 0);
@@ -169,22 +204,59 @@ export function CanteenExperience() {
 
   const submitDetails = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (paymentMethod === "VIETQR") {
-      setCheckoutStep("payment");
-      return;
-    }
-    completeOrder();
+    void createOrder();
   };
 
-  const completeOrder = () => {
+  const createOrder = async () => {
     setSubmitting(true);
-    window.setTimeout(() => {
-      setOrderNumber(`HDG-0902-${String(28 + itemCount).padStart(3, "0")}`);
-      setConfirmedTotal(subtotal);
+    try {
+      const order = await gatewayApi<ApiOrder>("canteen/orders", {
+        method: "POST",
+        json: {
+          items: cartLines.map(({ item, quantity }, index) => ({
+            menuItemId: item.id,
+            quantity,
+            ...(index === 0 && note.trim() ? { note: `${note.trim()} · Nhận lúc ${pickupTime}` } : {}),
+          })),
+          paymentMethod,
+        },
+      });
+      setOrderNumber(order.orderNumber);
+      setConfirmedTotal(order.finalAmount);
+      setRecentOrders((current) => [order, ...current.filter((item) => item._id !== order._id)]);
+      if (paymentMethod === "VIETQR") {
+        const paymentResult = await gatewayApi<ApiPayment>("payment/create-qr", { method: "POST", json: { orderId: order._id } });
+        setPayment(paymentResult);
+        setCheckoutStep("payment");
+      } else {
+        setCheckoutStep("success");
+        setCart({});
+      }
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Không thể tạo đơn hàng.");
+    } finally {
       setSubmitting(false);
+    }
+  };
+
+  const checkPayment = async () => {
+    if (!payment) return;
+    setSubmitting(true);
+    try {
+      const latest = await gatewayApi<ApiPayment>(`payment/payments/${encodeURIComponent(payment.paymentId)}`);
+      setPayment(latest);
+      if (latest.status !== "SUCCESS") {
+        setToast(`Thanh toán đang ở trạng thái ${latest.status}. Vui lòng thử lại sau.`);
+        return;
+      }
       setCheckoutStep("success");
       setCart({});
-    }, 700);
+      await loadCanteen();
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Không thể kiểm tra thanh toán.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const finishCheckout = () => {
@@ -318,10 +390,10 @@ export function CanteenExperience() {
             </div>
           )}
 
-          <div className={styles.recentOrder}>
-            <div><PackageCheck size={16} /><span><strong>Đơn gần nhất · #HDG-0901-018</strong><small>Đã hoàn thành lúc 12:06 hôm qua</small></span></div>
+          {recentOrders[0] ? <div className={styles.recentOrder}>
+            <div><PackageCheck size={16} /><span><strong>Đơn gần nhất · #{recentOrders[0].orderNumber}</strong><small>{recentOrders[0].status} · {new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }).format(new Date(recentOrders[0].createdAt))}</small></span></div>
             <CheckCircle2 size={18} />
-          </div>
+          </div> : null}
         </aside>
       </div>
 
@@ -382,17 +454,17 @@ export function CanteenExperience() {
                   <span><QrCode size={21} /></span>
                   <p>Bước 2 / 2</p>
                   <h2 id="checkout-title">Quét mã VietQR</h2>
-                  <small>Mã dưới đây là bản mô phỏng giao diện thanh toán.</small>
+                  <small>Mã được tạo theo số tiền chính thức của đơn hàng.</small>
                 </div>
                 <div className={styles.qrPanel}>
-                  <div className={styles.qrMock}><QrCode size={118} strokeWidth={1.15} /><i>QR MÔ PHỎNG</i></div>
-                  <strong>{currency.format(subtotal)}</strong>
-                  <span>HDG CANTEEN · HDG0902{itemCount}28</span>
+                  {payment?.qrUrl ? <Image className={styles.qrMock} src={payment.qrUrl} alt={`Mã VietQR cho đơn ${orderNumber}`} width={208} height={208} unoptimized /> : <div className={styles.qrMock}><QrCode size={118} strokeWidth={1.15} /></div>}
+                  <strong>{currency.format(payment?.amount ?? confirmedTotal)}</strong>
+                  <span>{payment?.transferContent ?? orderNumber}</span>
                 </div>
                 <div className={styles.paymentInfo}><ShieldCheck size={17} /><span><strong>Thanh toán được bảo vệ</strong><small>Không đóng cửa sổ cho đến khi hệ thống xác nhận.</small></span></div>
                 <div className={styles.modalActions}>
                   <button type="button" onClick={() => setCheckoutStep("details")} disabled={submitting}><ArrowLeft size={16} /> Quay lại</button>
-                  <button className={styles.modalPrimary} type="button" onClick={completeOrder} disabled={submitting}>{submitting ? <span className={styles.spinner} /> : <CheckCircle2 size={17} />}Tôi đã thanh toán</button>
+                  <button className={styles.modalPrimary} type="button" onClick={() => void checkPayment()} disabled={submitting}>{submitting ? <span className={styles.spinner} /> : <CheckCircle2 size={17} />}Kiểm tra thanh toán</button>
                 </div>
               </div>
             ) : null}
@@ -405,7 +477,7 @@ export function CanteenExperience() {
                 <small>Đến quầy lúc <strong>{pickupTime}</strong> và đọc mã đơn để nhận món.</small>
                 <div className={styles.orderTicket}>
                   <div><span>Mã đơn</span><strong>{orderNumber}</strong></div>
-                  <div><span>Thanh toán</span><strong>{paymentMethod === "VIETQR" ? "VietQR · Đã ghi nhận" : "Tiền mặt · Khi nhận món"}</strong></div>
+                  <div><span>Thanh toán</span><strong>{paymentMethod === "VIETQR" ? "VietQR · Đã xác nhận" : "Tiền mặt · Khi nhận món"}</strong></div>
                   <div><span>Tổng cộng</span><strong>{currency.format(confirmedTotal)}</strong></div>
                 </div>
                 <button className={styles.modalPrimary} type="button" onClick={finishCheckout}>Hoàn tất <Check size={17} /></button>

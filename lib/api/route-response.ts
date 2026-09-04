@@ -1,6 +1,7 @@
 import "server-only";
 
 import { GatewayApiError, GatewayUnavailableError } from "@/lib/api/errors";
+import { SessionError } from "@/lib/auth/server-session";
 
 export function jsonResponse(payload: unknown, status = 200) {
   return Response.json(payload, {
@@ -21,6 +22,9 @@ export function validationResponse(fields: string[]) {
 }
 
 export function routeErrorResponse(error: unknown, fallback: string) {
+  if (error instanceof SessionError) {
+    return jsonResponse({ code: error.code, message: error.message }, error.status);
+  }
   if (error instanceof GatewayApiError) {
     return jsonResponse(
       {

@@ -17,11 +17,6 @@
 .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
 .divider { display: flex; align-items: center; gap: 10px; margin: 2px 0; color: var(--slate-400); font-size: 8px; font-weight: 800; text-transform: uppercase; }
 .divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: var(--slate-200); }
-.demoCard { display: flex; align-items: center; gap: 10px; border: 1px solid var(--blue-100); border-radius: 14px; padding: 11px; background: var(--blue-50); }
-.demoCard > span { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 11px; background: white; color: var(--blue-700); }
-.demoCard div { min-width: 0; flex: 1; }
-.demoCard strong { display: block; color: var(--slate-700); font-size: 9px; font-weight: 900; }
-.demoCard p { margin: 3px 0 0; overflow: hidden; color: var(--slate-500); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
 .authSwitch { margin: 22px 0 0; color: var(--slate-500); font-size: 10px; text-align: center; }
 .authSwitch a { color: var(--blue-700); font-weight: 900; }
 .error { display: flex; align-items: flex-start; gap: 7px; border: 1px solid #fecdd3; border-radius: 12px; padding: 10px; background: #fff1f2; color: #be123c; font-size: 9px; line-height: 1.45; }

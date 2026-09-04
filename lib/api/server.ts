@@ -3,17 +3,15 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { GatewayApiError, GatewayUnavailableError } from "@/lib/api/errors";
 
-type GatewayRequestOptions = {
+export type GatewayRequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   accessToken?: string;
 };
 
 function getGatewayConfig() {
-  const baseUrl = process.env.NRAPP_API_URL?.trim().replace(/\/+$/, "");
-  if (!baseUrl) {
-    throw new GatewayUnavailableError("NRAPP_API_URL chưa được cấu hình trên máy chủ.");
-  }
+  const baseUrl = (process.env.NRAPP_API_URL?.trim() || "https://api.thanhlelmtp2006.id.vn/api")
+    .replace(/\/+$/, "");
 
   let parsedUrl: URL;
   try {

@@ -6,8 +6,6 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { ArrowRight, Eye, EyeOff, KeyRound, Mail, ShieldCheck } from "lucide-react";
 import { AuthFrame } from "@/components/features/auth-frame";
 import { apiRequest } from "@/lib/api/client";
-import { publicApiConfig } from "@/lib/api/config";
-import { demoCredentials } from "@/lib/auth/demo";
 import { getSafeReturnPath } from "@/lib/auth/redirect";
 import styles from "../auth.module.css";
 
@@ -16,15 +14,14 @@ const REMEMBERED_EMAIL_KEY = "nrapp.remembered-email";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const [email, setEmail] = useState(publicApiConfig.isDemo ? demoCredentials.email : "");
-  const [password, setPassword] = useState(publicApiConfig.isDemo ? demoCredentials.password : "");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberEmail, setRememberEmail] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (publicApiConfig.isDemo) return;
     const rememberedEmail = window.localStorage.getItem(REMEMBERED_EMAIL_KEY);
     if (!rememberedEmail) return;
     const frame = window.requestAnimationFrame(() => setEmail(rememberedEmail));
@@ -72,7 +69,6 @@ function LoginForm() {
         </div>
         <div className={styles.formOptions}><label className={styles.checkLabel}><input type="checkbox" checked={rememberEmail} onChange={(event) => setRememberEmail(event.target.checked)} disabled={loading} /> Ghi nhớ email</label><button type="button" className={styles.textButton} onClick={() => setError("Vui lòng liên hệ IT nội bộ để đặt lại mật khẩu.")}>Quên mật khẩu?</button></div>
         <button className={styles.submit} type="submit" disabled={loading}>{loading ? <><span className={styles.spinner} /> Đang xác nhận...</> : <>Tiếp tục nhận OTP <ArrowRight size={17} /></>}</button>
-        {publicApiConfig.isDemo ? <><div className={styles.divider}>Tài khoản mẫu</div><div className={styles.demoCard}><span><ShieldCheck size={17} /></span><div><strong>Đã điền sẵn để trải nghiệm</strong><p>{demoCredentials.email} · {demoCredentials.password}</p></div></div></> : null}
       </form>
       <p className={styles.authSwitch}>Chưa có tài khoản? <Link href="/dang-ky">Đăng ký ngay</Link></p>
     </AuthFrame>

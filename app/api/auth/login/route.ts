@@ -2,7 +2,6 @@ import { apiEndpoints } from "@/lib/api/endpoints";
 import type { LoginResponse } from "@/lib/api/contracts";
 import { gatewayRequest } from "@/lib/api/server";
 import { jsonResponse, routeErrorResponse, validationResponse } from "@/lib/api/route-response";
-import { publicApiConfig } from "@/lib/api/config";
 import { setPendingEmail } from "@/lib/auth/cookies";
 
 export const runtime = "nodejs";
@@ -23,11 +22,6 @@ export async function POST(request: Request) {
       ...(password.length < 6 || password.length > 128 ? ["password"] : []),
     ];
     if (invalidFields.length) return validationResponse(invalidFields);
-
-    if (publicApiConfig.isDemo) {
-      await setPendingEmail(email);
-      return jsonResponse({ message: "Mã OTP demo đã sẵn sàng." });
-    }
 
     const result = await gatewayRequest<LoginResponse>(apiEndpoints.auth.login, {
       method: "POST",

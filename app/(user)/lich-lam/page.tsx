@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -15,14 +15,15 @@ import {
   House,
   Info,
   MapPin,
-  Save,
   Send,
   Sparkles,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { demoReference, weekSchedule } from "@/lib/mock-data";
+import { gatewayApi } from "@/lib/api/gateway";
+import { unwrapData, type ApiScheduleRequest } from "@/lib/api/domain";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
 import type { BadgeTone } from "@/lib/types";
 import styles from "./lich-lam.module.css";
 
@@ -31,6 +32,7 @@ type WorkType = "office" | "remote" | "off";
 type ScheduleDay = {
   day: string;
   date: string;
+  isoDate: string;
   type: WorkType;
   label: string;
   time: string;
@@ -61,19 +63,29 @@ const workTypeMeta: Record<
   },
 };
 
-function shiftDateLabel(label: string, weeks: number) {
-  const [day, month] = label.split("/").map(Number);
-  const value = new Date(Date.UTC(2026, month - 1, day + weeks * 7));
-  return `${String(value.getUTCDate()).padStart(2, "0")}/${String(
-    value.getUTCMonth() + 1,
-  ).padStart(2, "0")}`;
+function startOfWeek(offset: number) {
+  const value = new Date();
+  value.setHours(12, 0, 0, 0);
+  const day = value.getDay() || 7;
+  value.setDate(value.getDate() - day + 1 + offset * 7);
+  return value;
 }
 
 function createWeek(offset: number): ScheduleDay[] {
-  return weekSchedule.map((item) => ({
-    ...item,
-    date: shiftDateLabel(item.date, offset),
-  }));
+  const monday = startOfWeek(offset);
+  return Array.from({ length: 7 }, (_, index) => {
+    const value = new Date(monday);
+    value.setDate(monday.getDate() + index);
+    return {
+      day: index === 6 ? "Chủ nhật" : `Thứ ${index + 2}`,
+      date: new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit" }).format(value),
+      isoDate: value.toISOString().slice(0, 10),
+      type: "off" as WorkType,
+      label: "Không đăng ký",
+      time: "Cả ngày",
+      note: "",
+    };
+  });
 }
 
 function weekName(offset: number) {
@@ -83,20 +95,53 @@ function weekName(offset: number) {
 }
 
 export default function WorkSchedulePage() {
+  const { user } = useAuthSession();
   const [weekOffset, setWeekOffset] = useState(1);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-  const [weeks, setWeeks] = useState<Record<string, ScheduleDay[]>>(() => ({
-    "0": createWeek(0),
-    "1": createWeek(1),
-  }));
-  const [submittedWeeks, setSubmittedWeeks] = useState<Record<string, boolean>>({});
+  const [weeks, setWeeks] = useState<Record<string, ScheduleDay[]>>(() => ({ "0": createWeek(0), "1": createWeek(1) }));
+  const [requestsByWeek, setRequestsByWeek] = useState<Record<string, ApiScheduleRequest>>({});
   const [notice, setNotice] = useState("");
 
   const weekKey = String(weekOffset);
   const currentWeek = weeks[weekKey] ?? createWeek(weekOffset);
   const selectedDay = currentWeek[selectedDayIndex] ?? currentWeek[0];
-  const isSubmitted = Boolean(submittedWeeks[weekKey]);
-  const isLocked = weekOffset === 0 || isSubmitted;
+  const activeRequest = requestsByWeek[weekKey];
+  const isLocked = Boolean(activeRequest && activeRequest.status !== "rejected");
+
+  const showNotice = useCallback((message: string) => {
+    setNotice(message);
+    window.setTimeout(() => setNotice(""), 2600);
+  }, []);
+
+  const loadSchedules = useCallback(async () => {
+    try {
+      const response = await gatewayApi<ApiScheduleRequest[] | { data: ApiScheduleRequest[] }>("workschedule/schedule/my");
+      const requests = unwrapData(response);
+      const nextWeeks: Record<string, ScheduleDay[]> = {};
+      const nextRequests: Record<string, ApiScheduleRequest> = {};
+      for (let offset = 0; offset <= 4; offset += 1) nextWeeks[String(offset)] = createWeek(offset);
+      for (const request of Array.isArray(requests) ? requests : []) {
+        const requestStart = new Date(`${request.week_start.slice(0, 10)}T12:00:00`);
+        const offset = Math.round((requestStart.getTime() - startOfWeek(0).getTime()) / 604_800_000);
+        if (offset < 0 || offset > 4) continue;
+        const key = String(offset);
+        const entries = new Map((request.entries ?? []).map((entry) => [entry.date.slice(0, 10), entry]));
+        nextWeeks[key] = nextWeeks[key].map((day) => {
+          const entry = entries.get(day.isoDate);
+          if (!entry) return day;
+          const type: WorkType = entry.type === "office" ? "office" : entry.type === "remote" ? "remote" : "off";
+          return { ...day, type, label: workTypeMeta[type].label, time: workTypeMeta[type].time, note: entry.note ?? "" };
+        });
+        nextRequests[key] = request;
+      }
+      setWeeks(nextWeeks);
+      setRequestsByWeek(nextRequests);
+    } catch (error) {
+      showNotice(error instanceof Error ? error.message : "Không thể tải lịch làm việc.");
+    }
+  }, [showNotice]);
+
+  useEffect(() => { void Promise.resolve().then(loadSchedules); }, [loadSchedules]);
 
   const summary = useMemo(
     () => ({
@@ -107,16 +152,11 @@ export default function WorkSchedulePage() {
     [currentWeek],
   );
 
-  const showNotice = (message: string) => {
-    setNotice(message);
-    window.setTimeout(() => setNotice(""), 2600);
-  };
-
   const changeWeek = (direction: -1 | 1) => {
     const nextOffset = Math.max(0, Math.min(4, weekOffset + direction));
     if (nextOffset === weekOffset) return;
     setWeekOffset(nextOffset);
-    setSelectedDayIndex(nextOffset === 0 ? demoReference.scheduleIndex : 0);
+    setSelectedDayIndex(nextOffset === 0 ? Math.max(0, (new Date().getDay() || 7) - 1) : 0);
   };
 
   const updateSelectedDay = (updates: Partial<ScheduleDay>) => {
@@ -130,7 +170,6 @@ export default function WorkSchedulePage() {
         ),
       };
     });
-    setSubmittedWeeks((current) => ({ ...current, [weekKey]: false }));
   };
 
   const selectWorkType = (type: WorkType) => {
@@ -143,10 +182,28 @@ export default function WorkSchedulePage() {
     });
   };
 
-  const submitWeek = () => {
+  const submitWeek = async () => {
     if (isLocked) return;
-    setSubmittedWeeks((current) => ({ ...current, [weekKey]: true }));
-    showNotice("Lịch làm việc đã được gửi duyệt thành công.");
+    const payload = {
+      week_start: currentWeek[0].isoDate,
+      entries: currentWeek.map((day) => ({
+        date: day.isoDate,
+        type: day.type === "off" ? "day_off" : day.type,
+        period: "full_day",
+        ...(day.note.trim() ? { note: day.note.trim() } : {}),
+      })),
+    };
+    try {
+      if (activeRequest?.status === "rejected") {
+        await gatewayApi(`workschedule/schedule/requests/${encodeURIComponent(activeRequest._id)}/resubmit`, { method: "POST", json: { entries: payload.entries } });
+      } else {
+        await gatewayApi("workschedule/schedule/requests", { method: "POST", json: payload });
+      }
+      await loadSchedules();
+      showNotice("Lịch làm việc đã được gửi duyệt thành công.");
+    } catch (error) {
+      showNotice(error instanceof Error ? error.message : "Không thể gửi lịch làm việc.");
+    }
   };
 
   return (
@@ -166,14 +223,13 @@ export default function WorkSchedulePage() {
           <>
             <button
               className="button-secondary"
-              onClick={() => showNotice("Đã lưu lịch tuần dưới dạng bản nháp.")}
-              disabled={isLocked}
+              onClick={() => void loadSchedules().then(() => showNotice("Đã tải lại lịch từ máy chủ."))}
             >
-              <Save size={16} /> Lưu bản nháp
+              <CalendarDays size={16} /> Tải lại lịch
             </button>
-            <button className="button-primary" onClick={submitWeek} disabled={isLocked}>
+            <button className="button-primary" onClick={() => void submitWeek()} disabled={isLocked}>
               {isLocked ? <CheckCircle2 size={16} /> : <Send size={16} />}
-              {weekOffset === 0 ? "Lịch đã duyệt" : isSubmitted ? "Đã gửi duyệt" : "Gửi đăng ký"}
+              {activeRequest?.status === "approved" ? "Lịch đã duyệt" : activeRequest?.status === "pending" ? "Đang chờ duyệt" : activeRequest?.status === "rejected" ? "Gửi lại lịch" : "Gửi đăng ký"}
             </button>
           </>
         }
@@ -187,15 +243,15 @@ export default function WorkSchedulePage() {
           <div>
             <p>{weekName(weekOffset)}</p>
             <h2>
-              {currentWeek[0].date} – {currentWeek[6].date}/2026
+              {currentWeek[0].date} – {currentWeek[6].date}/{currentWeek[6].isoDate.slice(0, 4)}
             </h2>
             <span>Chọn một ngày bên dưới để cập nhật hình thức làm việc.</span>
           </div>
         </div>
 
         <div className={styles.heroStatus}>
-          <Badge tone={weekOffset === 0 ? "emerald" : "amber"} dot>
-            {weekOffset === 0 ? "Đã duyệt" : isSubmitted ? "Đang chờ duyệt" : "Bản nháp"}
+          <Badge tone={activeRequest?.status === "approved" ? "emerald" : activeRequest?.status === "rejected" ? "rose" : "amber"} dot>
+            {activeRequest?.status === "approved" ? "Đã duyệt" : activeRequest?.status === "pending" ? "Đang chờ duyệt" : activeRequest?.status === "rejected" ? "Bị từ chối" : "Chưa gửi"}
           </Badge>
           <div className={styles.weekNavigation}>
             <button
@@ -209,7 +265,7 @@ export default function WorkSchedulePage() {
               className={styles.currentWeekButton}
               onClick={() => {
                 setWeekOffset(0);
-                setSelectedDayIndex(demoReference.scheduleIndex);
+                setSelectedDayIndex(Math.max(0, (new Date().getDay() || 7) - 1));
               }}
             >
               Tuần này
@@ -230,7 +286,7 @@ export default function WorkSchedulePage() {
           <div className={styles.panelHeading}>
             <div>
               <p className={styles.kicker}>Kế hoạch trong tuần</p>
-              <h2>Lịch của Minh Anh</h2>
+              <h2>Lịch của {user?.name ?? "bạn"}</h2>
               <span>{summary.office + summary.remote} ngày làm việc đã đăng ký</span>
             </div>
             <div className={styles.legend} aria-label="Chú thích lịch">
@@ -256,7 +312,7 @@ export default function WorkSchedulePage() {
                 >
                   <span className={styles.dayTop}>
                     <span>{item.day}</span>
-                    {weekOffset === 0 && index === demoReference.scheduleIndex ? <em>Hôm nay</em> : null}
+                    {weekOffset === 0 && index === Math.max(0, (new Date().getDay() || 7) - 1) ? <em>Hôm nay</em> : null}
                   </span>
                   <strong>{item.date.slice(0, 2)}</strong>
                   <span className={styles.dayTypeIcon}><Icon size={17} /></span>
@@ -291,7 +347,7 @@ export default function WorkSchedulePage() {
             </span>
             <div>
               <p className={styles.kicker}>Chỉnh lịch trong ngày</p>
-              <h2>{selectedDay.day}, {selectedDay.date}/2026</h2>
+              <h2>{selectedDay.day}, {selectedDay.date}/{selectedDay.isoDate.slice(0, 4)}</h2>
               <Badge tone={workTypeMeta[selectedDay.type].tone} dot>
                 {selectedDay.label}
               </Badge>

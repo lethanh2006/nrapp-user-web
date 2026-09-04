@@ -17,7 +17,6 @@ import {
   Phone,
   Save,
   ShieldCheck,
-  Smartphone,
   Trash2,
   UserRound,
   X,
@@ -27,15 +26,15 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { getUserInitials } from "@/lib/auth/session-user";
-import { currentUser } from "@/lib/mock-data";
+import { gatewayApi } from "@/lib/api/gateway";
 import styles from "./ho-so.module.css";
 
 type PreferenceKey = "tasks" | "messages" | "schedule" | "announcements";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, logout } = useAuthSession();
-  const [profile, setProfile] = useState({ name: user?.name ?? currentUser.name, email: user?.email ?? currentUser.email, phone: currentUser.phone });
+  const { user, logout, refreshSession } = useAuthSession();
+  const [profile, setProfile] = useState({ name: user?.name ?? "Người dùng", email: user?.email ?? "", phone: "Backend chưa cung cấp" });
   const [draft, setDraft] = useState(profile);
   const [editing, setEditing] = useState(false);
   const [notice, setNotice] = useState("");
@@ -48,12 +47,37 @@ export default function ProfilePage() {
     window.setTimeout(() => setNotice(""), 2500);
   }
 
-  function saveProfile(event: FormEvent<HTMLFormElement>) {
+  async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (draft.name.trim().length < 2 || !/^\S+@\S+\.\S+$/.test(draft.email)) return;
-    setProfile({ ...draft, name: draft.name.trim(), email: draft.email.trim() });
-    setEditing(false);
-    showNotice("Thông tin hồ sơ đã được cập nhật.");
+    try {
+      const normalizedName = draft.name.trim();
+      const normalizedEmail = draft.email.trim().toLowerCase();
+      if (normalizedName !== profile.name) {
+        await gatewayApi("user/update/user", { method: "POST", json: { username: normalizedName } });
+      }
+      if (normalizedEmail !== profile.email) {
+        await gatewayApi("auth/me/email", { method: "PATCH", json: { email: normalizedEmail } });
+      }
+      setProfile({ ...draft, name: normalizedName, email: normalizedEmail });
+      setEditing(false);
+      await refreshSession();
+      showNotice("Thông tin hồ sơ đã được cập nhật trên máy chủ.");
+    } catch (error) {
+      showNotice(error instanceof Error ? error.message : "Không thể cập nhật hồ sơ.");
+    }
+  }
+
+  async function deleteAccount() {
+    try {
+      await gatewayApi("auth/me", { method: "DELETE" });
+      await logout();
+      router.replace("/dang-nhap");
+      router.refresh();
+    } catch (error) {
+      setDeleteOpen(false);
+      showNotice(error instanceof Error ? error.message : "Không thể xóa tài khoản.");
+    }
   }
 
   function cancelEdit() {
@@ -88,13 +112,13 @@ export default function ProfilePage() {
           <div>
             <p>Hồ sơ nhân viên</p>
             <h2>{profile.name}</h2>
-            <div><Badge tone="cyan" dot>{roleLabel}</Badge><span>{currentUser.department}</span></div>
+            <div><Badge tone="cyan" dot>{roleLabel}</Badge><span>Hồ sơ NRApp</span></div>
           </div>
         </div>
         <div className={styles.heroMeta}>
-          <div><span><UserRound size={17} /></span><p>Mã nhân viên<strong>{currentUser.employeeCode}</strong></p></div>
-          <div><span><CalendarDays size={17} /></span><p>Ngày gia nhập<strong>{currentUser.joinedAt}</strong></p></div>
-          <div><span><MapPin size={17} /></span><p>Địa điểm<strong>HDG Studio 1</strong></p></div>
+          <div><span><UserRound size={17} /></span><p>Mã tài khoản<strong>{user?.id ?? "—"}</strong></p></div>
+          <div><span><CalendarDays size={17} /></span><p>Vai trò<strong>{roleLabel}</strong></p></div>
+          <div><span><MapPin size={17} /></span><p>Nguồn dữ liệu<strong>NRApp Gateway</strong></p></div>
         </div>
       </section>
 
@@ -107,8 +131,8 @@ export default function ProfilePage() {
                 <div className={styles.formGrid}>
                   <label><span>Họ và tên</span><div><UserRound size={16} /><input value={draft.name} onChange={(event) => setDraft((value) => ({ ...value, name: event.target.value }))} autoComplete="name" required /></div></label>
                   <label><span>Email công việc</span><div><Mail size={16} /><input type="email" value={draft.email} onChange={(event) => setDraft((value) => ({ ...value, email: event.target.value }))} autoComplete="email" required /></div></label>
-                  <label><span>Số điện thoại</span><div><Phone size={16} /><input value={draft.phone} onChange={(event) => setDraft((value) => ({ ...value, phone: event.target.value }))} autoComplete="tel" /></div></label>
-                  <label><span>Phòng ban</span><div><ShieldCheck size={16} /><input value={currentUser.department} disabled /></div></label>
+                  <label><span>Số điện thoại</span><div><Phone size={16} /><input value={draft.phone} disabled title="Backend chưa có API số điện thoại" /></div></label>
+                  <label><span>Vai trò</span><div><ShieldCheck size={16} /><input value={roleLabel} disabled /></div></label>
                 </div>
                 <div className={styles.formActions}><button type="button" className="button-ghost" onClick={cancelEdit}><X size={15} /> Hủy</button><button type="submit" className="button-primary"><Save size={15} /> Lưu thay đổi</button></div>
               </form>
@@ -117,7 +141,7 @@ export default function ProfilePage() {
                 <div><span><UserRound size={17} /></span><p><small>Họ và tên</small><strong>{profile.name}</strong></p></div>
                 <div><span><Mail size={17} /></span><p><small>Email công việc</small><strong>{profile.email}</strong></p></div>
                 <div><span><Phone size={17} /></span><p><small>Số điện thoại</small><strong>{profile.phone}</strong></p></div>
-                <div><span><ShieldCheck size={17} /></span><p><small>Vai trò hệ thống</small><strong>{roleLabel} · {currentUser.department}</strong></p></div>
+                <div><span><ShieldCheck size={17} /></span><p><small>Vai trò hệ thống</small><strong>{roleLabel}</strong></p></div>
               </div>
             )}
           </section>
@@ -131,7 +155,7 @@ export default function ProfilePage() {
                 ["schedule", "Lịch & đơn từ", "Kết quả duyệt lịch, đơn và nhắc chấm công"],
                 ["announcements", "Tin tức HDG", "Thông báo văn hóa và sự kiện nội bộ"],
               ] as Array<[PreferenceKey, string, string]>).map(([key, label, description]) => (
-                <label key={key}><span><strong>{label}</strong><small>{description}</small></span><input type="checkbox" checked={preferences[key]} onChange={() => { setPreferences((value) => ({ ...value, [key]: !value[key] })); showNotice("Đã lưu tùy chọn thông báo."); }} /><i aria-hidden="true"><span /></i></label>
+                <label key={key}><span><strong>{label}</strong><small>{description}</small></span><input type="checkbox" checked={preferences[key]} onChange={() => { setPreferences((value) => ({ ...value, [key]: !value[key] })); showNotice("Tùy chọn chỉ áp dụng trong phiên này vì backend chưa có API lưu thông báo."); }} /><i aria-hidden="true"><span /></i></label>
               ))}
             </div>
           </section>
@@ -141,14 +165,13 @@ export default function ProfilePage() {
           <section className={`surface-card ${styles.securityCard}`}>
             <div className={styles.cardTitle}><span><KeyRound size={18} /></span><div><p>Bảo mật</p><h2>Tài khoản & mật khẩu</h2></div></div>
             <div className={styles.securityStatus}><Check size={15} /><div><strong>Xác thực hai bước đang bật</strong><p>OTP được yêu cầu mỗi khi tạo phiên mới.</p></div></div>
-            <button className="button-secondary" onClick={() => showNotice("Tính năng đổi mật khẩu sẽ dùng dịch vụ Auth khi tích hợp Gateway.")}>Đổi mật khẩu</button>
+            <button className="button-secondary" onClick={() => showNotice("Backend hiện chưa cung cấp API đổi mật khẩu.")}>Đổi mật khẩu</button>
           </section>
 
           <section className={`surface-card ${styles.sessionsCard}`}>
             <div className={styles.cardTitle}><span><Laptop size={18} /></span><div><p>Phiên đăng nhập</p><h2>Thiết bị gần đây</h2></div></div>
-            <article><span><Laptop size={18} /></span><div><strong>Chrome · Linux</strong><p>Hồ Chí Minh · Hiện tại</p></div><Badge tone="emerald">Phiên này</Badge></article>
-            <article><span><Smartphone size={18} /></span><div><strong>NRApp · Android</strong><p>Hồ Chí Minh · 2 giờ trước</p></div><button aria-label="Đăng xuất khỏi Android" onClick={() => showNotice("Đã yêu cầu kết thúc phiên Android mẫu.")}><X size={15} /></button></article>
-            <button className="button-ghost" onClick={() => showNotice("Đã yêu cầu đăng xuất khỏi các thiết bị khác.")}>Đăng xuất thiết bị khác</button>
+            <article><span><Laptop size={18} /></span><div><strong>Trình duyệt hiện tại</strong><p>Phiên đang được bảo vệ bằng cookie HttpOnly</p></div><Badge tone="emerald">Phiên này</Badge></article>
+            <button className="button-ghost" onClick={() => void handleLogout()}>Đăng xuất phiên hiện tại</button>
           </section>
 
           <section className={styles.dangerCard}>
@@ -157,15 +180,15 @@ export default function ProfilePage() {
         </aside>
       </div>
 
-      <footer className={styles.profileFooter}><Clock3 size={14} /> Hồ sơ demo cập nhật lần cuối lúc 09:42, 02/09/2026</footer>
+      <footer className={styles.profileFooter}><Clock3 size={14} /> Hồ sơ được đồng bộ trực tiếp từ NRApp Gateway.</footer>
 
       {deleteOpen ? (
         <div className="modal-backdrop" onMouseDown={() => setDeleteOpen(false)}>
           <section className={`modal-card ${styles.deleteModal}`} onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="delete-title">
             <span><Trash2 size={24} /></span>
             <h2 id="delete-title">Xóa tài khoản?</h2>
-            <p>Bản demo sẽ không xóa dữ liệu thật. Khi tích hợp API, hành động này gọi endpoint xóa tài khoản cá nhân sau bước xác nhận.</p>
-            <div><button className="button-secondary" onClick={() => setDeleteOpen(false)} autoFocus>Giữ tài khoản</button><button className="button-danger" onClick={() => { setDeleteOpen(false); showNotice("Bản demo không xóa dữ liệu tài khoản."); }}><Trash2 size={15} /> Xác nhận demo</button></div>
+            <p>Tài khoản sẽ bị xóa vĩnh viễn trên hệ thống. Thao tác này không thể hoàn tác.</p>
+            <div><button className="button-secondary" onClick={() => setDeleteOpen(false)} autoFocus>Giữ tài khoản</button><button className="button-danger" onClick={() => void deleteAccount()}><Trash2 size={15} /> Xóa vĩnh viễn</button></div>
           </section>
         </div>
       ) : null}

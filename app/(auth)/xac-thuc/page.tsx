@@ -7,8 +7,6 @@ import { ArrowLeft, ArrowRight, Mail, RefreshCw } from "lucide-react";
 import { AuthFrame } from "@/components/features/auth-frame";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { apiRequest } from "@/lib/api/client";
-import { publicApiConfig } from "@/lib/api/config";
-import { demoCredentials } from "@/lib/auth/demo";
 import { getSafeReturnPath } from "@/lib/auth/redirect";
 import type { SessionUser } from "@/lib/auth/session-user";
 import styles from "../auth.module.css";
@@ -17,7 +15,7 @@ function VerifyForm() {
   const router = useRouter();
   const params = useSearchParams();
   const { setAuthenticatedUser } = useAuthSession();
-  const [digits, setDigits] = useState(() => publicApiConfig.isDemo ? demoCredentials.otp.split("") : Array(6).fill(""));
+  const [digits, setDigits] = useState(() => Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const refs = useRef<Array<HTMLInputElement | null>>([]);
@@ -80,7 +78,7 @@ function VerifyForm() {
 
 export default function VerifyPage() {
   return (
-    <AuthFrame eyebrow="Xác thực hai bước" title="Kiểm tra email của bạn" description={publicApiConfig.isDemo ? `Nhập mã OTP demo ${demoCredentials.otp} để hoàn tất đăng nhập.` : "Nhập mã OTP đã được gửi qua email để hoàn tất đăng nhập."}>
+    <AuthFrame eyebrow="Xác thực hai bước" title="Kiểm tra email của bạn" description="Nhập mã OTP đã được gửi qua email để hoàn tất đăng nhập.">
       <Suspense fallback={<div className="route-loading"><span aria-hidden="true" /><p>Đang chuẩn bị mã xác thực...</p></div>}><VerifyForm /></Suspense>
     </AuthFrame>
   );
