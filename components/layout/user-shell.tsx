@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
+  CheckSquare2,
   ChevronRight,
   CircleHelp,
   LogOut,
   Menu,
+  MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
   QrCode,
@@ -18,11 +20,13 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { pageTitles, userNavigation } from "@/lib/navigation";
 import { gatewayApi } from "@/lib/api/gateway";
+import type { ApiChatListItem, ApiTaskPage } from "@/lib/api/domain";
 import { getUserInitials, type SessionUser } from "@/lib/auth/session-user";
+import { NAVIGATION_METRICS_EVENT } from "@/lib/navigation-metrics";
 import { Avatar } from "@/components/ui/avatar";
 import styles from "./user-shell.module.css";
 
@@ -34,6 +38,7 @@ function SidebarContent({
   user,
   logoutPending,
   onLogout,
+  navigationCounts,
 }: {
   pathname: string;
   collapsed: boolean;
@@ -42,6 +47,7 @@ function SidebarContent({
   user: SessionUser;
   logoutPending: boolean;
   onLogout: () => void;
+  navigationCounts: Partial<Record<string, number>>;
 }) {
   const roleLabel = user.role === "vip" ? "Khách VIP" : "Nhân viên";
   const initials = getUserInitials(user.name);
@@ -75,11 +81,12 @@ function SidebarContent({
         {userNavigation.slice(0, 3).map((item) => {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
+          const count = navigationCounts[item.href];
           return (
             <Link href={item.href} className={`${styles.navItem} ${active ? styles.navItemActive : ""}`} key={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined}>
               <Icon size={19} strokeWidth={active ? 2.5 : 2} />
               <span className={styles.navText}>{item.label}</span>
-              {item.badge ? <span className={styles.navBadge}>{item.badge}</span> : null}
+              {count ? <span className={styles.navBadge}>{count > 99 ? "99+" : count}</span> : null}
             </Link>
           );
         })}
@@ -88,11 +95,12 @@ function SidebarContent({
         {userNavigation.slice(3).map((item) => {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
+          const count = navigationCounts[item.href];
           return (
             <Link href={item.href} className={`${styles.navItem} ${active ? styles.navItemActive : ""}`} key={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined}>
               <Icon size={19} strokeWidth={active ? 2.5 : 2} />
               <span className={styles.navText}>{item.label}</span>
-              {item.badge ? <span className={styles.navBadge}>{item.badge}</span> : null}
+              {count ? <span className={styles.navBadge}>{count > 99 ? "99+" : count}</span> : null}
             </Link>
           );
         })}
@@ -133,11 +141,57 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   const [qrToken, setQrToken] = useState("");
   const [scanPending, setScanPending] = useState(false);
   const [scanNotice, setScanNotice] = useState("");
+  const [navigationMetrics, setNavigationMetrics] = useState<{ openTasks: number | null; unreadMessages: number | null }>({
+    openTasks: null,
+    unreadMessages: null,
+  });
+  const [navigationMetricsError, setNavigationMetricsError] = useState(false);
+  const [navigationMetricsLoading, setNavigationMetricsLoading] = useState(true);
+  const navigationMetricsRequestRef = useRef(0);
+
+  const loadNavigationMetrics = useCallback(async () => {
+    const requestId = ++navigationMetricsRequestRef.current;
+    const openTasksRequest = Promise.all([
+      gatewayApi<ApiTaskPage>("todo/my-tasks?status=todo&limit=1"),
+      gatewayApi<ApiTaskPage>("todo/my-tasks?status=in_progress&limit=1"),
+    ]).then((pages) => pages.reduce((total, page) => total + (page.pagination?.total ?? page.tasks?.length ?? 0), 0));
+    const [tasksResult, chatsResult] = await Promise.allSettled([
+      openTasksRequest,
+      gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all"),
+    ]);
+    if (requestId !== navigationMetricsRequestRef.current) return;
+
+    setNavigationMetrics({
+      openTasks: tasksResult.status === "fulfilled"
+        ? tasksResult.value
+        : null,
+      unreadMessages: chatsResult.status === "fulfilled"
+        ? (chatsResult.value.chats ?? []).reduce((total, item) => total + Math.max(item.chat.unseenCount ?? 0, 0), 0)
+        : null,
+    });
+    setNavigationMetricsError(tasksResult.status === "rejected" || chatsResult.status === "rejected");
+    setNavigationMetricsLoading(false);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen || qrOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen, qrOpen]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const refresh = () => void loadNavigationMetrics();
+    refresh();
+    const timer = window.setInterval(refresh, 60_000);
+    window.addEventListener("focus", refresh);
+    window.addEventListener(NAVIGATION_METRICS_EVENT, refresh);
+    return () => {
+      navigationMetricsRequestRef.current += 1;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener(NAVIGATION_METRICS_EVENT, refresh);
+    };
+  }, [loadNavigationMetrics, pathname, user?.id]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -181,6 +235,12 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   }, [query]);
 
   const title = pageTitles[pathname] ?? "HDG WorkSpace";
+  const navigationCounts = {
+    "/cong-viec": navigationMetrics.openTasks ?? 0,
+    "/tro-chuyen": navigationMetrics.unreadMessages ?? 0,
+  };
+  const hasUnreadMessages = (navigationMetrics.unreadMessages ?? 0) > 0;
+  const hasNotificationContent = (navigationMetrics.openTasks ?? 0) > 0 || hasUnreadMessages;
 
   async function handleLogout() {
     if (logoutPending) return;
@@ -214,14 +274,14 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   return (
     <div className={`${styles.shell} ${collapsed ? styles.shellCollapsed : ""}`}>
       <aside className={styles.sidebar}>
-        <SidebarContent pathname={pathname} collapsed={collapsed} onCollapse={() => setCollapsed((value) => !value)} user={user} logoutPending={logoutPending} onLogout={() => void handleLogout()} />
+        <SidebarContent pathname={pathname} collapsed={collapsed} onCollapse={() => setCollapsed((value) => !value)} user={user} logoutPending={logoutPending} onLogout={() => void handleLogout()} navigationCounts={navigationCounts} />
       </aside>
 
       {mobileOpen ? (
         <div className={styles.mobileOverlay} onMouseDown={() => setMobileOpen(false)}>
           <aside ref={mobileDialogRef} className={styles.mobileSidebar} onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label="Điều hướng nhân viên">
             <button className={styles.mobileClose} onClick={() => setMobileOpen(false)} aria-label="Đóng điều hướng" autoFocus><X size={19} /></button>
-            <SidebarContent pathname={pathname} collapsed={false} onCollapse={() => setMobileOpen(false)} onNavigate={() => setMobileOpen(false)} user={user} logoutPending={logoutPending} onLogout={() => void handleLogout()} />
+            <SidebarContent pathname={pathname} collapsed={false} onCollapse={() => setMobileOpen(false)} onNavigate={() => setMobileOpen(false)} user={user} logoutPending={logoutPending} onLogout={() => void handleLogout()} navigationCounts={navigationCounts} />
           </aside>
         </div>
       ) : null}
@@ -268,11 +328,32 @@ export function UserShell({ children }: { children: React.ReactNode }) {
             <div className={styles.notificationWrap}>
               <button className={styles.iconButton} onClick={() => setNotificationsOpen((value) => !value)} aria-label="Thông báo" aria-expanded={notificationsOpen}>
                 <Bell size={18} />
+                {hasUnreadMessages ? <span className={styles.notificationDot} /> : null}
               </button>
               {notificationsOpen ? (
                 <div className={styles.notifications}>
-                  <div className={styles.notificationHeader}><strong>Thông báo</strong></div>
-                  <div className={styles.notificationItem}><span className={`${styles.notificationIcon} ${styles.iconBlue}`}><CircleHelp size={17} /></span><div><strong>Chưa có API thông báo riêng</strong><p>Các cập nhật thật đang hiển thị trong Công việc, Lịch làm và Trò chuyện.</p><small>NRApp Gateway</small></div></div>
+                  <div className={styles.notificationHeader}><strong>Nội dung cần chú ý</strong><span>Dữ liệu trực tiếp</span></div>
+                  {(navigationMetrics.openTasks ?? 0) > 0 ? (
+                    <Link className={styles.notificationItem} href="/cong-viec" onClick={() => setNotificationsOpen(false)}>
+                      <span className={`${styles.notificationIcon} ${styles.iconBlue}`}><CheckSquare2 size={17} /></span>
+                      <div><strong>{navigationMetrics.openTasks} công việc đang mở</strong><p>Gồm công việc cần làm và đang thực hiện.</p><small>Mở Công việc của tôi</small></div>
+                    </Link>
+                  ) : null}
+                  {hasUnreadMessages ? (
+                    <Link className={styles.notificationItem} href="/tro-chuyen" onClick={() => setNotificationsOpen(false)}>
+                      <span className={`${styles.notificationIcon} ${styles.iconGreen}`}><MessageCircle size={17} /></span>
+                      <div><strong>{navigationMetrics.unreadMessages} tin nhắn chưa đọc</strong><p>Số lượng do API trò chuyện trả về.</p><small>Mở Trò chuyện</small></div>
+                    </Link>
+                  ) : null}
+                  {navigationMetricsLoading ? (
+                    <div className={styles.notificationEmpty}><span className={styles.notificationLoader} /><p>Đang tải dữ liệu mới nhất...</p></div>
+                  ) : null}
+                  {!navigationMetricsLoading && !hasNotificationContent && !navigationMetricsError ? (
+                    <div className={styles.notificationEmpty}><Bell size={18} /><p>Hiện không có nội dung cần chú ý.</p></div>
+                  ) : null}
+                  {navigationMetricsError ? (
+                    <div className={styles.notificationWarning}><CircleHelp size={17} /><p>Một phần dữ liệu chưa tải được. Các bộ đếm lỗi đã được ẩn.</p></div>
+                  ) : null}
                 </div>
               ) : null}
             </div>

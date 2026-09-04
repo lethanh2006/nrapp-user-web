@@ -3,7 +3,6 @@
 import {
   ArrowLeft,
   CheckCheck,
-  Circle,
   Info,
   MoreHorizontal,
   Paperclip,
@@ -24,6 +23,7 @@ import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { gatewayApi } from "@/lib/api/gateway";
 import { apiUserName, type ApiChatListItem, type ApiMessage, type ApiUser } from "@/lib/api/domain";
 import { getUserInitials } from "@/lib/auth/session-user";
+import { notifyNavigationMetricsChanged } from "@/lib/navigation-metrics";
 import type { ChatMessage, Conversation } from "@/lib/types";
 import type { DirectoryPerson } from "@/lib/types";
 import styles from "./page.module.css";
@@ -47,10 +47,12 @@ function ConversationWorkspace() {
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
   const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(requestedPersonId));
+  const [chatLoadState, setChatLoadState] = useState<"loading" | "ready" | "error">("loading");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const creatingChatRef = useRef(false);
 
   const loadChats = useCallback(async () => {
+    setChatLoadState("loading");
     try {
       const [userResult, chatResult] = await Promise.all([
         gatewayApi<{ users: ApiUser[] }>("user/user/all"),
@@ -77,8 +79,10 @@ function ConversationWorkspace() {
         const requested = chats.find((item) => item.personId === requestedPersonId)?.id;
         return requested || (chats.some((item) => item.id === current) ? current : chats[0]?.id ?? "");
       });
+      setChatLoadState("ready");
     } catch {
       setConversationList([]);
+      setChatLoadState("error");
     }
   }, [requestedPersonId, user?.id]);
 
@@ -103,6 +107,7 @@ function ConversationWorkspace() {
           mine: message.sender === user?.id,
         }));
         setMessagesByConversation((current) => ({ ...current, [selectedId]: messages }));
+        notifyNavigationMetricsChanged();
       })
       .catch(() => setMessagesByConversation((current) => ({ ...current, [selectedId]: [] })));
   }, [selectedId, user?.id]);
@@ -158,7 +163,7 @@ function ConversationWorkspace() {
         eyebrow="Kết nối nội bộ"
         title="Trò chuyện"
         description="Trao đổi nhanh, giữ công việc liền mạch cùng đồng nghiệp trong HDG."
-        actions={<Badge tone="emerald" dot>Hệ thống đang hoạt động</Badge>}
+        actions={<Badge tone={chatLoadState === "error" ? "rose" : "slate"}>{chatLoadState === "loading" ? "Đang đồng bộ..." : chatLoadState === "error" ? "Không đồng bộ được" : `${conversationList.length} cuộc trò chuyện`}</Badge>}
       />
 
       <section className={`${styles.chatShell} ${mobileThreadOpen ? styles.mobileThreadOpen : ""}`}>
@@ -168,7 +173,7 @@ function ConversationWorkspace() {
               <span>Tin nhắn</span>
               <strong>Gần đây</strong>
             </div>
-            <button type="button" aria-label="Tùy chọn tin nhắn"><MoreHorizontal size={19} /></button>
+            <button type="button" aria-label="Tùy chọn tin nhắn" title="Backend chưa có API tùy chọn hội thoại" disabled><MoreHorizontal size={19} /></button>
           </div>
 
           <label className={styles.chatSearch}>
@@ -179,9 +184,9 @@ function ConversationWorkspace() {
           </label>
 
           <div className={styles.quickStatus}>
-            <span><Avatar initials={getUserInitials(user?.name ?? "Người dùng")} size="sm" online /></span>
-            <div><strong>{user?.name ?? "Người dùng"}</strong><p>Bạn đang hoạt động</p></div>
-            <Badge tone="emerald">Online</Badge>
+            <span><Avatar initials={getUserInitials(user?.name ?? "Người dùng")} size="sm" /></span>
+            <div><strong>{user?.name ?? "Người dùng"}</strong><p>Tài khoản của bạn</p></div>
+            <Badge tone="slate">Phiên hiện tại</Badge>
           </div>
 
           <div className={styles.conversationList}>
@@ -205,7 +210,7 @@ function ConversationWorkspace() {
               );
             })}
             {!filteredRows.length ? (
-              <div className={styles.noConversation}><Search size={22} /><p>Không tìm thấy cuộc trò chuyện</p></div>
+              <div className={styles.noConversation}><Search size={22} /><p>{chatLoadState === "loading" ? "Đang tải cuộc trò chuyện..." : chatLoadState === "error" ? "Không tải được cuộc trò chuyện" : "Không tìm thấy cuộc trò chuyện"}</p></div>
             ) : null}
           </div>
 
@@ -218,12 +223,12 @@ function ConversationWorkspace() {
             <Avatar initials={selectedPerson.initials} tone={selectedPerson.tone} size="md" online={selectedPerson.online} />
             <div className={styles.threadIdentity}>
               <strong>{selectedPerson.name}</strong>
-              <span>{selectedPerson.online ? <><Circle size={7} fill="currentColor" />Đang hoạt động</> : selectedPerson.role}</span>
+              <span>{selectedPerson.role}</span>
             </div>
             <div className={styles.threadActions}>
-              <button type="button" aria-label={`Gọi cho ${selectedPerson.name}`} title="Gọi thoại"><Phone size={17} /></button>
-              <button type="button" aria-label={`Gọi video cho ${selectedPerson.name}`} title="Gọi video"><Video size={18} /></button>
-              <button type="button" aria-label="Thông tin cuộc trò chuyện" title="Thông tin"><Info size={18} /></button>
+              <button type="button" aria-label={`Gọi cho ${selectedPerson.name}`} title="Backend chưa hỗ trợ cuộc gọi thoại" disabled><Phone size={17} /></button>
+              <button type="button" aria-label={`Gọi video cho ${selectedPerson.name}`} title="Backend chưa hỗ trợ cuộc gọi video" disabled><Video size={18} /></button>
+              <button type="button" aria-label="Thông tin cuộc trò chuyện" title="Backend chưa có API thông tin hội thoại" disabled><Info size={18} /></button>
             </div>
           </header>
 

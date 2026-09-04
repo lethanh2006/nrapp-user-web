@@ -29,8 +29,6 @@ import { getUserInitials } from "@/lib/auth/session-user";
 import { gatewayApi } from "@/lib/api/gateway";
 import styles from "./ho-so.module.css";
 
-type PreferenceKey = "tasks" | "messages" | "schedule" | "announcements";
-
 export default function ProfilePage() {
   const router = useRouter();
   const { user, logout, refreshSession } = useAuthSession();
@@ -40,7 +38,6 @@ export default function ProfilePage() {
   const [notice, setNotice] = useState("");
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [logoutPending, setLogoutPending] = useState(false);
-  const [preferences, setPreferences] = useState<Record<PreferenceKey, boolean>>({ tasks: true, messages: true, schedule: true, announcements: false });
 
   function showNotice(message: string) {
     setNotice(message);
@@ -101,7 +98,7 @@ export default function ProfilePage() {
       <PageHeader
         eyebrow="Tài khoản cá nhân"
         title="Hồ sơ của tôi"
-        description="Quản lý thông tin liên hệ, bảo mật và cách bạn nhận thông báo."
+        description="Quản lý thông tin liên hệ và bảo mật tài khoản."
         actions={<button type="button" className="button-secondary" onClick={() => void handleLogout()} disabled={logoutPending}><LogOut size={16} /> {logoutPending ? "Đang đăng xuất..." : "Đăng xuất"}</button>}
       />
 
@@ -147,16 +144,10 @@ export default function ProfilePage() {
           </section>
 
           <section className={`surface-card ${styles.preferencesCard}`}>
-            <header><div><p>Tùy chọn cá nhân</p><h2>Thông báo</h2></div><span className={styles.headerIcon}><Bell size={18} /></span></header>
-            <div className={styles.preferenceRows}>
-              {([
-                ["tasks", "Cập nhật công việc", "Khi công việc được giao hoặc thay đổi trạng thái"],
-                ["messages", "Tin nhắn mới", "Khi đồng nghiệp gửi tin nhắn trực tiếp"],
-                ["schedule", "Lịch & đơn từ", "Kết quả duyệt lịch, đơn và nhắc chấm công"],
-                ["announcements", "Tin tức HDG", "Thông báo văn hóa và sự kiện nội bộ"],
-              ] as Array<[PreferenceKey, string, string]>).map(([key, label, description]) => (
-                <label key={key}><span><strong>{label}</strong><small>{description}</small></span><input type="checkbox" checked={preferences[key]} onChange={() => { setPreferences((value) => ({ ...value, [key]: !value[key] })); showNotice("Tùy chọn chỉ áp dụng trong phiên này vì backend chưa có API lưu thông báo."); }} /><i aria-hidden="true"><span /></i></label>
-              ))}
+            <header><div><p>Tùy chọn cá nhân</p><h2>Thông báo</h2></div><Badge tone="slate">Chưa hỗ trợ</Badge></header>
+            <div className={styles.notificationUnavailable}>
+              <span className={styles.headerIcon}><Bell size={18} /></span>
+              <div><strong>Backend chưa có API cài đặt thông báo</strong><p>Bộ đếm Công việc và Trò chuyện trên thanh điều hướng vẫn được lấy trực tiếp từ API, nhưng hiện chưa thể bật/tắt từng loại thông báo.</p></div>
             </div>
           </section>
         </div>

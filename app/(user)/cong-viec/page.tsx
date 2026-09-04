@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { gatewayApi } from "@/lib/api/gateway";
+import { notifyNavigationMetricsChanged } from "@/lib/navigation-metrics";
 import type { ApiTask, ApiTaskPage } from "@/lib/api/domain";
 import { getUserInitials } from "@/lib/auth/session-user";
 import type { BadgeTone, TaskPriority, TaskStatus, UserTask } from "@/lib/types";
@@ -151,6 +152,7 @@ export default function MyTasksPage() {
     try {
       await gatewayApi(`todo/${encodeURIComponent(task.id)}/status`, { method: "PATCH", json: { status: nextStatus } });
       setTaskItems((current) => current.map((item) => (item.id === task.id ? { ...item, status: nextStatus } : item)));
+      notifyNavigationMetricsChanged();
       showNotice(nextStatus === "done" ? `Đã hoàn thành “${task.title}”.` : `Đã bắt đầu “${task.title}”.`);
     } catch (error) {
       showNotice(error instanceof Error ? error.message : "Không thể cập nhật công việc.");

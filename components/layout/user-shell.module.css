@@ -71,8 +71,10 @@
 .notifications { position: absolute; top: 50px; right: 0; width: 350px; overflow: hidden; border: 1px solid var(--slate-200); border-radius: 18px; background: white; box-shadow: 0 20px 55px rgba(15,43,78,.18); animation: popover-in 160ms ease-out; }
 .notificationHeader { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; border-bottom: 1px solid var(--slate-100); }
 .notificationHeader strong { font-size: 13px; font-weight: 900; }
+.notificationHeader > span { color: var(--slate-400); font-size: 8px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .notificationHeader button { cursor: pointer; background: transparent; color: var(--blue-700); font-size: 9px; font-weight: 850; }
 .notificationItem { display: flex; gap: 11px; padding: 13px 16px; border-bottom: 1px solid var(--slate-100); }
+.notificationItem:hover { background: var(--slate-50); }
 .notificationItem:last-child { border-bottom: 0; }
 .notificationItem > div { min-width: 0; }
 .notificationItem strong { display: block; color: var(--slate-800); font-size: 11px; }
@@ -81,6 +83,10 @@
 .notificationIcon { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 11px; }
 .iconGreen { background: #ecfdf5; color: #059669; }
 .iconBlue { background: var(--blue-50); color: var(--blue-700); }
+.notificationEmpty, .notificationWarning { display: flex; align-items: center; gap: 9px; padding: 18px 16px; color: var(--slate-400); }
+.notificationEmpty p, .notificationWarning p { margin: 0; font-size: 10px; line-height: 1.5; }
+.notificationWarning { border-top: 1px solid var(--slate-100); background: #fffbeb; color: #b45309; }
+.notificationLoader { width: 16px; height: 16px; border: 2px solid var(--slate-200); border-top-color: var(--blue-600); border-radius: 50%; animation: spin 700ms linear infinite; }
 .topbarAvatar { border-radius: 12px; }
 .main { width: 100%; max-width: 1660px; margin: 0 auto; padding: 26px 28px 40px; }
 .mobileBottomNav, .mobileOverlay { display: none; }
@@ -102,6 +108,7 @@
 
 @keyframes scan { 0%, 100% { transform: translateY(-73px); } 50% { transform: translateY(73px); } }
 @keyframes popover-in { from { opacity: 0; transform: translateY(-5px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 1240px) { .today { display: none; } .globalSearchWrap { width: 220px; } .scanTopButton span { display: none; } }
 @media (max-width: 900px) {
