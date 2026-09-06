@@ -12,9 +12,22 @@ npm ci
 npm run dev
 ```
 
-Mở [http://localhost:3000](http://localhost:3000) và đăng nhập bằng tài khoản NRApp có vai trò `user` hoặc `vip`. Nếu một dịch vụ khác đang dùng cổng 3000, có thể chạy web bằng `npm run dev -- --port 3100`.
+Mở [http://localhost:3000](http://localhost:3000) và đăng nhập bằng tài khoản NRApp có vai trò `user` hoặc `vip`. Nếu một dịch vụ khác đang dùng cổng 3000, có thể chạy web bằng `npm run dev -- --port 3002` rồi mở [http://localhost:3002](http://localhost:3002).
 
 Mặc định BFF kết nối tới `https://api.thanhlelmtp2006.id.vn/api`. Có thể đổi bằng biến môi trường `NRAPP_API_URL`; tài liệu endpoint nằm tại [NRApp Swagger](https://api.thanhlelmtp2006.id.vn/api-docs).
+
+### Chạy cùng backend Docker trên máy local
+
+Khi Next.js chạy trực tiếp trên cùng máy với backend Docker, đặt trong `.env.local`:
+
+```env
+NRAPP_API_URL=http://127.0.0.1:3000/api
+NRAPP_API_TIMEOUT_MS=10000
+```
+
+Gateway Docker dùng cổng `3000`, Grafana dùng `3001` và Loki dùng `3100`; chạy web bằng `npm run dev -- --port 3002`. BFF sẽ gọi trực tiếp cổng Gateway được Docker publish, tránh phụ thuộc kết nối Internet và domain API khi phát triển local. Nếu đổi `GATEWAY_HOST_PORT` trong backend, cập nhật cổng trong `NRAPP_API_URL` tương ứng. Khởi động lại Next.js nếu cấu hình mới chưa được nạp.
+
+Lỗi `GATEWAY_UNAVAILABLE` được BFF trả về khi không kết nối được tới Gateway. Container `healthy` chỉ xác nhận Gateway hoạt động trong Docker; hãy kiểm tra cả URL mà `NRAPP_API_URL` đang trỏ tới từ máy chạy Next.js.
 
 ## Kiến trúc xác thực và API
 
