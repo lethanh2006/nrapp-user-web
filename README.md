@@ -14,6 +14,8 @@ npm run dev
 
 Mở [http://localhost:3000](http://localhost:3000) và đăng nhập bằng tài khoản NRApp có vai trò `user` hoặc `vip`. Nếu một dịch vụ khác đang dùng cổng 3000, có thể chạy web bằng `npm run dev -- --port 3002` rồi mở [http://localhost:3002](http://localhost:3002).
 
+Khi truy cập qua LAN, mở `http://192.168.0.108:3000` (hoặc cổng web đang dùng). IP này đã được khai báo trong `allowedDevOrigins` tại `next.config.ts` để Next.js cho phép tải JavaScript/CSS và kết nối HMR khi chạy dev. Nếu IP máy thay đổi, cập nhật danh sách này bằng IP mới, không kèm `http://` hoặc cổng, rồi khởi động lại `npm run dev`. Lỗi 403 ở `/_next/static/*` và lỗi socket `/_next/hmr` liên quan tới dev server, không phụ thuộc `NRAPP_API_URL`.
+
 Mặc định BFF kết nối tới `https://api.thanhlelmtp2006.id.vn/api`. Có thể đổi bằng biến môi trường `NRAPP_API_URL`; tài liệu endpoint nằm tại [NRApp Swagger](https://api.thanhlelmtp2006.id.vn/api-docs).
 
 ### Chạy cùng backend Docker trên máy local
