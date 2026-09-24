@@ -4,10 +4,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "HDG WorkSpace · Nhân viên",
-    template: "%s · HDG WorkSpace",
+    default: "NRApp WorkSpace · Nhân viên",
+    template: "%s · NRApp WorkSpace",
   },
-  description: "Không gian làm việc dành cho nhân viên HDG",
+  description: "Không gian làm việc số dành cho nhân viên HDG",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

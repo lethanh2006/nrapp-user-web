@@ -56,10 +56,10 @@ function SidebarContent({
     <>
       <div className={styles.brandRow}>
         <Link href="/trang-chu" className={styles.brand} onClick={onNavigate}>
-          <span className={styles.brandMark}>HD</span>
+          <span className={styles.brandMark}>NR</span>
           <span className={styles.brandCopy}>
-            <strong>WorkSpace</strong>
-            <small>Employee Portal</small>
+            <strong>NRApp</strong>
+            <small>Employee Workspace</small>
           </span>
         </Link>
         <button className={styles.collapseButton} onClick={onCollapse} aria-label={collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"}>
@@ -234,7 +234,7 @@ export function UserShell({ children }: { children: React.ReactNode }) {
     return userNavigation.filter((item) => !normalized || [item.label, ...item.keywords].some((value) => value.toLocaleLowerCase("vi").includes(normalized))).slice(0, 5);
   }, [query]);
 
-  const title = pageTitles[pathname] ?? "HDG WorkSpace";
+  const title = pageTitles[pathname] ?? "NRApp WorkSpace";
   const navigationCounts = {
     "/cong-viec": navigationMetrics.openTasks ?? 0,
     "/tro-chuyen": navigationMetrics.unreadMessages ?? 0,

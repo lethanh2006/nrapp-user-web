@@ -1,6 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
+import { CalendarCheck2, CheckCircle2, LockKeyhole, MessagesSquare, ShieldCheck, Sparkles } from "lucide-react";
 import styles from "./auth-frame.module.css";
 
 export function AuthFrame({
@@ -19,15 +18,20 @@ export function AuthFrame({
       <section className={styles.brandPanel}>
         <div className={styles.brandGlow} />
         <div className={styles.brandPattern} />
-        <Link href="/" className={styles.brand} aria-label="HDG WorkSpace">
-          <span className={styles.brandMark}>HD</span>
-          <span><strong>WorkSpace</strong><small>Employee Portal</small></span>
+        <Link href="/" className={styles.brand} aria-label="NRApp WorkSpace">
+          <span className={styles.brandMark}>NR</span>
+          <span><strong>NRApp</strong><small>Employee Workspace</small></span>
         </Link>
 
         <div className={styles.brandMessage}>
-          <span className={styles.brandEyebrow}><Sparkles size={15} /> Một nơi cho mọi ngày làm việc</span>
-          <h1>Kết nối đội ngũ.<br />Sắp xếp công việc.<br /><em>Tạo nên khác biệt.</em></h1>
-          <p>Truy cập lịch làm, công việc, trò chuyện và các dịch vụ nội bộ của HDG trong một không gian thống nhất.</p>
+          <span className={styles.brandEyebrow}><Sparkles size={15} /> Không gian làm việc số của HDG</span>
+          <h1>Mọi công việc.<br />Một trải nghiệm<br /><em>thật liền mạch.</em></h1>
+          <p>NRApp kết nối lịch làm, nhiệm vụ, trò chuyện và dịch vụ nội bộ trong một không gian rõ ràng, nhanh chóng.</p>
+          <div className={styles.featureList}>
+            <span><CalendarCheck2 size={16} /> Lịch làm đồng bộ</span>
+            <span><MessagesSquare size={16} /> Kết nối tức thì</span>
+            <span><CheckCircle2 size={16} /> Công việc tập trung</span>
+          </div>
         </div>
 
         <div className={styles.securityCard}>
@@ -35,15 +39,13 @@ export function AuthFrame({
           <div><strong>Kết nối nội bộ an toàn</strong><p>Phiên đăng nhập được bảo vệ bằng xác thực hai bước.</p></div>
         </div>
 
-        <div className={styles.logoWatermark} aria-hidden="true">
-          <Image src="/images/logo.png" alt="" fill sizes="420px" priority />
-        </div>
+        <div className={styles.brandOrbit} aria-hidden="true"><span /><span /><span /></div>
       </section>
 
       <section className={styles.formPanel}>
         <div className={styles.mobileBrand}>
-          <span className={styles.brandMark}>HD</span>
-          <span><strong>WorkSpace</strong><small>Employee Portal</small></span>
+          <span className={styles.brandMark}>NR</span>
+          <span><strong>NRApp</strong><small>Employee Workspace</small></span>
         </div>
         <div className={styles.formContainer}>
           <div className={styles.formHeading}>
@@ -52,7 +54,7 @@ export function AuthFrame({
             <p>{description}</p>
           </div>
           {children}
-          <footer className={styles.footerNote}><LockKeyhole size={14} /> Kết nối được bảo mật bởi HDG</footer>
+          <footer className={styles.footerNote}><LockKeyhole size={14} /> Phiên làm việc được bảo vệ bởi NRApp</footer>
         </div>
       </section>
     </main>

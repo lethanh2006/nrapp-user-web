@@ -59,7 +59,7 @@ function LoginForm() {
   }
 
   return (
-    <AuthFrame eyebrow="Chào mừng trở lại" title="Đăng nhập WorkSpace" description="Dùng tài khoản nội bộ để tiếp tục. Mã OTP sẽ được gửi sau khi thông tin đăng nhập được xác nhận.">
+    <AuthFrame eyebrow="Chào mừng trở lại" title="Đăng nhập NRApp" description="Tiếp tục bằng Google hoặc tài khoản nội bộ. Với mật khẩu, mã OTP sẽ được gửi tới email của bạn.">
       <form className={styles.form} onSubmit={submit} noValidate>
         {params.get("registered") === "1" ? <div className={styles.notice} role="status"><ShieldCheck size={15} />Tạo tài khoản thành công. Hãy đăng nhập để nhận OTP.</div> : null}
         {error ? <div className={styles.error} role="alert"><ShieldCheck size={15} />{error}</div> : null}
