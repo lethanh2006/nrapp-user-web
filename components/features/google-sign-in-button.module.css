@@ -10,7 +10,10 @@
 .button {
   width: 100%;
   min-height: 44px;
+  overflow: hidden;
 }
+
+.button iframe { max-width: 100%; }
 
 .button > div {
   margin-inline: auto;

@@ -58,6 +58,12 @@ Trình duyệt → Next.js /api/auth/* hoặc /api/gateway/* → NRApp Gateway
 
 Những khả năng backend chưa có endpoint tương ứng (đổi mật khẩu, số điện thoại, tải avatar, gọi thoại/video và gửi ảnh qua proxy JSON) được vô hiệu hóa hoặc ghi chú rõ trên giao diện.
 
+## Hệ giao diện
+
+- Toàn bộ khu vực xác thực và 8 phân hệ nhân viên dùng chung palette navy–cobalt của NRApp; màu đỏ chỉ dành cho lỗi, ưu tiên cao hoặc thao tác nguy hiểm.
+- Token màu, bề mặt, bo góc, đổ bóng, trạng thái focus và các nút dùng chung được khai báo tại `app/globals.css`.
+- Giao diện có bố cục riêng cho desktop, tablet và mobile; thanh điều hướng đáy giữ các thao tác quan trọng trong tầm tay trên màn hình nhỏ.
+
 ## Biến môi trường
 
 ```env

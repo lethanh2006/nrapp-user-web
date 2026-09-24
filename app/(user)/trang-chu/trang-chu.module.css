@@ -12,7 +12,7 @@
 .heroLead { max-width: 560px; margin: 20px 0 22px; color: rgba(255,255,255,.72); font-size: 13px; line-height: 1.7; }
 .heroLead strong { color: white; }
 .heroActions { display: flex; flex-wrap: wrap; gap: 9px; }
-.heroPrimary, .heroSecondary { display: inline-flex; min-height: 43px; align-items: center; justify-content: center; gap: 8px; border-radius: 13px; padding: 0 15px; font-size: 13px; font-weight: 750; }
+.heroPrimary, .heroSecondary { display: inline-flex; min-height: 43px; align-items: center; justify-content: center; gap: 8px; border-radius: 13px; padding: 0 15px; font-size: 13px; font-weight: 750; white-space: nowrap; }
 .heroPrimary { background: white; color: var(--blue-800); box-shadow: 0 10px 24px rgba(2,18,41,.18); }
 .heroSecondary { border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.09); color: white; }
 .todayCard { border: 1px solid rgba(255,255,255,.22); border-radius: 23px; padding: 20px; background: rgba(255,255,255,.12); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 20px 40px rgba(2,18,41,.14); backdrop-filter: blur(12px); }
@@ -130,7 +130,8 @@
   .hero { min-height: auto; border-radius: 23px; padding: 22px 18px; }
   .greetingRow h1 { font-size: 24px; }
   .heroLead { margin: 15px 0 17px; font-size: 13px; }
-  .heroActions > a { flex: 1; }
+  .heroActions { flex-wrap: nowrap; }
+  .heroActions > a { min-width: 0; flex: 1; padding-inline: 10px; font-size: 12px; }
   .todayCard { padding: 16px; }
   .workMode { align-items: flex-start; }
   .workMode > span:last-child { display: none; }
