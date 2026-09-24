@@ -37,7 +37,8 @@ Lỗi `GATEWAY_UNAVAILABLE` được BFF trả về khi không kết nối đư�
 Trình duyệt → Next.js /api/auth/* hoặc /api/gateway/* → NRApp Gateway
 ```
 
-- Đăng ký, đăng nhập, xác thực OTP, khôi phục phiên và đăng xuất đi qua các route BFF cùng origin.
+- Đăng ký, đăng nhập bằng mật khẩu/OTP hoặc Google, khôi phục phiên và đăng xuất đi qua các route BFF cùng origin.
+- Google Identity Services chỉ trả ID token cho trình duyệt; BFF chuyển token tới Gateway, kiểm tra vai trò rồi lưu access/refresh token vào cookie `HttpOnly` giống luồng OTP.
 - Email chờ OTP, access token và refresh token chỉ nằm trong cookie `HttpOnly`; JavaScript phía trình duyệt không đọc được token.
 - Khi access token hết hạn, BFF làm mới phiên một lần và lưu refresh token mới sau khi Gateway xoay vòng.
 - Proxy chỉ cho phép các nhóm API đã khai báo: auth, user, todo, workschedule, canteen, payment và chat.
@@ -63,9 +64,12 @@ Những khả năng backend chưa có endpoint tương ứng (đổi mật khẩ
 NRAPP_API_URL=https://api.thanhlelmtp2006.id.vn/api
 NRAPP_API_TIMEOUT_MS=10000
 NRAPP_COOKIE_SECURE=false
+NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID=779200897119-2m0amhfd2prcpuuec18502f14vlfbh3f.apps.googleusercontent.com
 ```
 
 `NRAPP_API_URL` là biến phía máy chủ, không dùng tiền tố `NEXT_PUBLIC_`. Ở production, cookie tự bật cờ `Secure`; chỉ đặt `NRAPP_COOKIE_SECURE=false` khi chạy HTTP cục bộ.
+
+`NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID` là định danh công khai và phải trùng với `GOOGLE_WEB_CLIENT_ID` của Auth service. Trong Google Cloud Console, thêm URL chạy web (ví dụ `http://localhost:3002` và domain production) vào **Authorized JavaScript origins** của OAuth Web Client.
 
 ## Kiểm tra chất lượng
 

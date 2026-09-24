@@ -39,6 +39,10 @@ export type LoginResponse = MessageResponse & {
   email: string;
 };
 
+export type GoogleLoginRequest = {
+  token: string;
+};
+
 export type VerifyOtpRequest = {
   email: string;
   otp: string;

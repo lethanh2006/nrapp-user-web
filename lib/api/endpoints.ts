@@ -2,6 +2,7 @@ export const apiEndpoints = {
   auth: {
     register: "/auth/register",
     login: "/auth/login",
+    loginGoogle: "/auth/login-google",
     verify: "/auth/verify",
     refresh: "/auth/refresh",
     myEmail: "/auth/me/email",

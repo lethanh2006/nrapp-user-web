@@ -1,0 +1,55 @@
+.wrap {
+  position: relative;
+  display: grid;
+  min-height: 44px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.button {
+  width: 100%;
+  min-height: 44px;
+}
+
+.button > div {
+  margin-inline: auto;
+}
+
+.placeholder,
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--slate-200);
+  border-radius: 10px;
+  background: white;
+  color: var(--slate-500);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.overlay {
+  z-index: 2;
+  gap: 8px;
+  color: var(--blue-800);
+}
+
+.overlay > span {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--blue-100);
+  border-top-color: var(--blue-700);
+  border-radius: 50%;
+  animation: google-spin .7s linear infinite;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+@keyframes google-spin {
+  to { transform: rotate(360deg); }
+}

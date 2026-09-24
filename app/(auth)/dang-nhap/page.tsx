@@ -5,7 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { ArrowRight, Eye, EyeOff, KeyRound, Mail, ShieldCheck } from "lucide-react";
 import { AuthFrame } from "@/components/features/auth-frame";
+import { GoogleSignInButton } from "@/components/features/google-sign-in-button";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { apiRequest } from "@/lib/api/client";
+import type { SessionUser } from "@/lib/auth/session-user";
 import { getSafeReturnPath } from "@/lib/auth/redirect";
 import styles from "../auth.module.css";
 
@@ -14,11 +17,12 @@ const REMEMBERED_EMAIL_KEY = "nrapp.remembered-email";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
+  const { setAuthenticatedUser } = useAuthSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberEmail, setRememberEmail] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<"password" | "google" | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -37,7 +41,7 @@ function LoginForm() {
       return;
     }
 
-    setLoading(true);
+    setLoading("password");
     try {
       await apiRequest<{ message: string }>("/api/auth/login", {
         method: "POST",
@@ -50,7 +54,7 @@ function LoginForm() {
       router.push(`/xac-thuc?redirect=${encodeURIComponent(redirect)}`);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Không thể bắt đầu đăng nhập.");
-      setLoading(false);
+      setLoading(null);
     }
   }
 
@@ -61,15 +65,35 @@ function LoginForm() {
         {error ? <div className={styles.error} role="alert"><ShieldCheck size={15} />{error}</div> : null}
         <div className={styles.fieldGroup}>
           <label htmlFor="email">Email công việc</label>
-          <div className={styles.inputWrap}><Mail size={17} /><input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" placeholder="tenban@hdg.vn" disabled={loading} /></div>
+          <div className={styles.inputWrap}><Mail size={17} /><input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" placeholder="tenban@hdg.vn" disabled={loading !== null} /></div>
         </div>
         <div className={styles.fieldGroup}>
           <label htmlFor="password">Mật khẩu</label>
-          <div className={styles.inputWrap}><KeyRound size={17} /><input id="password" type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" placeholder="Nhập mật khẩu" disabled={loading} /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"} disabled={loading}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
+          <div className={styles.inputWrap}><KeyRound size={17} /><input id="password" type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" placeholder="Nhập mật khẩu" disabled={loading !== null} /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"} disabled={loading !== null}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
         </div>
-        <div className={styles.formOptions}><label className={styles.checkLabel}><input type="checkbox" checked={rememberEmail} onChange={(event) => setRememberEmail(event.target.checked)} disabled={loading} /> Ghi nhớ email</label><button type="button" className={styles.textButton} onClick={() => setError("Vui lòng liên hệ IT nội bộ để đặt lại mật khẩu.")}>Quên mật khẩu?</button></div>
-        <button className={styles.submit} type="submit" disabled={loading}>{loading ? <><span className={styles.spinner} /> Đang xác nhận...</> : <>Tiếp tục nhận OTP <ArrowRight size={17} /></>}</button>
+        <div className={styles.formOptions}><label className={styles.checkLabel}><input type="checkbox" checked={rememberEmail} onChange={(event) => setRememberEmail(event.target.checked)} disabled={loading !== null} /> Ghi nhớ email</label><button type="button" className={styles.textButton} onClick={() => setError("Vui lòng liên hệ IT nội bộ để đặt lại mật khẩu.")}>Quên mật khẩu?</button></div>
+        <button className={styles.submit} type="submit" disabled={loading !== null}>{loading === "password" ? <><span className={styles.spinner} /> Đang xác nhận...</> : <>Tiếp tục nhận OTP <ArrowRight size={17} /></>}</button>
       </form>
+      <div className={styles.divider}>Hoặc đăng nhập nhanh</div>
+      <GoogleSignInButton
+        disabled={loading === "google"}
+        onUnavailable={setError}
+        onCredential={(token) => {
+          setError("");
+          setLoading("google");
+          void apiRequest<{ message: string; user: SessionUser }>("/api/auth/google", {
+            method: "POST",
+            json: { token },
+          }).then(({ user }) => {
+            setAuthenticatedUser(user);
+            router.replace(getSafeReturnPath(params.get("redirect")));
+            router.refresh();
+          }).catch((requestError: unknown) => {
+            setError(requestError instanceof Error ? requestError.message : "Không thể đăng nhập bằng Google.");
+            setLoading(null);
+          });
+        }}
+      />
       <p className={styles.authSwitch}>Chưa có tài khoản? <Link href="/dang-ky">Đăng ký ngay</Link></p>
     </AuthFrame>
   );
