@@ -10,7 +10,7 @@ export type GatewayRequestOptions = {
 };
 
 function getGatewayConfig() {
-  const baseUrl = (process.env.NRAPP_API_URL?.trim() || "https://api.thanhlelmtp2006.id.vn/api")
+  const baseUrl = (process.env.NRAPP_API_URL?.trim() || "https://api-vps.thanhlelmtp2006.id.vn/api")
     .replace(/\/+$/, "");
 
   let parsedUrl: URL;
