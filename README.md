@@ -75,7 +75,16 @@ NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID=779200897119-2m0amhfd2prcpuuec18502f14vlfbh3f.a
 
 `NRAPP_API_URL` là biến phía máy chủ, không dùng tiền tố `NEXT_PUBLIC_`. Ở production, cookie tự bật cờ `Secure`; chỉ đặt `NRAPP_COOKIE_SECURE=false` khi chạy HTTP cục bộ.
 
-`NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID` là định danh công khai và phải trùng với `GOOGLE_WEB_CLIENT_ID` của Auth service. Trong Google Cloud Console, thêm URL chạy web (ví dụ `http://localhost:3002` và domain production) vào **Authorized JavaScript origins** của OAuth Web Client.
+`NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID` là định danh công khai và phải trùng với `GOOGLE_WEB_CLIENT_ID` của Auth service. Trong Google Cloud Console, OAuth Client phải có loại **Web application** và khai báo đầy đủ trong **Authorized JavaScript origins**:
+
+```text
+http://localhost
+http://localhost:3000
+http://localhost:3002
+https://<domain-web-production>
+```
+
+Origin chỉ gồm protocol, host và port; không thêm `/dang-nhap`, query hoặc dấu `/` cuối. Sau khi đổi Client ID trong `.env.local`, cần khởi động lại Next.js.
 
 ## Kiểm tra chất lượng
 
