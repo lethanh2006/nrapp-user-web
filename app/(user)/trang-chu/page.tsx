@@ -190,7 +190,7 @@ export default function HomePage() {
               <div className={styles.scheduleInfo}><Badge tone="blue">{tomorrowSchedule?.label ?? "Chưa đăng ký"}</Badge><strong>{tomorrowSchedule?.time ?? "—"}</strong><p><MapPin size={13} /> {tomorrowSchedule?.note ?? "Chưa có dữ liệu"}</p></div>
               <div className={styles.scheduleDivider} />
               <div className={styles.scheduleHint}><CalendarClock size={16} /><p>Lịch hiển thị được đồng bộ trực tiếp từ <strong>NRApp Gateway</strong>.</p></div>
-              <Link href="/lich-lam" className="button-secondary">Đăng ký lịch tuần sau <ArrowRight size={15} /></Link>
+              <Link href="/lich-lam" className="button-secondary">Đăng ký lịch tháng <ArrowRight size={15} /></Link>
             </div>
           </section>
 

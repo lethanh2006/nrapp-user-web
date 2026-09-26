@@ -165,7 +165,7 @@ export default function UtilitiesPage() {
         <div className={styles.toolGrid}>
           <Link href="/lich-lam" className={styles.toolCard}>
             <span className={styles.toolBlue}><CalendarClock size={22} /></span>
-            <div><strong>Đăng ký lịch tuần</strong><p>Chọn văn phòng hoặc làm từ xa</p></div>
+            <div><strong>Đăng ký lịch tháng</strong><p>Chọn ngày và ca làm tại văn phòng</p></div>
             <ArrowRight size={16} />
           </Link>
           <button className={styles.toolCard} onClick={() => setModalOpen(true)}>

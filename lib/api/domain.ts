@@ -25,25 +25,40 @@ export type ApiTaskPage = {
 };
 
 export type ScheduleEntryType = "office" | "remote" | "day_off" | "leave";
+export type WorkPeriod = "full_day" | "morning" | "afternoon";
 export type ApiScheduleEntry = {
   _id?: string;
   date: string;
   type: ScheduleEntryType;
-  period?: "full_day" | "morning" | "afternoon";
+  period?: WorkPeriod;
   note?: string;
 };
 export type ApiScheduleRequest = {
   _id: string;
   employee_id: string;
-  week_start: string;
+  month?: string;
+  week_start?: string;
   status: "pending" | "approved" | "rejected";
   submitted_at?: string;
+  reviewed_at?: string;
   reject_reason?: string;
   entries?: ApiScheduleEntry[];
 };
+export type ApiWorkPolicy = {
+  schedule_month?: string | null;
+  registration_start: string;
+  registration_end: string;
+  locked?: boolean;
+};
 export type ApiMonthlyOverview = {
   month: string;
-  entries: Array<ApiScheduleEntry & { request_status: "pending" | "approved" | "rejected" }>;
+  entries: Array<ApiScheduleEntry & {
+    schedule_request_id: string;
+    month?: string;
+    week_start?: string;
+    request_status: "pending" | "approved" | "rejected";
+    reject_reason?: string;
+  }>;
   stats: {
     registered_sessions: number;
     approved_sessions: number;
