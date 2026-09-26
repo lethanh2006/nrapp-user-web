@@ -10,6 +10,10 @@ export type GatewayRequestOptions = {
   timeoutMs?: number;
 };
 
+const RETRYABLE_GATEWAY_STATUSES = new Set([502, 503, 504]);
+const GET_MAX_ATTEMPTS = 2;
+const RETRY_DELAY_MS = 150;
+
 function getGatewayConfig() {
   const baseUrl = (process.env.NRAPP_API_URL?.trim() || "https://api-vps.thanhlelmtp2006.id.vn/api")
     .replace(/\/+$/, "");
@@ -50,35 +54,67 @@ export async function gatewayRequest<T>(
   const timeoutMs = Number.isFinite(requestTimeoutMs)
     ? Math.min(Math.max(Number(requestTimeoutMs), 1_000), 60_000)
     : defaultTimeoutMs;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const deadline = Date.now() + timeoutMs;
+  const maxAttempts = method === "GET" ? GET_MAX_ATTEMPTS : 1;
+  const requestId = randomUUID();
+  let lastError: unknown;
 
-  try {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) break;
+
+    // Chừa thời gian cho lần thử thứ hai khi kết nối từ Vercel đến VPS bị
+    // nghẽn nhất thời. Các request ghi dữ liệu không bao giờ được tự thử lại.
+    const attemptTimeoutMs = attempt < maxAttempts
+      ? Math.max(1_000, Math.min(6_000, Math.floor(remainingMs * 0.65)))
+      : remainingMs;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), attemptTimeoutMs);
     const headers = new Headers({
       Accept: "application/json",
-      "x-request-id": randomUUID(),
+      "x-request-id": requestId,
     });
     if (body !== undefined) headers.set("Content-Type", "application/json");
     if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
 
-    const response = await fetch(`${baseUrl}/${path.replace(/^\/+/, "")}`, {
-      method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
-      cache: "no-store",
-      redirect: "manual",
-      signal: controller.signal,
-    });
-    const payload = await readPayload(response);
-    if (!response.ok) throw new GatewayApiError(response.status, payload);
-    return payload as T;
-  } catch (error) {
-    if (error instanceof GatewayApiError || error instanceof GatewayUnavailableError) throw error;
-    if (error instanceof Error && error.name === "AbortError") {
-      throw new GatewayUnavailableError("Kết nối đến Gateway đã quá thời gian.");
+    try {
+      const response = await fetch(`${baseUrl}/${path.replace(/^\/+/, "")}`, {
+        method,
+        headers,
+        body: body === undefined ? undefined : JSON.stringify(body),
+        cache: "no-store",
+        redirect: "manual",
+        signal: controller.signal,
+      });
+      const payload = await readPayload(response);
+      if (response.ok) return payload as T;
+
+      const apiError = new GatewayApiError(response.status, payload);
+      if (attempt === maxAttempts || !RETRYABLE_GATEWAY_STATUSES.has(response.status)) {
+        throw apiError;
+      }
+      lastError = apiError;
+    } catch (error) {
+      if (error instanceof GatewayApiError || error instanceof GatewayUnavailableError) throw error;
+      lastError = error;
+      if (attempt === maxAttempts) break;
+    } finally {
+      clearTimeout(timeout);
     }
-    throw new GatewayUnavailableError();
-  } finally {
-    clearTimeout(timeout);
+
+    const retryBudgetMs = deadline - Date.now();
+    if (retryBudgetMs <= RETRY_DELAY_MS) break;
+    await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
   }
+
+  if (lastError instanceof Error && lastError.name === "AbortError") {
+    throw new GatewayUnavailableError("Kết nối đến Gateway đã quá thời gian.");
+  }
+  if (lastError instanceof GatewayApiError || lastError instanceof GatewayUnavailableError) {
+    throw lastError;
+  }
+  if (Date.now() >= deadline) {
+    throw new GatewayUnavailableError("Kết nối đến Gateway đã quá thời gian.");
+  }
+  throw new GatewayUnavailableError();
 }
