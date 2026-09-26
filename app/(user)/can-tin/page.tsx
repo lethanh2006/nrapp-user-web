@@ -3,7 +3,7 @@ import { CanteenExperience } from "./canteen-experience";
 
 export const metadata: Metadata = {
   title: "Căn tin",
-  description: "Xem thực đơn, đặt món và thanh toán tại căn tin HDG.",
+  description: "Chọn bàn, gọi món và thanh toán tiền mặt tại căn tin HDG.",
 };
 
 export default function CanteenPage() {

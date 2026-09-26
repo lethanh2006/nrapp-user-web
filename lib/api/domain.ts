@@ -101,21 +101,59 @@ export type ApiMenuItem = {
   price: number;
   imageUrl?: string;
   isAvailable: boolean;
-  options?: Array<{ name: string; price: number }>;
+  options?: ApiMenuItemOption[];
 };
+export type ApiMenuItemOption = { name: string; price: number };
 export type ApiMenuGroup = {
-  category: { _id: string; name: string; description?: string };
+  category: {
+    _id: string;
+    name: string;
+    description?: string;
+    displayOrder?: number;
+    isActive?: boolean;
+  };
   items: ApiMenuItem[];
+};
+export type ApiCanteenTable = {
+  _id: string;
+  name: string;
+  capacity: number;
+  status: "empty" | "occupied" | "reserved";
+  createdAt?: string;
+  updatedAt?: string;
+};
+export type ApiCanteenTablePage = {
+  success?: boolean;
+  data: ApiCanteenTable[];
+  meta: { page: number; limit: number; total: number; totalPages: number };
+};
+export type ApiOrderItem = {
+  menuItemId: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  selectedOptions?: ApiMenuItemOption[];
+  note?: string;
 };
 export type ApiOrder = {
   _id: string;
   orderNumber: string;
-  items: Array<{ menuItemId: string; name: string; quantity: number; unitPrice: number }>;
+  userId: string;
+  userRole: string;
+  tableId: string;
+  items: ApiOrderItem[];
+  totalAmount: number;
   finalAmount: number;
-  status: "CREATED" | "CONFIRMED" | "COOKING" | "READY" | "COMPLETED" | "PAID" | "CANCELLED";
-  paymentStatus: "PENDING" | "PAID" | "REFUNDED";
-  paymentMethod: "CASH" | "VIETQR" | "VNPAY" | "MOMO";
+  status: "CREATED" | "COMPLETED" | "CANCELLED";
+  paymentStatus: "PENDING" | "PAID";
+  paymentMethod: "CASH";
+  paidAt?: string;
+  paidBy?: string;
+  cancelledAt?: string;
+  cancelledBy?: string;
+  cancellationReason?: string;
   createdAt: string;
+  updatedAt: string;
 };
 export type ApiPayment = {
   paymentId: string;

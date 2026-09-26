@@ -22,7 +22,10 @@ export const apiEndpoints = {
     search: "/canteen/menu/search",
     orders: "/canteen/orders",
     myOrders: "/canteen/orders/my-orders",
+    order: (id: string) => `/canteen/orders/${id}`,
     cancelOrder: (id: string) => `/canteen/orders/${id}/cancel`,
+    tables: "/canteen/tables",
+    table: (id: string) => `/canteen/tables/${id}`,
   },
   payment: {
     createQr: "/payment/create-qr",

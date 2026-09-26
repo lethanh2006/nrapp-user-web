@@ -29,7 +29,7 @@ import styles from "./trang-chu.module.css";
 const shortcuts = [
   { href: "/tro-chuyen", label: "Trò chuyện", helper: "Tin nhắn nội bộ", icon: MessageCircle, tone: "blue" },
   { href: "/cong-viec", label: "Công việc", helper: "Việc được giao", icon: CheckSquare2, tone: "emerald" },
-  { href: "/can-tin", label: "Căn tin", helper: "Đặt bữa trưa", icon: Soup, tone: "amber" },
+  { href: "/can-tin", label: "Căn tin", helper: "Gọi món tại bàn", icon: Soup, tone: "amber" },
   { href: "/tien-ich", label: "Đơn từ", helper: "Tạo yêu cầu mới", icon: CalendarHeart, tone: "violet" },
 ] as const;
 

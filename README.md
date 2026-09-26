@@ -50,7 +50,7 @@ Trình duyệt → Next.js /api/auth/* hoặc /api/gateway/* → NRApp Gateway
 - `/trang-chu`: tổng hợp công việc và lịch làm gần nhất.
 - `/lich-lam`: đọc lịch, tạo bản đăng ký theo tháng và gửi quản lý duyệt.
 - `/cong-viec`: đọc, lọc và cập nhật trạng thái công việc của người dùng.
-- `/can-tin`: đọc thực đơn, tạo đơn, tạo VietQR, kiểm tra thanh toán và xem lịch sử đơn.
+- `/can-tin`: chọn bàn, tùy chỉnh món, tạo đơn tiền mặt, xem lịch sử và hủy đơn chưa thanh toán.
 - `/danh-ba`: đọc danh bạ tài khoản và mở hội thoại.
 - `/tro-chuyen`: đọc hội thoại, tải lịch sử và gửi tin nhắn văn bản.
 - `/tien-ich`: tổng quan tháng, chấm công và tạo/hủy đơn nhân sự.
