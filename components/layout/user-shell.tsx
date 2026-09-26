@@ -139,15 +139,15 @@ export function UserShell({ children }: { children: React.ReactNode }) {
     unreadMessages: null,
   });
   const [navigationMetricsError, setNavigationMetricsError] = useState(false);
-  const [navigationMetricsLoading, setNavigationMetricsLoading] = useState(true);
+  const [navigationMetricsLoading, setNavigationMetricsLoading] = useState(false);
   const navigationMetricsRequestRef = useRef(0);
 
   const loadNavigationMetrics = useCallback(async () => {
     const requestId = ++navigationMetricsRequestRef.current;
-    const openTasksRequest = Promise.all([
-      gatewayApi<ApiTaskPage>("todo/my-tasks?status=todo&limit=1"),
-      gatewayApi<ApiTaskPage>("todo/my-tasks?status=in_progress&limit=1"),
-    ]).then((pages) => pages.reduce((total, page) => total + (page.pagination?.total ?? page.tasks?.length ?? 0), 0));
+    setNavigationMetricsLoading(true);
+    setNavigationMetricsError(false);
+    const openTasksRequest = gatewayApi<ApiTaskPage>("todo/my-tasks?limit=100")
+      .then((page) => (page.tasks ?? []).filter((task) => task.status === "todo" || task.status === "in_progress").length);
     const [tasksResult, chatsResult] = await Promise.allSettled([
       openTasksRequest,
       gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all"),
@@ -172,19 +172,15 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   }, [mobileOpen]);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!notificationsOpen || !user?.id) return;
     const refresh = () => void loadNavigationMetrics();
     refresh();
-    const timer = window.setInterval(refresh, 60_000);
-    window.addEventListener("focus", refresh);
     window.addEventListener(NAVIGATION_METRICS_EVENT, refresh);
     return () => {
       navigationMetricsRequestRef.current += 1;
-      window.clearInterval(timer);
-      window.removeEventListener("focus", refresh);
       window.removeEventListener(NAVIGATION_METRICS_EVENT, refresh);
     };
-  }, [loadNavigationMetrics, pathname, user?.id]);
+  }, [loadNavigationMetrics, notificationsOpen, user?.id]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

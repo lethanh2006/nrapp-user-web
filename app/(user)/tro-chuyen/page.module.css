@@ -29,7 +29,9 @@
 .conversationCopy p { min-width: 0; margin: 0; overflow: hidden; color: var(--slate-500); font-size: 13px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 .conversationCopy b { display: grid; min-width: 18px; height: 18px; flex: 0 0 auto; place-items: center; border-radius: 7px; background: var(--blue-700); color: white; font-size: 14px; font-weight: 800; }
 .noConversation { display: grid; min-height: 180px; place-items: center; align-content: center; color: var(--slate-300); }
-.noConversation p { margin: 8px 0 0; color: var(--slate-400); font-size: 13px; }
+.noConversation p { max-width: 240px; margin: 8px 0 0; color: var(--slate-400); font-size: 13px; line-height: 1.5; text-align: center; }
+.noConversation button { margin-top: 12px; cursor: pointer; border: 1px solid var(--blue-200); border-radius: 10px; padding: 8px 13px; background: white; color: var(--blue-700); font-size: 13px; font-weight: 750; }
+.noConversation button:hover { border-color: var(--blue-300); background: var(--blue-50); }
 .privateNote { display: flex; flex: 0 0 auto; align-items: center; gap: 7px; border-top: 1px solid var(--slate-100); padding: 11px 14px; color: var(--slate-400); font-size: 14px; line-height: 1.4; }
 .privateNote svg { flex: 0 0 auto; color: var(--blue-600); }
 

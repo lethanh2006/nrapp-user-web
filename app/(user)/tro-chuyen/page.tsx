@@ -35,6 +35,19 @@ function toPerson(raw: ApiUser, index: number): DirectoryPerson {
   return { id: raw._id, name, initials: getUserInitials(name), role: raw.role ?? "Thành viên", department: "NRApp", email: raw.email ?? "", phone: "", tone: tones[index % tones.length] };
 }
 
+function chatItemUser(item: ApiChatListItem) {
+  const wrapper = item.user as { user?: ApiUser };
+  return wrapper.user ?? item.user as ApiUser;
+}
+
+function unknownPerson(id: string): DirectoryPerson {
+  return { id, name: "Đồng nghiệp", initials: "ĐN", role: "Thành viên", department: "NRApp", email: "", phone: "", tone: "slate" };
+}
+
+function requestErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error && error.message.trim() ? error.message : fallback;
+}
+
 function ConversationWorkspace() {
   const { user } = useAuthSession();
   const searchParams = useSearchParams();
@@ -48,42 +61,58 @@ function ConversationWorkspace() {
   const [draft, setDraft] = useState("");
   const [mobileThreadOpen, setMobileThreadOpen] = useState(Boolean(requestedPersonId));
   const [chatLoadState, setChatLoadState] = useState<"loading" | "ready" | "error">("loading");
+  const [chatError, setChatError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const creatingChatRef = useRef(false);
 
   const loadChats = useCallback(async () => {
     setChatLoadState("loading");
-    try {
-      const [userResult, chatResult] = await Promise.all([
-        gatewayApi<{ users: ApiUser[] }>("user/user/all"),
-        gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all"),
-      ]);
-      const directory = (Array.isArray(userResult.users) ? userResult.users : []).map(toPerson);
-      const chats = (Array.isArray(chatResult.chats) ? chatResult.chats : []).map(({ chat, user: wrapper }) => {
-        const raw = (wrapper as { user?: ApiUser }).user ?? wrapper as ApiUser;
-        const personId = raw?._id ?? chat.users.find((id) => id !== user?.id) ?? "";
-        const updated = new Date(chat.updatedAt);
-        return {
-          id: chat._id,
-          personId,
-          preview: chat.latestMessage?.text || "Bắt đầu cuộc trò chuyện",
-          time: Number.isNaN(updated.getTime()) ? "" : new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(updated),
-          unread: chat.unseenCount,
-          messages: [],
-        } satisfies Conversation;
-      });
-      setPeople(directory);
-      setConversationList(chats);
-      setUnreadByConversation(Object.fromEntries(chats.map((item) => [item.id, item.unread ?? 0])));
-      setSelectedId((current) => {
-        const requested = chats.find((item) => item.personId === requestedPersonId)?.id;
-        return requested || (chats.some((item) => item.id === current) ? current : chats[0]?.id ?? "");
-      });
-      setChatLoadState("ready");
-    } catch {
-      setConversationList([]);
+    setChatError("");
+    const [userResult, chatResult] = await Promise.allSettled([
+      gatewayApi<{ users: ApiUser[] }>("user/user/all"),
+      gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all"),
+    ]);
+    const directory = userResult.status === "fulfilled"
+      ? (Array.isArray(userResult.value.users) ? userResult.value.users : []).map(toPerson)
+      : [];
+    const chatItems = chatResult.status === "fulfilled" && Array.isArray(chatResult.value.chats)
+      ? chatResult.value.chats
+      : [];
+    const chatPeople = chatItems
+      .map(chatItemUser)
+      .filter((item): item is ApiUser => Boolean(item?._id))
+      .map(toPerson);
+    const peopleById = new Map(directory.map((person) => [person.id, person]));
+    chatPeople.forEach((person) => peopleById.set(person.id, person));
+    const chats = chatItems.map(({ chat, user: wrapper }) => {
+      const raw = (wrapper as { user?: ApiUser }).user ?? wrapper as ApiUser;
+      const personId = raw?._id ?? chat.users.find((id) => id !== user?.id) ?? "";
+      const updated = new Date(chat.updatedAt);
+      return {
+        id: chat._id,
+        personId,
+        preview: chat.latestMessage?.text || "Bắt đầu cuộc trò chuyện",
+        time: Number.isNaN(updated.getTime()) ? "" : new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(updated),
+        unread: chat.unseenCount,
+        messages: [],
+      } satisfies Conversation;
+    });
+    setPeople(Array.from(peopleById.values()));
+    setConversationList(chats);
+    setUnreadByConversation(Object.fromEntries(chats.map((item) => [item.id, item.unread ?? 0])));
+    setSelectedId((current) => {
+      const requested = chats.find((item) => item.personId === requestedPersonId)?.id;
+      return requested || (chats.some((item) => item.id === current) ? current : chats[0]?.id ?? "");
+    });
+    if (chatResult.status === "rejected") {
+      setChatError(requestErrorMessage(chatResult.reason, "Dịch vụ trò chuyện chưa phản hồi. Vui lòng thử lại."));
       setChatLoadState("error");
+      return;
     }
+    if (userResult.status === "rejected") {
+      setChatError("Danh bạ chưa tải đủ, nhưng các cuộc trò chuyện hiện có vẫn sử dụng được.");
+    }
+    setChatLoadState("ready");
   }, [requestedPersonId, user?.id]);
 
   useEffect(() => { void Promise.resolve().then(loadChats); }, [loadChats]);
@@ -93,6 +122,10 @@ function ConversationWorkspace() {
     creatingChatRef.current = true;
     void gatewayApi<{ chatId: string }>("chat/chat/new", { method: "POST", json: { otherUserId: requestedPersonId } })
       .then(() => loadChats())
+      .catch((error: unknown) => {
+        setChatError(requestErrorMessage(error, "Không thể tạo cuộc trò chuyện mới."));
+        setChatLoadState("error");
+      })
       .finally(() => { creatingChatRef.current = false; });
   }, [conversationList, loadChats, people, requestedPersonId]);
 
@@ -115,7 +148,7 @@ function ConversationWorkspace() {
   const rows = useMemo(
     () => conversationList.map((conversation) => ({
       conversation,
-      person: people.find((person) => person.id === conversation.personId) ?? people[0],
+      person: people.find((person) => person.id === conversation.personId) ?? unknownPerson(conversation.personId),
     })),
     [conversationList, people],
   );
@@ -152,8 +185,8 @@ function ConversationWorkspace() {
       setMessagesByConversation((value) => ({ ...value, [selectedConversation.id]: [...(value[selectedConversation.id] ?? []), message] }));
       setConversationList((current) => current.map((item) => item.id === selectedConversation.id ? { ...item, preview: body, time: message.time } : item));
       setDraft("");
-    } catch {
-      return;
+    } catch (error) {
+      setChatError(requestErrorMessage(error, "Không thể gửi tin nhắn. Vui lòng thử lại."));
     }
   }
 
@@ -210,7 +243,11 @@ function ConversationWorkspace() {
               );
             })}
             {!filteredRows.length ? (
-              <div className={styles.noConversation}><Search size={22} /><p>{chatLoadState === "loading" ? "Đang tải cuộc trò chuyện..." : chatLoadState === "error" ? "Không tải được cuộc trò chuyện" : "Không tìm thấy cuộc trò chuyện"}</p></div>
+              <div className={styles.noConversation}>
+                <Search size={22} />
+                <p>{chatLoadState === "loading" ? "Đang tải cuộc trò chuyện..." : chatLoadState === "error" ? chatError || "Không tải được cuộc trò chuyện" : "Không tìm thấy cuộc trò chuyện"}</p>
+                {chatLoadState === "error" ? <button type="button" onClick={() => void loadChats()}>Thử lại</button> : null}
+              </div>
             ) : null}
           </div>
 
