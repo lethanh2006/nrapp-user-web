@@ -7,6 +7,7 @@ export type GatewayRequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   accessToken?: string;
+  timeoutMs?: number;
 };
 
 function getGatewayConfig() {
@@ -43,9 +44,12 @@ async function readPayload(response: Response): Promise<unknown> {
 
 export async function gatewayRequest<T>(
   path: string,
-  { method = "GET", body, accessToken }: GatewayRequestOptions = {},
+  { method = "GET", body, accessToken, timeoutMs: requestTimeoutMs }: GatewayRequestOptions = {},
 ): Promise<T> {
-  const { baseUrl, timeoutMs } = getGatewayConfig();
+  const { baseUrl, timeoutMs: defaultTimeoutMs } = getGatewayConfig();
+  const timeoutMs = Number.isFinite(requestTimeoutMs)
+    ? Math.min(Math.max(Number(requestTimeoutMs), 1_000), 60_000)
+    : defaultTimeoutMs;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 

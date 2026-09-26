@@ -20,6 +20,9 @@ export async function POST(request: Request) {
     const result = await gatewayRequest<GatewaySessionResponse>(apiEndpoints.auth.loginGoogle, {
       method: "POST",
       body: { token },
+      // Lần xác minh đầu tiên có thể cần tải bộ khóa ký Google. Auth vẫn tự
+      // giới hạn từng dependency, nhưng route cần đủ thời gian cho cold start.
+      timeoutMs: 20_000,
     });
     const user = normalizeSessionUser(result.user);
     if (!user) {
