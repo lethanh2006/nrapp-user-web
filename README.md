@@ -53,7 +53,7 @@ Trình duyệt → Next.js /api/auth/* hoặc /api/gateway/* → NRApp Gateway
 - `/can-tin`: chọn bàn, tùy chỉnh món, tạo đơn tiền mặt, xem lịch sử và hủy đơn chưa thanh toán.
 - `/danh-ba`: đọc danh bạ tài khoản và mở hội thoại.
 - `/tro-chuyen`: đọc hội thoại, tải lịch sử và gửi tin nhắn văn bản.
-- `/tien-ich`: tổng quan tháng, chấm công và tạo/hủy đơn nhân sự.
+- `/tien-ich`: tổng quan tháng, xem lịch sử chấm công và tạo/hủy đơn nhân sự.
 - `/ho-so`: cập nhật tên/email, đăng xuất và xóa tài khoản.
 
 Những khả năng backend chưa có endpoint tương ứng (đổi mật khẩu, số điện thoại, tải avatar, gọi thoại/video và gửi ảnh qua proxy JSON) được vô hiệu hóa hoặc ghi chú rõ trên giao diện.

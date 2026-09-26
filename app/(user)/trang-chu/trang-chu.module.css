@@ -1,151 +1,872 @@
-.page { display: flex; flex-direction: column; gap: 28px; }
-.hero { position: relative; display: grid; min-height: 282px; grid-template-columns: minmax(0, 1.35fr) minmax(330px, .65fr); align-items: center; gap: 34px; overflow: hidden; border-radius: 28px; padding: 34px 38px; background: linear-gradient(120deg, var(--blue-900) 0%, var(--blue-700) 56%, var(--blue-600) 100%); color: white; box-shadow: 0 24px 60px rgba(12,59,102,.22); }
-.heroGlowOne, .heroGlowTwo { position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
-.heroGlowOne { width: 300px; height: 300px; top: -190px; left: 32%; background: rgba(125,211,252,.22); }
-.heroGlowTwo { width: 240px; height: 240px; right: -95px; bottom: -165px; background: rgba(255,255,255,.13); }
-.heroPattern { position: absolute; inset: 0; opacity: .16; background-image: radial-gradient(rgba(255,255,255,.7) .7px, transparent .7px); background-size: 16px 16px; mask-image: linear-gradient(90deg, transparent 35%, #000); }
-.heroContent, .todayCard { position: relative; z-index: 2; }
-.greetingRow { display: flex; align-items: center; gap: 14px; }
-.greetingRow > span { border-color: rgba(255,255,255,.36); background: rgba(255,255,255,.13); color: white; }
-.greetingRow p { margin: 0 0 2px; color: rgba(255,255,255,.68); font-size: 13px; font-weight: 700; }
-.greetingRow h1 { margin: 0; font-size: clamp(24px, 3vw, 34px); font-weight: 800; letter-spacing: -.045em; }
-.heroLead { max-width: 560px; margin: 20px 0 22px; color: rgba(255,255,255,.72); font-size: 13px; line-height: 1.7; }
-.heroLead strong { color: white; }
-.heroActions { display: flex; flex-wrap: wrap; gap: 9px; }
-.heroPrimary, .heroSecondary { display: inline-flex; min-height: 43px; align-items: center; justify-content: center; gap: 8px; border-radius: 13px; padding: 0 15px; font-size: 13px; font-weight: 750; white-space: nowrap; }
-.heroPrimary { background: white; color: var(--blue-800); box-shadow: 0 10px 24px rgba(2,18,41,.18); }
-.heroSecondary { border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.09); color: white; }
-.todayCard { border: 1px solid rgba(255,255,255,.22); border-radius: 23px; padding: 20px; background: rgba(255,255,255,.12); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 20px 40px rgba(2,18,41,.14); backdrop-filter: blur(12px); }
-.todayTop { display: flex; align-items: center; justify-content: space-between; }
-.todayTop p { margin: 0 0 3px; color: rgba(255,255,255,.62); font-size: 13px; font-weight: 800; text-transform: uppercase; }
-.todayTop strong { font-size: 18px; font-weight: 800; }
-.todayTop > span { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 13px; background: rgba(255,255,255,.12); }
-.workMode { display: flex; align-items: center; gap: 10px; margin: 16px 0 13px; border-top: 1px solid rgba(255,255,255,.13); border-bottom: 1px solid rgba(255,255,255,.13); padding: 14px 0; }
-.workMode > span:first-child { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 11px; background: rgba(125,211,252,.16); color: var(--blue-200); }
-.workMode > div { display: flex; min-width: 0; flex: 1; flex-direction: column; }
-.workMode small { color: rgba(255,255,255,.56); font-size: 14px; }
-.workMode strong { margin-top: 2px; font-size: 14px; }
-.todayMeta { display: flex; flex-wrap: wrap; gap: 10px 17px; color: rgba(255,255,255,.68); font-size: 13px; font-weight: 700; }
-.todayMeta span { display: flex; align-items: center; gap: 5px; }
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
 
-.shortcutSection { margin-top: 1px; }
-.shortcutGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.shortcutCard { display: flex; min-width: 0; align-items: center; gap: 11px; border: 1px solid var(--slate-200); border-radius: 19px; padding: 14px; background: white; box-shadow: var(--shadow-sm); transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease; }
-.shortcutCard:hover { transform: translateY(-2px); border-color: var(--blue-200); box-shadow: 0 14px 32px rgba(35,72,113,.1); }
-.shortcutIcon { display: grid; width: 43px; height: 43px; flex: 0 0 auto; place-items: center; border-radius: 14px; }
-.shortcut_blue { background: var(--blue-50); color: var(--blue-700); }
-.shortcut_emerald { background: var(--blue-50); color: var(--blue-700); }
-.shortcut_amber { background: var(--blue-50); color: var(--blue-700); }
-.shortcut_violet { background: var(--blue-50); color: var(--blue-700); }
-.shortcutCard > span:nth-child(2) { display: flex; min-width: 0; flex: 1; flex-direction: column; }
-.shortcutCard strong { overflow: hidden; color: var(--slate-800); font-size: 13px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
-.shortcutCard small { margin-top: 3px; overflow: hidden; color: var(--slate-400); font-size: 13px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
-.shortcutCard > svg { color: var(--slate-300); }
+.welcomePanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(430px, .72fr);
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--slate-200);
+  border-radius: 22px;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
 
-.mainGrid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, .5fr); align-items: start; gap: 24px; }
-.primaryColumn, .sideColumn { display: flex; min-width: 0; flex-direction: column; gap: 28px; }
-.taskCard { overflow: hidden; }
-.taskRow { display: flex; min-height: 76px; align-items: center; gap: 13px; padding: 12px 16px; border-bottom: 1px solid var(--slate-100); }
-.taskRow:last-child { border-bottom: 0; }
-.taskIndex { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: var(--blue-50); color: var(--blue-700); font-size: 14px; font-weight: 800; }
-.taskIndexHigh { background: #fff1f2; color: #e11d48; }
-.taskCopy { min-width: 0; flex: 1; }
-.taskCopy > div { display: flex; align-items: center; gap: 8px; }
-.taskCopy strong { overflow: hidden; color: var(--slate-800); font-size: 13px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
-.taskCopy p { margin: 5px 0 0; color: var(--slate-400); font-size: 13px; font-weight: 650; }
-.taskArrow { display: grid; width: 32px; height: 32px; flex: 0 0 auto; place-items: center; border-radius: 10px; color: var(--slate-300); }
-.taskRow:hover .taskArrow { background: var(--blue-50); color: var(--blue-700); }
+.welcomeMain {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 26px;
+}
 
-.newsGrid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 12px; }
-.newsCard { display: grid; min-width: 0; grid-template-columns: 90px 1fr; overflow: hidden; border: 1px solid var(--slate-200); border-radius: 20px; background: white; box-shadow: var(--shadow-sm); }
-.newsCard + .newsCard:not(.newsFeatured) { grid-column: 2; }
-.newsFeatured { grid-row: span 2; grid-template-columns: 1fr; }
-.newsVisual { display: flex; min-height: 116px; align-items: center; justify-content: center; flex-direction: column; gap: 10px; padding: 15px; }
-.newsVisual span { border-radius: 999px; padding: 4px 8px; background: rgba(255,255,255,.72); font-size: 14px; font-weight: 800; text-transform: uppercase; }
-.news_blue { background: linear-gradient(145deg, var(--blue-100), var(--blue-50)); color: var(--blue-700); }
-.news_amber { background: linear-gradient(145deg, var(--blue-100), var(--blue-50)); color: var(--blue-800); }
-.news_violet { background: linear-gradient(145deg, var(--blue-100), var(--blue-50)); color: var(--blue-800); }
-.newsCopy { min-width: 0; padding: 15px; }
-.newsCopy small { color: var(--slate-400); font-size: 14px; font-weight: 750; }
-.newsCopy h3 { display: -webkit-box; overflow: hidden; margin: 6px 0 6px; color: var(--slate-800); font-size: 14px; font-weight: 800; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.newsFeatured .newsCopy h3 { font-size: 15px; }
-.newsCopy p { display: -webkit-box; overflow: hidden; margin: 0; color: var(--slate-500); font-size: 13px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.newsFeatured .newsCopy p { -webkit-line-clamp: 3; }
-.newsCopy button { display: inline-flex; align-items: center; gap: 5px; margin-top: 11px; cursor: pointer; background: transparent; color: var(--blue-700); font-size: 13px; font-weight: 750; }
+.welcomeMain > :first-child {
+  border-color: var(--blue-100);
+  background: var(--blue-50);
+  color: var(--blue-800);
+}
 
-.scheduleCard { padding: 17px; }
-.scheduleDate { display: inline-flex; width: 67px; height: 67px; align-items: center; justify-content: center; flex-direction: column; border-radius: 18px; background: var(--blue-700); color: white; float: left; margin-right: 13px; }
-.scheduleDate span { font-size: 25px; font-weight: 800; line-height: 1; }
-.scheduleDate small { margin-top: 5px; font-size: 13px; font-weight: 800; }
-.scheduleInfo { min-height: 69px; }
-.scheduleInfo > strong { display: block; margin-top: 7px; color: var(--slate-800); font-size: 13px; }
-.scheduleInfo p { display: flex; align-items: center; gap: 4px; margin: 5px 0 0; color: var(--slate-400); font-size: 13px; }
-.scheduleDivider { clear: both; height: 1px; margin: 16px 0; background: var(--slate-100); }
-.scheduleHint { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 14px; border-radius: 13px; padding: 11px; background: var(--slate-50); color: var(--blue-700); }
-.scheduleHint p { margin: 0; color: var(--slate-500); font-size: 13px; line-height: 1.55; }
-.scheduleHint strong { color: var(--slate-700); }
-.scheduleCard > a { width: 100%; }
+.welcomeCopy {
+  min-width: 0;
+  flex: 1;
+}
 
-.progressCard { display: grid; grid-template-columns: 84px 1fr; align-items: center; gap: 14px; padding: 17px; }
-.progressRing { display: grid; width: 80px; height: 80px; place-items: center; border-radius: 50%; background: conic-gradient(var(--blue-600) var(--progress), var(--blue-100) 0); }
-.progressRing::before { content: ""; grid-area: 1/1; width: 62px; height: 62px; border-radius: 50%; background: white; }
-.progressRing > span { z-index: 1; grid-area: 1/1; color: var(--slate-900); font-size: 20px; font-weight: 800; }
-.progressRing small { font-size: 14px; }
-.progressCopy strong { color: var(--slate-800); font-size: 13px; font-weight: 800; }
-.progressCopy p { margin: 4px 0 0; color: var(--slate-400); font-size: 13px; line-height: 1.5; }
-.progressStats { display: grid; grid-column: 1/-1; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--slate-100); padding-top: 13px; }
-.progressStats > div { position: relative; display: grid; grid-template-columns: 7px 1fr; align-items: center; column-gap: 5px; padding-left: 8px; border-right: 1px solid var(--slate-100); }
-.progressStats > div:last-child { border-right: 0; }
-.progressStats span { width: 6px; height: 6px; border-radius: 50%; }
-.dotBlue { background: var(--blue-600); }.dotGreen { background: var(--blue-600); }.dotSlate { background: var(--slate-300); }
-.progressStats strong { color: var(--slate-800); font-size: 13px; }
-.progressStats small { grid-column: 2; color: var(--slate-400); font-size: 14px; }
-.attendanceBanner { display: flex; align-items: center; gap: 11px; border: 1px solid var(--blue-200); border-radius: 19px; padding: 14px; background: linear-gradient(135deg, var(--blue-50), var(--blue-50)); }
-.attendanceBanner > span { display: grid; width: 43px; height: 43px; flex: 0 0 auto; place-items: center; border-radius: 14px; background: white; color: var(--blue-700); box-shadow: var(--shadow-sm); }
-.attendanceBanner > div { min-width: 0; flex: 1; }
-.attendanceBanner strong { color: var(--slate-800); font-size: 14px; font-weight: 800; }
-.attendanceBanner p { margin: 3px 0 0; color: var(--slate-500); font-size: 14px; line-height: 1.5; }
-.attendanceBanner > svg { color: var(--blue-600); }
+.welcomeCopy p {
+  margin: 0 0 4px;
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.welcomeCopy p span {
+  color: var(--slate-400);
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.welcomeCopy h1 {
+  overflow: hidden;
+  margin: 0;
+  color: var(--slate-900);
+  font-size: clamp(23px, 2.4vw, 31px);
+  font-weight: 850;
+  letter-spacing: -.045em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.welcomeCopy small {
+  display: block;
+  margin-top: 6px;
+  color: var(--slate-500);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.primaryAction {
+  display: inline-flex;
+  min-height: 42px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 12px;
+  padding: 0 15px;
+  background: var(--blue-700);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(36, 87, 167, .16);
+}
+
+.primaryAction:hover {
+  background: var(--blue-800);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-left: 1px solid var(--slate-100);
+  background: var(--slate-50);
+}
+
+.summaryGrid article {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 14px;
+  border-right: 1px solid var(--slate-100);
+}
+
+.summaryGrid article:last-child {
+  border-right: 0;
+}
+
+.summaryGrid article > span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--blue-100);
+  border-radius: 12px;
+  background: white;
+  color: var(--blue-700);
+}
+
+.summaryGrid article > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.summaryGrid small {
+  overflow: hidden;
+  color: var(--slate-400);
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryGrid strong {
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--slate-800);
+  font-size: 15px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dataNotice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -12px;
+  border: 1px solid var(--blue-100);
+  border-radius: 12px;
+  padding: 10px 13px;
+  background: var(--blue-50);
+  color: var(--slate-600);
+  font-size: 12px;
+}
+
+.dataNotice button {
+  margin-left: auto;
+  cursor: pointer;
+  background: transparent;
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.shortcutSection {
+  margin-top: -1px;
+}
+
+.shortcutGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.shortcutCard {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid var(--slate-200);
+  border-radius: 17px;
+  padding: 13px;
+  background: white;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.shortcutCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue-200);
+  box-shadow: 0 12px 28px rgba(35, 72, 113, .08);
+}
+
+.shortcutIcon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.shortcutCard > span:nth-child(2) {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.shortcutCard strong,
+.shortcutCard small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shortcutCard strong {
+  color: var(--slate-800);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.shortcutCard small {
+  margin-top: 4px;
+  color: var(--slate-400);
+  font-size: 12px;
+}
+
+.shortcutCard > svg {
+  flex: 0 0 auto;
+  color: var(--slate-300);
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, .55fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.primaryColumn,
+.sideColumn {
+  min-width: 0;
+}
+
+.primaryColumn,
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.taskCard {
+  overflow: hidden;
+}
+
+.taskRow {
+  display: grid;
+  min-height: 76px;
+  grid-template-columns: 38px minmax(0, 1fr) 94px 26px;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 15px;
+  border-bottom: 1px solid var(--slate-100);
+  transition: background 150ms ease;
+}
+
+.taskRow:last-child {
+  border-bottom: 0;
+}
+
+.taskRow:hover {
+  background: var(--slate-50);
+}
+
+.taskStatus {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--slate-100);
+  color: var(--slate-500);
+}
+
+.taskStatusActive {
+  background: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.taskCopy {
+  min-width: 0;
+}
+
+.taskCopy > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskCopy strong {
+  overflow: hidden;
+  color: var(--slate-800);
+  font-size: 13px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskCopy p {
+  overflow: hidden;
+  margin: 5px 0 0;
+  color: var(--slate-400);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskDeadline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.taskDeadline small {
+  color: var(--slate-400);
+  font-size: 10px;
+}
+
+.taskDeadline strong {
+  margin-top: 3px;
+  color: var(--slate-700);
+  font-size: 12px;
+}
+
+.rowArrow {
+  color: var(--slate-300);
+}
+
+.taskRow:hover .rowArrow {
+  color: var(--blue-700);
+}
+
+.emptyState {
+  display: flex;
+  min-height: 118px;
+  align-items: center;
+  gap: 13px;
+  padding: 20px;
+}
+
+.emptyState > span {
+  display: grid;
+  width: 45px;
+  height: 45px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.emptyState > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.emptyState strong {
+  color: var(--slate-800);
+  font-size: 13px;
+}
+
+.emptyState p {
+  margin: 5px 0 0;
+  color: var(--slate-400);
+  font-size: 12px;
+}
+
+.emptyState > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--blue-700);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.loadingState {
+  display: flex;
+  min-height: 118px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: var(--slate-400);
+  font-size: 12px;
+}
+
+.loadingState span {
+  width: 17px;
+  height: 17px;
+  border: 2px solid var(--blue-100);
+  border-top-color: var(--blue-600);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+.loadingState p {
+  margin: 0;
+}
+
+.scheduleCard {
+  padding: 17px;
+}
+
+.scheduleHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scheduleHeader > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.scheduleHeader small {
+  color: var(--blue-700);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.scheduleHeader strong {
+  margin-top: 3px;
+  color: var(--slate-800);
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.currentSchedule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  border: 1px solid var(--blue-100);
+  border-radius: 14px;
+  padding: 12px;
+  background: var(--blue-50);
+}
+
+.currentSchedule > span {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: white;
+  color: var(--blue-700);
+}
+
+.currentSchedule strong {
+  color: var(--slate-800);
+  font-size: 13px;
+}
+
+.currentSchedule p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 4px 0 0;
+  color: var(--slate-500);
+  font-size: 12px;
+}
+
+.scheduleMeta {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 11px 2px 14px;
+  color: var(--slate-400);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.scheduleMeta svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.nextSchedule {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--slate-100);
+  border-bottom: 1px solid var(--slate-100);
+  padding: 12px 0;
+}
+
+.nextDate {
+  display: grid;
+  width: 43px;
+  height: 45px;
+  place-items: center;
+  align-content: center;
+  border-radius: 11px;
+  background: var(--slate-100);
+}
+
+.nextDate strong {
+  color: var(--slate-800);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.nextDate small {
+  margin-top: 3px;
+  color: var(--slate-400);
+  font-size: 9px;
+}
+
+.nextSchedule > div:nth-child(2) {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.nextSchedule > div:nth-child(2) small {
+  color: var(--slate-400);
+  font-size: 10px;
+}
+
+.nextSchedule > div:nth-child(2) strong {
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--slate-700);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nextSchedule > span {
+  color: var(--slate-500);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scheduleAction {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 13px;
+  border: 1px solid var(--slate-200);
+  border-radius: 11px;
+  color: var(--slate-700);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.scheduleAction:hover {
+  border-color: var(--blue-200);
+  background: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.progressCard {
+  padding: 17px;
+}
+
+.progressTop {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.progressRing {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--blue-600) var(--progress), var(--blue-100) 0);
+}
+
+.progressRing::before {
+  content: "";
+  grid-area: 1/1;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: white;
+}
+
+.progressRing span {
+  z-index: 1;
+  grid-area: 1/1;
+  color: var(--slate-900);
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.progressRing small {
+  font-size: 10px;
+}
+
+.progressTop > div:last-child strong {
+  color: var(--slate-800);
+  font-size: 13px;
+}
+
+.progressTop > div:last-child p {
+  margin: 4px 0 0;
+  color: var(--slate-400);
+  font-size: 11px;
+}
+
+.progressStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 15px;
+  border-top: 1px solid var(--slate-100);
+  padding-top: 13px;
+}
+
+.progressStats > div {
+  display: grid;
+  grid-template-columns: 7px 1fr;
+  align-items: center;
+  gap: 3px 5px;
+  padding: 0 8px;
+  border-right: 1px solid var(--slate-100);
+}
+
+.progressStats > div:first-child {
+  padding-left: 0;
+}
+
+.progressStats > div:last-child {
+  border-right: 0;
+}
+
+.progressStats span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dotActive,
+.dotDone {
+  background: var(--blue-600);
+}
+
+.dotTodo {
+  background: var(--slate-300);
+}
+
+.progressStats strong {
+  color: var(--slate-800);
+  font-size: 12px;
+}
+
+.progressStats small {
+  grid-column: 2;
+  color: var(--slate-400);
+  font-size: 10px;
+}
+
+.peopleLink {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid var(--slate-200);
+  border-radius: 17px;
+  padding: 13px;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.peopleLink > span {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--blue-50);
+  color: var(--blue-700);
+}
+
+.peopleLink > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.peopleLink strong {
+  color: var(--slate-800);
+  font-size: 12px;
+}
+
+.peopleLink p {
+  margin: 3px 0 0;
+  color: var(--slate-400);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.peopleLink > svg {
+  color: var(--slate-300);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 @media (max-width: 1180px) {
-  .hero { grid-template-columns: 1fr 340px; padding: 28px; }
-  .shortcutGrid { grid-template-columns: repeat(2, 1fr); }
-  .mainGrid { grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); }
-  .newsGrid { grid-template-columns: 1fr; }
-  .newsFeatured { grid-row: auto; }
-  .newsCard + .newsCard:not(.newsFeatured) { grid-column: auto; }
-  .newsFeatured { grid-template-columns: 90px 1fr; }
-  .newsFeatured .newsVisual { min-height: 116px; }
-  .newsFeatured .newsCopy h3 { font-size: 14px; }
+  .welcomePanel {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryGrid {
+    border-top: 1px solid var(--slate-100);
+    border-left: 0;
+  }
+
+  .shortcutGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
-@media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; }
-  .todayCard { max-width: 520px; }
-  .mainGrid { grid-template-columns: 1fr; }
-  .sideColumn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .sideColumn > section:last-child { grid-column: 1/-1; }
+
+@media (max-width: 900px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sideColumn {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .peopleLink {
+    grid-column: 1 / -1;
+  }
 }
-@media (max-width: 600px) {
-  .page { gap: 23px; }
-  .hero { min-height: auto; border-radius: 23px; padding: 22px 18px; }
-  .greetingRow h1 { font-size: 24px; }
-  .heroLead { margin: 15px 0 17px; font-size: 13px; }
-  .heroActions { flex-wrap: nowrap; }
-  .heroActions > a { min-width: 0; flex: 1; padding-inline: 10px; font-size: 12px; }
-  .todayCard { padding: 16px; }
-  .workMode { align-items: flex-start; }
-  .workMode > span:last-child { display: none; }
-  .shortcutGrid { gap: 9px; }
-  .shortcutCard { align-items: flex-start; flex-direction: column; padding: 13px; }
-  .shortcutCard > svg { display: none; }
-  .shortcutIcon { width: 39px; height: 39px; }
-  .shortcutCard strong { white-space: normal; }
-  .taskRow { padding: 11px; }
-  .taskCopy > div { align-items: flex-start; flex-direction: column; gap: 5px; }
-  .taskCopy strong { white-space: normal; }
-  .taskArrow { display: none; }
-  .newsCard, .newsFeatured { grid-template-columns: 75px 1fr; }
-  .newsVisual { min-height: 124px; padding: 8px; }
-  .newsVisual span { font-size: 13px; }
-  .sideColumn { display: flex; }
+
+@media (max-width: 620px) {
+  .page {
+    gap: 22px;
+  }
+
+  .welcomeMain {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    padding: 18px;
+  }
+
+  .welcomeCopy p span {
+    display: none;
+  }
+
+  .welcomeCopy h1 {
+    font-size: 23px;
+  }
+
+  .welcomeCopy small {
+    font-size: 12px;
+  }
+
+  .primaryAction {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .summaryGrid article {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 10px;
+  }
+
+  .summaryGrid article > span {
+    width: 34px;
+    height: 34px;
+  }
+
+  .summaryGrid small,
+  .summaryGrid strong {
+    white-space: normal;
+  }
+
+  .summaryGrid strong {
+    font-size: 13px;
+  }
+
+  .dataNotice {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dataNotice button {
+    margin-left: 0;
+  }
+
+  .shortcutGrid {
+    gap: 8px;
+  }
+
+  .shortcutCard {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .shortcutCard > svg {
+    display: none;
+  }
+
+  .shortcutCard strong,
+  .shortcutCard small {
+    white-space: normal;
+  }
+
+  .taskRow {
+    grid-template-columns: 36px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .taskDeadline {
+    grid-column: 2;
+    align-items: flex-start;
+  }
+
+  .rowArrow {
+    display: none;
+  }
+
+  .taskCopy > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .taskCopy strong,
+  .taskCopy p {
+    white-space: normal;
+  }
+
+  .emptyState {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .emptyState > a {
+    width: 100%;
+    padding-left: 58px;
+  }
+
+  .sideColumn {
+    display: flex;
+  }
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
+  CalendarDays,
   CheckSquare2,
   ChevronRight,
   CircleHelp,
@@ -12,12 +13,9 @@ import {
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
-  QrCode,
-  ScanLine,
   Search,
   Settings,
   Sparkles,
-  UserRound,
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -130,17 +128,12 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuthSession();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileDialogRef = useRef<HTMLElement>(null);
-  const qrDialogRef = useRef<HTMLElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [qrOpen, setQrOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [logoutPending, setLogoutPending] = useState(false);
-  const [qrToken, setQrToken] = useState("");
-  const [scanPending, setScanPending] = useState(false);
-  const [scanNotice, setScanNotice] = useState("");
   const [navigationMetrics, setNavigationMetrics] = useState<{ openTasks: number | null; unreadMessages: number | null }>({
     openTasks: null,
     unreadMessages: null,
@@ -174,9 +167,9 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen || qrOpen ? "hidden" : "";
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [mobileOpen, qrOpen]);
+  }, [mobileOpen]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -196,8 +189,7 @@ export function UserShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (qrOpen) setQrOpen(false);
-        else if (mobileOpen) setMobileOpen(false);
+        if (mobileOpen) setMobileOpen(false);
         else if (notificationsOpen) setNotificationsOpen(false);
         return;
       }
@@ -208,10 +200,10 @@ export function UserShell({ children }: { children: React.ReactNode }) {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [mobileOpen, notificationsOpen, qrOpen]);
+  }, [mobileOpen, notificationsOpen]);
 
   useEffect(() => {
-    const dialog = qrOpen ? qrDialogRef.current : mobileOpen ? mobileDialogRef.current : null;
+    const dialog = mobileOpen ? mobileDialogRef.current : null;
     if (!dialog) return;
     const previousFocus = document.activeElement as HTMLElement | null;
     const focusable = () => Array.from(dialog.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex='-1'])"));
@@ -227,7 +219,7 @@ export function UserShell({ children }: { children: React.ReactNode }) {
     };
     dialog.addEventListener("keydown", trapFocus);
     return () => { dialog.removeEventListener("keydown", trapFocus); previousFocus?.focus(); };
-  }, [mobileOpen, qrOpen]);
+  }, [mobileOpen]);
 
   const searchResults = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase("vi");
@@ -251,21 +243,6 @@ export function UserShell({ children }: { children: React.ReactNode }) {
       router.refresh();
     } finally {
       setLogoutPending(false);
-    }
-  }
-
-  async function submitAttendance() {
-    if (!qrToken.trim() || scanPending) return;
-    setScanPending(true);
-    setScanNotice("");
-    try {
-      const result = await gatewayApi<{ message?: string }>("workschedule/attendance/scan", { method: "POST", json: { token: qrToken.trim() } });
-      setScanNotice(result.message || "Chấm công thành công.");
-      setQrToken("");
-    } catch (error) {
-      setScanNotice(error instanceof Error ? error.message : "Không thể chấm công.");
-    } finally {
-      setScanPending(false);
     }
   }
 
@@ -323,8 +300,6 @@ export function UserShell({ children }: { children: React.ReactNode }) {
               {new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }).format(new Date())}
             </time>
 
-            <button className={styles.scanTopButton} onClick={() => setQrOpen(true)} aria-label="Quét mã chấm công"><ScanLine size={18} /><span>Chấm công</span></button>
-
             <div className={styles.notificationWrap}>
               <button className={styles.iconButton} onClick={() => setNotificationsOpen((value) => !value)} aria-label="Thông báo" aria-expanded={notificationsOpen}>
                 <Bell size={18} />
@@ -366,29 +341,10 @@ export function UserShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <nav className={styles.mobileBottomNav} aria-label="Điều hướng nhanh">
-        <Link href="/trang-chu" className={pathname === "/trang-chu" ? styles.mobileNavActive : ""}><UserRound size={21} /><span>Trang chủ</span></Link>
-        <button className={styles.scanButton} onClick={() => setQrOpen(true)} aria-label="Quét mã chấm công"><ScanLine size={25} /></button>
+        <Link href="/trang-chu" className={pathname === "/trang-chu" ? styles.mobileNavActive : ""}><Sparkles size={21} /><span>Trang chủ</span></Link>
+        <Link href="/lich-lam" className={pathname.startsWith("/lich-lam") ? styles.mobileNavActive : ""}><CalendarDays size={21} /><span>Lịch làm</span></Link>
         <Link href="/ho-so" className={pathname === "/ho-so" ? styles.mobileNavActive : ""}><Settings size={21} /><span>Hồ sơ</span></Link>
       </nav>
-
-      {qrOpen ? (
-        <div className="modal-backdrop" onMouseDown={() => setQrOpen(false)}>
-          <section ref={qrDialogRef} className="modal-card" onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="scan-title">
-            <div className={styles.qrModal}>
-              <button className={styles.qrClose} onClick={() => setQrOpen(false)} aria-label="Đóng trình quét" autoFocus><X size={18} /></button>
-              <span className={styles.qrModalIcon}><QrCode size={23} /></span>
-              <p className={styles.qrEyebrow}>Chấm công nhanh</p>
-              <h2 id="scan-title">Đưa mã QR vào khung</h2>
-              <p>Nhập token được mã QR chấm công cung cấp để gửi trực tiếp đến NRApp Gateway.</p>
-              <label className="form-label" htmlFor="attendance-token">Token chấm công</label>
-              <input id="attendance-token" className="field" value={qrToken} onChange={(event) => setQrToken(event.target.value)} placeholder="qr-token-string-here" autoComplete="off" />
-              {scanNotice ? <div className={styles.qrHint}><CircleHelp size={15} /><span>{scanNotice}</span></div> : null}
-              <button className="button-primary" onClick={() => void submitAttendance()} disabled={!qrToken.trim() || scanPending}>{scanPending ? "Đang chấm công..." : "Xác nhận chấm công"}</button>
-              <button className="button-secondary" onClick={() => setQrOpen(false)}>Đóng</button>
-            </div>
-          </section>
-        </div>
-      ) : null}
     </div>
   );
 }

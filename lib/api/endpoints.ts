@@ -43,7 +43,6 @@ export const apiEndpoints = {
     createRequest: "/workschedule/requests",
     cancelRequest: (id: string) => `/workschedule/requests/${id}/cancel`,
     myAttendance: "/workschedule/attendance/my",
-    scanAttendance: "/workschedule/attendance/scan",
   },
   chat: {
     create: "/chat/chat/new",

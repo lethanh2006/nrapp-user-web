@@ -1,7 +1,7 @@
 import {
   CalendarDays,
   CheckSquare2,
-  Grid2X2,
+  FileText,
   Home,
   MessageCircle,
   Soup,
@@ -24,7 +24,7 @@ export const userNavigation: NavigationItem[] = [
   { href: "/can-tin", label: "Căn tin", shortLabel: "Căn tin", icon: Soup, keywords: ["món ăn", "đặt món", "thực đơn"] },
   { href: "/danh-ba", label: "Danh bạ", shortLabel: "Danh bạ", icon: Users, keywords: ["nhân sự", "đồng nghiệp", "liên hệ"] },
   { href: "/tro-chuyen", label: "Trò chuyện", shortLabel: "Tin nhắn", icon: MessageCircle, keywords: ["chat", "tin nhắn", "đồng nghiệp"] },
-  { href: "/tien-ich", label: "Tiện ích nhân sự", shortLabel: "Tiện ích", icon: Grid2X2, keywords: ["đơn từ", "thống kê", "nghỉ phép"] },
+  { href: "/tien-ich", label: "Đơn từ & nhân sự", shortLabel: "Nhân sự", icon: FileText, keywords: ["đơn từ", "chấm công", "thống kê", "nghỉ phép"] },
 ];
 
 export const pageTitles: Record<string, string> = {
@@ -34,6 +34,6 @@ export const pageTitles: Record<string, string> = {
   "/can-tin": "Căn tin HDG",
   "/danh-ba": "Danh bạ đồng nghiệp",
   "/tro-chuyen": "Trò chuyện nội bộ",
-  "/tien-ich": "Tiện ích nhân sự",
+  "/tien-ich": "Đơn từ & nhân sự",
   "/ho-so": "Hồ sơ cá nhân",
 };
