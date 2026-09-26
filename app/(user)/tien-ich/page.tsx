@@ -99,6 +99,9 @@ export default function UtilitiesPage() {
   const pendingCount = useMemo(() => requests.filter((item) => item.status === "Chờ duyệt").length, [requests]);
   const selectedMeta = requestTypes.find((item) => item.value === selectedType) ?? requestTypes[0];
   const month = localDateKey(new Date()).slice(0, 7);
+  const [monthYear, monthNumber] = month.split("-").map(Number);
+  const monthStart = `${month}-01`;
+  const monthEnd = localDateKey(new Date(monthYear, monthNumber, 0));
   const rawMonthLabel = new Intl.DateTimeFormat("vi-VN", { month: "long", year: "numeric" }).format(new Date());
   const monthLabel = `${rawMonthLabel.charAt(0).toLocaleUpperCase("vi")}${rawMonthLabel.slice(1)}`;
 
@@ -110,8 +113,8 @@ export default function UtilitiesPage() {
   const loadUtilities = useCallback(async () => {
     setLoading(true);
     const [requestResult, attendanceResult, overviewResult] = await Promise.allSettled([
-      gatewayApi<ApiWorkRequest[] | { data: ApiWorkRequest[] }>("workschedule/requests/my"),
-      gatewayApi<ApiAttendance[] | { data: ApiAttendance[] }>("workschedule/attendance/my"),
+      gatewayApi<ApiWorkRequest[] | { data: ApiWorkRequest[] }>(`workschedule/requests/my?month=${month}`),
+      gatewayApi<ApiAttendance[] | { data: ApiAttendance[] }>(`workschedule/attendance/my?from=${monthStart}&to=${monthEnd}`),
       gatewayApi<ApiMonthlyOverview | { data: ApiMonthlyOverview }>(`workschedule/schedule/monthly-overview?month=${month}`),
     ]);
 
@@ -151,7 +154,7 @@ export default function UtilitiesPage() {
     setOverview(overviewResult.status === "fulfilled" ? unwrapData(overviewResult.value).stats : null);
     setLoadError(requestResult.status === "rejected" || attendanceResult.status === "rejected" || overviewResult.status === "rejected");
     setLoading(false);
-  }, [month]);
+  }, [month, monthEnd, monthStart]);
 
   useEffect(() => { void Promise.resolve().then(loadUtilities); }, [loadUtilities]);
 
