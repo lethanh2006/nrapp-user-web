@@ -23,8 +23,8 @@ type GoogleAccountsId = {
     type: "standard";
     theme: "outline";
     size: "large";
-    text: "continue_with";
-    shape: "rectangular";
+    text: "signin_with";
+    shape: "pill";
     logo_alignment: "left";
     locale: "vi";
     width: number;
@@ -83,8 +83,8 @@ export function GoogleSignInButton({
       type: "standard",
       theme: "outline",
       size: "large",
-      text: "continue_with",
-      shape: "rectangular",
+      text: "signin_with",
+      shape: "pill",
       logo_alignment: "left",
       locale: "vi",
       width,
@@ -108,7 +108,11 @@ export function GoogleSignInButton({
   }, [renderGoogleButton, scriptReady]);
 
   return (
-    <div className={`${styles.wrap} ${disabled ? styles.disabled : ""}`} aria-busy={disabled}>
+    <div
+      className={`${styles.wrap} ${disabled ? styles.disabled : ""}`}
+      aria-busy={disabled}
+      aria-disabled={disabled}
+    >
       <Script
         src="https://accounts.google.com/gsi/client?hl=vi"
         strategy="afterInteractive"
