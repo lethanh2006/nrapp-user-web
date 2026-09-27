@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import type { GatewaySessionResponse, UserProfileResponse } from "@/lib/api/contracts";
+import type { GatewaySessionResponse, GatewayUser, UserProfileResponse } from "@/lib/api/contracts";
 import { apiEndpoints } from "@/lib/api/endpoints";
 import { GatewayApiError } from "@/lib/api/errors";
 import { gatewayRequest, type GatewayRequestOptions } from "@/lib/api/server";
@@ -73,13 +73,40 @@ async function refreshSession(refreshToken: string) {
 }
 
 async function requestProfile(accessToken: string) {
-  const profile = await gatewayRequest<UserProfileResponse>(apiEndpoints.user.me, { accessToken });
-  const user = normalizeSessionUser(profile.user);
-  if (!user) {
+  // Xác minh phiên bằng Auth Service trước. /user/me còn phải đi qua User
+  // Service và luồng tổng hợp hồ sơ, nên không được phép làm sập toàn bộ web
+  // khi dịch vụ hồ sơ đang chậm hoặc tạm ngừng.
+  const identity = await gatewayRequest<GatewayUser>(apiEndpoints.auth.me, {
+    accessToken,
+    timeoutMs: 6_000,
+  });
+  const sessionUser = normalizeSessionUser(identity);
+  if (!sessionUser) {
     await clearSessionCookies();
     throw forbidden();
   }
-  return user;
+
+  // Hồ sơ chi tiết chỉ dùng để lấy tên hiển thị. Phiên đã được Auth Service
+  // xác minh nên lỗi ở User Service không được chặn người dùng vào ứng dụng.
+  try {
+    const profile = await gatewayRequest<UserProfileResponse>(apiEndpoints.user.me, {
+      accessToken,
+      timeoutMs: 2_500,
+    });
+    const enrichedUser = normalizeSessionUser(profile.user);
+    if (
+      enrichedUser
+      && enrichedUser.id === sessionUser.id
+      && enrichedUser.email === sessionUser.email
+      && enrichedUser.role === sessionUser.role
+    ) {
+      return enrichedUser;
+    }
+  } catch {
+    // Dùng danh tính đã xác minh từ Auth Service khi hồ sơ không khả dụng.
+  }
+
+  return sessionUser;
 }
 
 export async function getCurrentSessionUser(): Promise<SessionUser> {
