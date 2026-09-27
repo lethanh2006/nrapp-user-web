@@ -2,20 +2,20 @@
   position: relative;
   display: grid;
   width: 100%;
-  min-height: 54px;
+  min-height: 62px;
   place-items: center;
   overflow: hidden;
-  border: 1px solid var(--blue-100);
-  border-radius: 16px;
+  border: 1px solid #dce1ee;
+  border-radius: 13px;
   padding: 5px;
-  background: linear-gradient(180deg, #fff 0%, var(--blue-50) 100%);
-  box-shadow: 0 7px 20px rgba(36, 87, 167, .09);
+  background: #fff;
+  box-shadow: 0 7px 20px rgba(42, 47, 112, .06);
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .wrap:hover {
-  border-color: var(--blue-200);
-  box-shadow: 0 10px 26px rgba(36, 87, 167, .14);
+  border-color: #bcc3e4;
+  box-shadow: 0 10px 26px rgba(42, 47, 112, .11);
   transform: translateY(-1px);
 }
 
@@ -27,14 +27,14 @@
 .button {
   display: grid;
   width: 100%;
-  min-height: 44px;
+  min-height: 50px;
   place-items: center;
 }
 
 .button iframe {
   display: block;
   max-width: 100%;
-  border-radius: 999px;
+  border-radius: 8px;
 }
 
 .button > div {
@@ -52,7 +52,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--blue-100);
-  border-radius: 999px;
+  border-radius: 8px;
   background: white;
   color: var(--slate-500);
   font-size: 12px;

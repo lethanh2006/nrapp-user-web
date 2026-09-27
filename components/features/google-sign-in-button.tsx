@@ -24,7 +24,7 @@ type GoogleAccountsId = {
     theme: "outline";
     size: "large";
     text: "signin_with";
-    shape: "pill";
+    shape: "rectangular";
     logo_alignment: "left";
     locale: "vi";
     width: number;
@@ -84,7 +84,7 @@ export function GoogleSignInButton({
       theme: "outline",
       size: "large",
       text: "signin_with",
-      shape: "pill",
+      shape: "rectangular",
       logo_alignment: "left",
       locale: "vi",
       width,

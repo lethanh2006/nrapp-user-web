@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Cho phép tải tài nguyên dev và kết nối HMR khi mở web qua IP LAN.
   allowedDevOrigins: ["192.168.0.108"],
+  async redirects() {
+    return [
+      { source: "/danh-ba", destination: "/tro-chuyen", permanent: true },
+      { source: "/nhan-su", destination: "/tro-chuyen", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

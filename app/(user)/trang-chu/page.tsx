@@ -15,7 +15,6 @@ import {
   MapPin,
   MessageCircle,
   Soup,
-  Users,
 } from "lucide-react";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { Avatar } from "@/components/ui/avatar";
@@ -272,12 +271,6 @@ export default function HomePage() {
               <Link href="/lich-lam" className={styles.scheduleAction}>Cập nhật lịch làm việc <ArrowRight size={15} /></Link>
             </div>
           </section>
-
-          <Link href="/danh-ba" className={styles.peopleLink}>
-            <span><Users size={20} /></span>
-            <div><strong>Cần tìm một đồng nghiệp?</strong><p>Mở danh bạ nội bộ để xem thông tin liên hệ.</p></div>
-            <ArrowRight size={17} />
-          </Link>
         </aside>
       </div>
     </div>

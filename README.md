@@ -51,7 +51,6 @@ Trình duyệt → Next.js /api/auth/* hoặc /api/gateway/* → NRApp Gateway
 - `/lich-lam`: đọc lịch, tạo bản đăng ký theo tháng và gửi quản lý duyệt.
 - `/cong-viec`: đọc, lọc và cập nhật trạng thái công việc của người dùng.
 - `/can-tin`: chọn bàn, tùy chỉnh món, tạo đơn tiền mặt, xem lịch sử và hủy đơn chưa thanh toán.
-- `/danh-ba`: đọc danh bạ tài khoản và mở hội thoại.
 - `/tro-chuyen`: đọc hội thoại, tải lịch sử và gửi tin nhắn văn bản.
 - `/tien-ich`: tổng quan tháng, xem lịch sử chấm công và tạo/hủy đơn nhân sự.
 - `/ho-so`: cập nhật tên/email, đăng xuất và xóa tài khoản.
@@ -60,7 +59,7 @@ Những khả năng backend chưa có endpoint tương ứng (đổi mật khẩ
 
 ## Hệ giao diện
 
-- Toàn bộ khu vực xác thực và 8 phân hệ nhân viên dùng chung palette navy–cobalt của NRApp; màu đỏ chỉ dành cho lỗi, ưu tiên cao hoặc thao tác nguy hiểm.
+- Toàn bộ khu vực xác thực và 7 phân hệ nhân viên dùng chung palette navy–cobalt của NRApp; màu đỏ chỉ dành cho lỗi, ưu tiên cao hoặc thao tác nguy hiểm.
 - Token màu, bề mặt, bo góc, đổ bóng, trạng thái focus và các nút dùng chung được khai báo tại `app/globals.css`.
 - Giao diện có bố cục riêng cho desktop, tablet và mobile; thanh điều hướng đáy giữ các thao tác quan trọng trong tầm tay trên màn hình nhỏ.
 

@@ -42,7 +42,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuthFrame eyebrow="Tài khoản nội bộ" title="Tạo tài khoản mới" description="Điền thông tin của bạn. Tài khoản sẽ tuân theo quy trình cấp quyền và xác minh của HDG.">
+    <AuthFrame eyebrow="Bắt đầu cùng HDG Studio" title="Tạo tài khoản mới" description="Tạo tài khoản nội bộ để bắt đầu làm việc, kết nối và sử dụng các tiện ích dành cho đội ngũ." mode="register">
       <form className={styles.form} onSubmit={submit} noValidate>
         {error ? <div className={styles.error} role="alert">{error}</div> : null}
         <div className={styles.fieldGroup}><label htmlFor="name">Họ và tên</label><div className={styles.inputWrap}><UserRound size={17} /><input id="name" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" placeholder="Nguyễn Văn A" disabled={loading} /></div></div>
@@ -52,7 +52,7 @@ export default function RegisterPage() {
         <label className={styles.checkLabel}><input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} disabled={loading} /> Tôi đồng ý tuân thủ quy định sử dụng hệ thống nội bộ.</label>
         <button className={styles.submit} type="submit" disabled={loading}>{loading ? <><span className={styles.spinner} /> Đang tạo tài khoản...</> : <>Tạo tài khoản <ArrowRight size={17} /></>}</button>
       </form>
-      <Link className={styles.backLink} href="/dang-nhap"><ArrowLeft size={14} /> Quay lại đăng nhập</Link>
+      <p className={styles.authSwitch}>Đã có tài khoản? <Link href="/dang-nhap"><ArrowLeft size={13} /> Quay lại đăng nhập</Link></p>
     </AuthFrame>
   );
 }
