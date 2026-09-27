@@ -22,7 +22,9 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { gatewayApi } from "@/lib/api/gateway";
+import { readQueryCache, writeQueryCache } from "@/lib/api/query-cache";
 import {
   unwrapData,
   type ApiScheduleRequest,
@@ -40,6 +42,11 @@ type DraftEntry = {
 };
 
 type DraftEntries = Record<string, DraftEntry>;
+
+type WorkScheduleSnapshot = {
+  policy: ApiWorkPolicy;
+  schedules: ApiScheduleRequest[];
+};
 
 const WEEKDAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
@@ -196,19 +203,34 @@ function registrationReason(policy: ApiWorkPolicy | null, now: Date) {
 }
 
 export default function WorkSchedulePage() {
+  const { user } = useAuthSession();
+  const scheduleCacheKey = `workschedule:calendar:${user?.id ?? "anonymous"}`;
+  const cachedSnapshot = readQueryCache<WorkScheduleSnapshot>(scheduleCacheKey);
+  const initialTodayKey = getScheduleDateKey();
+  const initialMonth = getRegistrationMonth(cachedSnapshot?.policy ?? null);
+  const initialRequest = cachedSnapshot?.schedules.find((item) => item.month === initialMonth);
+  const initialDraft = initialMonth
+    ? requestEntries(initialRequest, initialMonth, initialTodayKey)
+    : {};
   const [now, setNow] = useState(() => new Date());
-  const [policy, setPolicy] = useState<ApiWorkPolicy | null>(null);
-  const [schedules, setSchedules] = useState<ApiScheduleRequest[]>([]);
-  const [draftEntries, setDraftEntries] = useState<DraftEntries>({});
-  const [initialEntries, setInitialEntries] = useState<DraftEntries>({});
-  const [selectedKey, setSelectedKey] = useState(() => getScheduleDateKey());
-  const [loading, setLoading] = useState(true);
+  const [policy, setPolicy] = useState<ApiWorkPolicy | null>(cachedSnapshot?.policy ?? null);
+  const [schedules, setSchedules] = useState<ApiScheduleRequest[]>(cachedSnapshot?.schedules ?? []);
+  const [draftEntries, setDraftEntries] = useState<DraftEntries>(() => cloneEntries(initialDraft));
+  const [initialEntries, setInitialEntries] = useState<DraftEntries>(() => cloneEntries(initialDraft));
+  const [selectedKey, setSelectedKey] = useState(() =>
+    initialMonth && initialMonth !== initialTodayKey.slice(0, 7)
+      ? `${initialMonth}-01`
+      : initialTodayKey,
+  );
+  const [loading, setLoading] = useState(cachedSnapshot === undefined);
+  const [hasSnapshot, setHasSnapshot] = useState(cachedSnapshot !== undefined);
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [saveError, setSaveError] = useState("");
   const [notice, setNotice] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const loadRequestRef = useRef(0);
+  const hasSnapshotRef = useRef(cachedSnapshot !== undefined);
   const savingRef = useRef(false);
   const noticeTimerRef = useRef<number | null>(null);
   const editorRef = useRef<HTMLElement>(null);
@@ -244,6 +266,12 @@ export default function WorkSchedulePage() {
         ? requestEntries(nextRequest, nextMonth, todayKey)
         : {};
 
+      hasSnapshotRef.current = true;
+      setHasSnapshot(true);
+      writeQueryCache(scheduleCacheKey, {
+        policy: nextPolicy,
+        schedules: safeSchedules,
+      });
       setPolicy(nextPolicy);
       setSchedules(safeSchedules);
       setDraftEntries(cloneEntries(nextDraft));
@@ -257,12 +285,16 @@ export default function WorkSchedulePage() {
       return true;
     } catch (error) {
       if (requestId !== loadRequestRef.current) return false;
-      setLoadError(error instanceof Error ? error.message : "Không thể tải lịch làm việc.");
+      const message = error instanceof Error ? error.message : "Không thể tải lịch làm việc.";
+      setLoadError(message);
+      if (hasSnapshotRef.current) {
+        showNotice(`${message} Đang giữ lịch gần nhất ở chế độ chỉ xem.`);
+      }
       return false;
     } finally {
       if (requestId === loadRequestRef.current) setLoading(false);
     }
-  }, [todayKey]);
+  }, [scheduleCacheKey, showNotice, todayKey]);
 
   useEffect(() => {
     void Promise.resolve().then(loadData);
@@ -363,7 +395,8 @@ export default function WorkSchedulePage() {
       : requestStatus === "approved"
         ? "Lịch tháng này đã được quản lý duyệt."
         : null;
-  const globalEditReason = loadError || policyReason || requestReason;
+  const syncReason = loading ? "Đang đồng bộ dữ liệu mới nhất." : loadError;
+  const globalEditReason = syncReason || policyReason || requestReason;
   const selectedEntry = displayEntries[selectedKey];
   const selectedIsLegacy = legacyDates.has(selectedKey) && !draftEntries[selectedKey];
   const selectedReadOnlyReason =
@@ -507,7 +540,7 @@ export default function WorkSchedulePage() {
     }
   };
 
-  const initialLoading = loading && !policy && !loadError;
+  const initialLoading = loading && !hasSnapshot;
 
   return (
     <div className={styles.page}>
@@ -543,7 +576,7 @@ export default function WorkSchedulePage() {
           </div>
           <span className="sr-only">Đang tải dữ liệu lịch làm việc.</span>
         </section>
-      ) : loadError ? (
+      ) : loadError && !hasSnapshot ? (
         <section className={styles.errorState} role="alert">
           <span><AlertCircle size={24} /></span>
           <div>
@@ -557,6 +590,19 @@ export default function WorkSchedulePage() {
         </section>
       ) : (
         <>
+          {loadError ? (
+            <section className={styles.syncWarning} role="status">
+              <AlertCircle size={20} />
+              <div>
+                <strong>Chưa đồng bộ được dữ liệu mới</strong>
+                <p>{loadError} Đang hiển thị lịch gần nhất và tạm khóa chỉnh sửa để tránh ghi đè dữ liệu.</p>
+              </div>
+              <button type="button" onClick={() => void loadData()} disabled={loading}>
+                {loading ? <LoaderCircle className={styles.spin} size={16} /> : <RefreshCw size={16} />}
+                Thử lại
+              </button>
+            </section>
+          ) : null}
           <section className={styles.registrationBar} aria-label="Thông tin đợt đăng ký">
             <span className={styles.registrationIcon}>
               {registrationOpen ? <CalendarCheck2 size={23} /> : <LockKeyhole size={22} />}
