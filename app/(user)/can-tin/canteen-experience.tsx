@@ -32,6 +32,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { ApiClientError } from "@/lib/api/client";
 import type {
   ApiCanteenTable,
@@ -41,6 +42,7 @@ import type {
   ApiOrder,
 } from "@/lib/api/domain";
 import { gatewayApi } from "@/lib/api/gateway";
+import { readQueryCache, writeQueryCache } from "@/lib/api/query-cache";
 import styles from "./can-tin.module.css";
 
 type ViewMode = "menu" | "orders";
@@ -85,6 +87,9 @@ const paymentStatusLabel: Record<ApiOrder["paymentStatus"], string> = {
   PENDING: "Chờ thu tiền",
   PAID: "Đã thanh toán",
 };
+
+const MENU_CACHE_KEY = "canteen:menu";
+const TABLE_CACHE_KEY = "canteen:tables";
 
 function normalizeText(value: string) {
   return value
@@ -167,17 +172,25 @@ function EmptyBlock({
 }
 
 export function CanteenExperience() {
+  const { user } = useAuthSession();
   const dialogRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const requestLockedRef = useRef(false);
+  const orderCacheKey = `canteen:orders:${user?.id ?? "anonymous"}`;
+  const cachedMenu = readQueryCache<ApiMenuGroup[]>(MENU_CACHE_KEY);
+  const cachedTables = readQueryCache<ApiCanteenTable[]>(TABLE_CACHE_KEY);
+  const cachedOrders = readQueryCache<ApiOrder[]>(orderCacheKey);
+  const hasMenuSnapshotRef = useRef(cachedMenu !== undefined);
+  const hasTableSnapshotRef = useRef(cachedTables !== undefined);
+  const hasOrderSnapshotRef = useRef(cachedOrders !== undefined);
 
   const [view, setView] = useState<ViewMode>("menu");
-  const [menuGroups, setMenuGroups] = useState<ApiMenuGroup[]>([]);
-  const [tables, setTables] = useState<ApiCanteenTable[]>([]);
-  const [orders, setOrders] = useState<ApiOrder[]>([]);
-  const [menuState, setMenuState] = useState<LoadState>("loading");
-  const [tableState, setTableState] = useState<LoadState>("loading");
-  const [orderState, setOrderState] = useState<LoadState>("loading");
+  const [menuGroups, setMenuGroups] = useState<ApiMenuGroup[]>(cachedMenu ?? []);
+  const [tables, setTables] = useState<ApiCanteenTable[]>(cachedTables ?? []);
+  const [orders, setOrders] = useState<ApiOrder[]>(cachedOrders ?? []);
+  const [menuState, setMenuState] = useState<LoadState>(cachedMenu === undefined ? "loading" : "ready");
+  const [tableState, setTableState] = useState<LoadState>(cachedTables === undefined ? "loading" : "ready");
+  const [orderState, setOrderState] = useState<LoadState>(cachedOrders === undefined ? "loading" : "ready");
   const [menuError, setMenuError] = useState("");
   const [tableError, setTableError] = useState("");
   const [orderError, setOrderError] = useState("");
@@ -204,26 +217,37 @@ export function CanteenExperience() {
   }, []);
 
   const loadMenu = useCallback(async () => {
-    setMenuState("loading");
+    if (!hasMenuSnapshotRef.current) setMenuState("loading");
     setMenuError("");
     try {
       const result = await gatewayApi<ApiMenuGroup[]>("canteen/menu");
-      setMenuGroups(Array.isArray(result) ? result : []);
+      const nextMenu = Array.isArray(result) ? result : [];
+      hasMenuSnapshotRef.current = true;
+      writeQueryCache(MENU_CACHE_KEY, nextMenu);
+      setMenuGroups(nextMenu);
       setMenuState("ready");
     } catch (error) {
-      setMenuError(getErrorMessage(error, "Không thể tải thực đơn căn tin."));
-      setMenuState("error");
+      const message = getErrorMessage(error, "Không thể tải thực đơn căn tin.");
+      setMenuError(message);
+      if (hasMenuSnapshotRef.current) {
+        setMenuState("ready");
+        showToast(`${message} Đang hiển thị thực đơn gần nhất.`, "info");
+      } else {
+        setMenuState("error");
+      }
     }
-  }, []);
+  }, [showToast]);
 
   const loadTables = useCallback(async (showLoading = true) => {
-    if (showLoading) setTableState("loading");
+    if (showLoading && !hasTableSnapshotRef.current) setTableState("loading");
     setTableError("");
     try {
       const result = await gatewayApi<ApiCanteenTablePage>(
         "canteen/tables?limit=100&sortBy=name&sortOrder=asc",
       );
       const nextTables = Array.isArray(result.data) ? result.data : [];
+      hasTableSnapshotRef.current = true;
+      writeQueryCache(TABLE_CACHE_KEY, nextTables);
       setTables(nextTables);
       setSelectedTableId((current) => {
         if (!current) return null;
@@ -233,23 +257,38 @@ export function CanteenExperience() {
       });
       setTableState("ready");
     } catch (error) {
-      setTableError(getErrorMessage(error, "Không thể tải danh sách bàn."));
-      setTableState("error");
+      const message = getErrorMessage(error, "Không thể tải danh sách bàn.");
+      setTableError(message);
+      if (hasTableSnapshotRef.current) {
+        setTableState("ready");
+        if (showLoading) showToast(`${message} Đang giữ danh sách bàn gần nhất.`, "info");
+      } else {
+        setTableState("error");
+      }
     }
-  }, []);
+  }, [showToast]);
 
   const loadOrders = useCallback(async (showLoading = true) => {
-    if (showLoading) setOrderState("loading");
+    if (showLoading && !hasOrderSnapshotRef.current) setOrderState("loading");
     setOrderError("");
     try {
       const result = await gatewayApi<ApiOrder[]>("canteen/orders/my-orders");
-      setOrders(Array.isArray(result) ? result : []);
+      const nextOrders = Array.isArray(result) ? result : [];
+      hasOrderSnapshotRef.current = true;
+      writeQueryCache(orderCacheKey, nextOrders);
+      setOrders(nextOrders);
       setOrderState("ready");
     } catch (error) {
-      setOrderError(getErrorMessage(error, "Không thể tải đơn hàng của bạn."));
-      setOrderState("error");
+      const message = getErrorMessage(error, "Không thể tải đơn hàng của bạn.");
+      setOrderError(message);
+      if (hasOrderSnapshotRef.current) {
+        setOrderState("ready");
+        if (showLoading) showToast(`${message} Đang hiển thị dữ liệu gần nhất.`, "info");
+      } else {
+        setOrderState("error");
+      }
     }
-  }, []);
+  }, [orderCacheKey, showToast]);
 
   useEffect(() => {
     void Promise.resolve().then(() => {
@@ -511,7 +550,12 @@ export function CanteenExperience() {
         },
       });
       setCreatedOrder(order);
-      setOrders((current) => [order, ...current.filter((item) => item._id !== order._id)]);
+      setOrders((current) => {
+        const nextOrders = [order, ...current.filter((item) => item._id !== order._id)];
+        hasOrderSnapshotRef.current = true;
+        writeQueryCache(orderCacheKey, nextOrders);
+        return nextOrders;
+      });
       setOrderState("ready");
       setCart([]);
       setDialog("success");
@@ -574,7 +618,11 @@ export function CanteenExperience() {
           json: cancelReason.trim() ? { reason: cancelReason.trim() } : {},
         },
       );
-      setOrders((current) => current.map((order) => order._id === updated._id ? updated : order));
+      setOrders((current) => {
+        const nextOrders = current.map((order) => order._id === updated._id ? updated : order);
+        writeQueryCache(orderCacheKey, nextOrders);
+        return nextOrders;
+      });
       setDialog(null);
       setOrderToCancel(null);
       showToast(`Đã hủy đơn ${updated.orderNumber}.`, "success");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Check,
@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { gatewayApi } from "@/lib/api/gateway";
+import { readQueryCache, writeQueryCache } from "@/lib/api/query-cache";
 import { notifyNavigationMetricsChanged } from "@/lib/navigation-metrics";
 import type { ApiTask, ApiTaskPage } from "@/lib/api/domain";
 import { getUserInitials } from "@/lib/auth/session-user";
@@ -86,26 +87,45 @@ function toUserTask(task: ApiTask): UserTask | null {
 
 export default function MyTasksPage() {
   const { user } = useAuthSession();
-  const [taskItems, setTaskItems] = useState<UserTask[]>([]);
+  const taskCacheKey = `todo:my-tasks:${user?.id ?? "anonymous"}`;
+  const cachedTasks = readQueryCache<UserTask[]>(taskCacheKey);
+  const [taskItems, setTaskItems] = useState<UserTask[]>(cachedTasks ?? []);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [notice, setNotice] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [loading, setLoading] = useState(cachedTasks === undefined);
+  const [refreshing, setRefreshing] = useState(false);
+  const [hasTaskSnapshot, setHasTaskSnapshot] = useState(cachedTasks !== undefined);
+  const hasTaskSnapshotRef = useRef(cachedTasks !== undefined);
 
   const loadTasks = useCallback(async () => {
-    setLoading(true);
+    if (!hasTaskSnapshotRef.current) setLoading(true);
+    setRefreshing(true);
+    setLoadError("");
     try {
       const result = await gatewayApi<ApiTaskPage>("todo/my-tasks?limit=100");
-      setTaskItems((Array.isArray(result.tasks) ? result.tasks : []).map(toUserTask).filter((task): task is UserTask => task !== null));
+      const nextTasks = (Array.isArray(result.tasks) ? result.tasks : [])
+        .map(toUserTask)
+        .filter((task): task is UserTask => task !== null);
+      hasTaskSnapshotRef.current = true;
+      setHasTaskSnapshot(true);
+      writeQueryCache(taskCacheKey, nextTasks);
+      setTaskItems(nextTasks);
       return true;
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Không thể tải công việc.");
+      const message = error instanceof Error ? error.message : "Không thể tải công việc.";
+      setLoadError(message);
+      setNotice(hasTaskSnapshotRef.current
+        ? `${message} Đang giữ danh sách gần nhất.`
+        : message);
       return false;
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  }, []);
+  }, [taskCacheKey]);
 
   useEffect(() => { void Promise.resolve().then(loadTasks); }, [loadTasks]);
 
@@ -147,18 +167,21 @@ export default function MyTasksPage() {
     if (!nextStatus) return;
     try {
       await gatewayApi(`todo/${encodeURIComponent(task.id)}/status`, { method: "PATCH", json: { status: nextStatus } });
-      setTaskItems((current) => current.map((item) => (item.id === task.id ? { ...item, status: nextStatus } : item)));
+      setTaskItems((current) => {
+        const nextTasks = current.map((item) => (item.id === task.id ? { ...item, status: nextStatus } : item));
+        writeQueryCache(taskCacheKey, nextTasks);
+        return nextTasks;
+      });
       notifyNavigationMetricsChanged();
-      showNotice(nextStatus === "done" ? `Đã hoàn thành “${task.title}”.` : `Đã bắt đầu “${task.title}”.`);
+      showNotice(nextStatus === "done"
+        ? `Đã hoàn thành “${task.title}” và chuyển sang tab Hoàn tất.`
+        : `Đã bắt đầu “${task.title}” và chuyển sang tab Đang làm.`);
     } catch (error) {
       showNotice(error instanceof Error ? error.message : "Không thể cập nhật công việc.");
     }
   };
 
   const refreshTasks = async () => {
-    setSearch("");
-    setStatusFilter("all");
-    setPriorityFilter("all");
     if (await loadTasks()) showNotice("Đã đồng bộ danh sách công việc từ máy chủ.");
   };
 
@@ -176,8 +199,8 @@ export default function MyTasksPage() {
         title="Công việc của tôi"
         description="Theo dõi ưu tiên, cập nhật tiến độ và tập trung vào những đầu việc quan trọng nhất."
         actions={
-          <button className="button-secondary" onClick={() => void refreshTasks()} disabled={loading}>
-            <RotateCcw size={16} /> {loading ? "Đang tải..." : "Làm mới"}
+          <button className="button-secondary" onClick={() => void refreshTasks()} disabled={loading || refreshing}>
+            <RotateCcw size={16} /> {loading || refreshing ? "Đang đồng bộ..." : "Làm mới"}
           </button>
         }
       />
@@ -270,8 +293,11 @@ export default function MyTasksPage() {
               {!loading && !filteredTasks.length ? (
                 <div className={styles.emptyState}>
                   <span><CheckCircle2 size={24} /></span>
-                  <div><strong>{hasFilters ? "Không tìm thấy công việc phù hợp" : "Bạn chưa có công việc nào"}</strong><p>{hasFilters ? "Thử thay đổi từ khóa hoặc bộ lọc để xem kết quả khác." : "Công việc mới được giao sẽ xuất hiện tại đây."}</p></div>
-                  {hasFilters ? <button type="button" onClick={() => { setSearch(""); setStatusFilter("all"); setPriorityFilter("all"); }}>Đặt lại bộ lọc</button> : <button type="button" onClick={() => void refreshTasks()}>Kiểm tra lại</button>}
+                  <div>
+                    <strong>{loadError && !hasTaskSnapshot ? "Chưa tải được danh sách công việc" : hasFilters ? "Không tìm thấy công việc phù hợp" : "Bạn chưa có công việc nào"}</strong>
+                    <p>{loadError && !hasTaskSnapshot ? loadError : hasFilters ? "Thử thay đổi từ khóa hoặc bộ lọc để xem kết quả khác." : "Công việc mới được giao sẽ xuất hiện tại đây."}</p>
+                  </div>
+                  {hasFilters && !loadError ? <button type="button" onClick={() => { setSearch(""); setStatusFilter("all"); setPriorityFilter("all"); }}>Đặt lại bộ lọc</button> : <button type="button" onClick={() => void refreshTasks()}>Kiểm tra lại</button>}
                 </div>
               ) : null}
             </div>

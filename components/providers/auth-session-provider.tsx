@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ApiClientError, apiRequest } from "@/lib/api/client";
+import { clearQueryCache } from "@/lib/api/query-cache";
 import type { SessionUser } from "@/lib/auth/session-user";
 
 type AuthStatus = "loading" | "authenticated" | "unauthenticated" | "error";
@@ -62,6 +63,7 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
     } catch {
       // The local session must still be cleared when the network goes away.
     } finally {
+      clearQueryCache();
       setUser(null);
       setError("");
       setStatus("unauthenticated");
