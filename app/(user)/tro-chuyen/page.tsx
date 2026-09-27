@@ -64,58 +64,78 @@ function ConversationWorkspace() {
   const [chatError, setChatError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const creatingChatRef = useRef(false);
+  const chatRetryAttemptRef = useRef(0);
 
   const loadChats = useCallback(async () => {
     setChatLoadState("loading");
     setChatError("");
-    const [userResult, chatResult] = await Promise.allSettled([
-      gatewayApi<{ users: ApiUser[] }>("user/user/all"),
-      gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all"),
-    ]);
-    const directory = userResult.status === "fulfilled"
-      ? (Array.isArray(userResult.value.users) ? userResult.value.users : []).map(toPerson)
-      : [];
-    const chatItems = chatResult.status === "fulfilled" && Array.isArray(chatResult.value.chats)
-      ? chatResult.value.chats
-      : [];
-    const chatPeople = chatItems
-      .map(chatItemUser)
-      .filter((item): item is ApiUser => Boolean(item?._id))
-      .map(toPerson);
-    const peopleById = new Map(directory.map((person) => [person.id, person]));
-    chatPeople.forEach((person) => peopleById.set(person.id, person));
-    const chats = chatItems.map(({ chat, user: wrapper }) => {
-      const raw = (wrapper as { user?: ApiUser }).user ?? wrapper as ApiUser;
-      const personId = raw?._id ?? chat.users.find((id) => id !== user?.id) ?? "";
-      const updated = new Date(chat.updatedAt);
-      return {
-        id: chat._id,
-        personId,
-        preview: chat.latestMessage?.text || "Bắt đầu cuộc trò chuyện",
-        time: Number.isNaN(updated.getTime()) ? "" : new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(updated),
-        unread: chat.unseenCount,
-        messages: [],
-      } satisfies Conversation;
-    });
-    setPeople(Array.from(peopleById.values()));
-    setConversationList(chats);
-    setUnreadByConversation(Object.fromEntries(chats.map((item) => [item.id, item.unread ?? 0])));
-    setSelectedId((current) => {
-      const requested = chats.find((item) => item.personId === requestedPersonId)?.id;
-      return requested || (chats.some((item) => item.id === current) ? current : chats[0]?.id ?? "");
-    });
-    if (chatResult.status === "rejected") {
-      setChatError(requestErrorMessage(chatResult.reason, "Dịch vụ trò chuyện chưa phản hồi. Vui lòng thử lại."));
+    try {
+      const result = await gatewayApi<{ chats: ApiChatListItem[] }>("chat/chat/all");
+      const chatItems = Array.isArray(result.chats) ? result.chats : [];
+      const chatPeople = chatItems
+        .map(chatItemUser)
+        .filter((item): item is ApiUser => Boolean(item?._id))
+        .map(toPerson);
+      const chats = chatItems.map(({ chat, user: wrapper }) => {
+        const raw = (wrapper as { user?: ApiUser }).user ?? wrapper as ApiUser;
+        const personId = raw?._id ?? chat.users.find((id) => id !== user?.id) ?? "";
+        const updated = new Date(chat.updatedAt);
+        return {
+          id: chat._id,
+          personId,
+          preview: chat.latestMessage?.text || "Bắt đầu cuộc trò chuyện",
+          time: Number.isNaN(updated.getTime()) ? "" : new Intl.DateTimeFormat("vi-VN", { hour: "2-digit", minute: "2-digit" }).format(updated),
+          unread: chat.unseenCount,
+          messages: [],
+        } satisfies Conversation;
+      });
+
+      setPeople((current) => {
+        const peopleById = new Map(current.map((person) => [person.id, person]));
+        chatPeople.forEach((person) => peopleById.set(person.id, person));
+        return Array.from(peopleById.values());
+      });
+      setConversationList(chats);
+      setUnreadByConversation(Object.fromEntries(chats.map((item) => [item.id, item.unread ?? 0])));
+      setSelectedId((current) => {
+        const requested = chats.find((item) => item.personId === requestedPersonId)?.id;
+        return requested || (chats.some((item) => item.id === current) ? current : chats[0]?.id ?? "");
+      });
+      setChatLoadState("ready");
+
+      const requestedPersonExists = chatPeople.some((person) => person.id === requestedPersonId);
+      if (requestedPersonId && !requestedPersonExists) {
+        try {
+          const profile = await gatewayApi<{ user: ApiUser }>(`user/${encodeURIComponent(requestedPersonId)}`);
+          const requestedPerson = toPerson(profile.user, chatPeople.length);
+          setPeople((current) => current.some((person) => person.id === requestedPerson.id)
+            ? current
+            : [...current, requestedPerson]);
+        } catch (error) {
+          setChatError(requestErrorMessage(error, "Không tải được thông tin người nhận."));
+          setChatLoadState("error");
+          return;
+        }
+      }
+      chatRetryAttemptRef.current = 0;
+    } catch (error) {
+      // Không xóa danh sách đang hiển thị khi một lần đồng bộ tạm thời lỗi.
+      setChatError(requestErrorMessage(error, "Dịch vụ trò chuyện chưa phản hồi. Vui lòng thử lại."));
       setChatLoadState("error");
-      return;
     }
-    if (userResult.status === "rejected") {
-      setChatError("Danh bạ chưa tải đủ, nhưng các cuộc trò chuyện hiện có vẫn sử dụng được.");
-    }
-    setChatLoadState("ready");
   }, [requestedPersonId, user?.id]);
 
   useEffect(() => { void Promise.resolve().then(loadChats); }, [loadChats]);
+
+  useEffect(() => {
+    if (chatLoadState !== "error" || chatRetryAttemptRef.current >= 3) return;
+    const delayMs = Math.min(1_500 * (2 ** chatRetryAttemptRef.current), 6_000);
+    const timeout = window.setTimeout(() => {
+      chatRetryAttemptRef.current += 1;
+      void loadChats();
+    }, delayMs);
+    return () => window.clearTimeout(timeout);
+  }, [chatLoadState, loadChats]);
 
   useEffect(() => {
     if (!requestedPersonId || creatingChatRef.current || conversationList.some((item) => item.personId === requestedPersonId) || !people.some((person) => person.id === requestedPersonId)) return;
@@ -246,7 +266,12 @@ function ConversationWorkspace() {
               <div className={styles.noConversation}>
                 <Search size={22} />
                 <p>{chatLoadState === "loading" ? "Đang tải cuộc trò chuyện..." : chatLoadState === "error" ? chatError || "Không tải được cuộc trò chuyện" : "Không tìm thấy cuộc trò chuyện"}</p>
-                {chatLoadState === "error" ? <button type="button" onClick={() => void loadChats()}>Thử lại</button> : null}
+                {chatLoadState === "error" ? (
+                  <button type="button" onClick={() => {
+                    chatRetryAttemptRef.current = 0;
+                    void loadChats();
+                  }}>Thử lại</button>
+                ) : null}
               </div>
             ) : null}
           </div>
