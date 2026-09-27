@@ -42,7 +42,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuthFrame eyebrow="Bắt đầu cùng HDG Studio" title="Tạo tài khoản mới" description="Tạo tài khoản nội bộ để bắt đầu làm việc, kết nối và sử dụng các tiện ích dành cho đội ngũ." mode="register">
+    <AuthFrame eyebrow="Bắt đầu cùng HDG Studio" title="Tạo tài khoản mới" description="Tạo tài khoản nội bộ để bắt đầu làm việc." mode="register">
       <form className={styles.form} onSubmit={submit} noValidate>
         {error ? <div className={styles.error} role="alert">{error}</div> : null}
         <div className={styles.fieldGroup}><label htmlFor="name">Họ và tên</label><div className={styles.inputWrap}><UserRound size={17} /><input id="name" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" placeholder="Nguyễn Văn A" disabled={loading} /></div></div>
