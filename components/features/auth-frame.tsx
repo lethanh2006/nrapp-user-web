@@ -60,7 +60,7 @@ export function AuthFrame({
         <div className={styles.mobileBrand}>
           <Image src="/images/logo.png" alt="HDG Studio" width={2172} height={724} priority />
         </div>
-        <div className={`${styles.formContainer} ${mode === "register" ? styles.enterForward : styles.enterBack}`}>
+        <div className={`${styles.formContainer} ${mode === "register" ? `${styles.registerContainer} ${styles.enterForward}` : styles.enterBack}`}>
           <div className={styles.formHeading}>
             <span>{eyebrow}</span>
             <h2>{title}</h2>

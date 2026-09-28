@@ -114,17 +114,24 @@
   min-height: 100svh;
   overflow-y: auto;
   place-items: center;
-  padding: 48px clamp(44px, 6vw, 96px);
-  background: radial-gradient(circle at 100% 0, rgba(224, 229, 255, .55), transparent 31%), #fff;
+  padding: 42px clamp(36px, 5vw, 76px);
+  background: radial-gradient(circle at 100% 0, rgba(224, 229, 255, .62), transparent 34%), #f8f9ff;
 }
 
 .mobileBrand { display: none; }
 
 .formContainer {
-  width: min(100%, 510px);
+  width: min(100%, 460px);
   min-width: 0;
+  border: 1px solid rgba(191, 197, 225, .68);
+  border-radius: 24px;
+  padding: 36px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 24px 60px -18px rgba(28, 30, 91, .22), 0 10px 28px -14px rgba(28, 30, 91, .14), 0 0 0 1px rgba(45, 49, 116, .03);
   will-change: transform, opacity;
 }
+
+.registerContainer { padding-block: 30px; }
 
 .enterBack { animation: form-enter-back 420ms cubic-bezier(.22, 1, .36, 1) both; }
 .enterForward { animation: form-enter-forward 420ms cubic-bezier(.22, 1, .36, 1) both; }
@@ -142,16 +149,16 @@
 }
 
 .formHeading h2 {
-  margin: 22px 0 10px;
+  margin: 18px 0 9px;
   color: #0d1026;
-  font-size: clamp(36px, 3.3vw, 48px);
+  font-size: clamp(31px, 2.6vw, 35px);
   font-weight: 820;
   letter-spacing: -.055em;
   line-height: 1.08;
 }
 
-.formHeading p { margin: 0 0 30px; color: #727d9e; font-size: 14px; line-height: 1.7; }
-.footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 30px; color: #9ca6bf; font-size: 10px; font-weight: 650; }
+.formHeading p { margin: 0 0 24px; color: #727d9e; font-size: 13px; line-height: 1.65; }
+.footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 23px; color: #9ca6bf; font-size: 10px; font-weight: 650; }
 
 @keyframes form-enter-back {
   from { opacity: 0; transform: translateX(-18px); }
@@ -169,7 +176,7 @@
   .brandMessage h1 { font-size: 51px; }
   .brandMessage > p { font-size: 14px; }
   .featureList { gap: 14px; }
-  .formPanel { padding-inline: 48px; }
+  .formPanel { padding-inline: 38px; }
 }
 
 @media (max-width: 860px) {
@@ -181,18 +188,22 @@
   .featureList { grid-template-columns: 1fr; gap: 12px; }
   .featureList small br { display: none; }
   .securityCard { padding: 12px; }
-  .formPanel { padding-inline: 34px; }
+  .formPanel { padding-inline: 28px; }
+  .formContainer { padding-inline: 28px; }
 }
 
 @media (max-width: 760px) {
   .page { display: block; min-height: 100svh; background: #f6f7ff; }
   .brandPanel { display: none; }
-  .formPanel { min-height: 100svh; align-content: center; padding: 26px 19px; background: radial-gradient(circle at 100% 0, rgba(194, 201, 255, .42), transparent 34%), #f7f8ff; }
-  .mobileBrand { display: flex; width: min(100%, 510px); align-items: center; justify-content: center; margin: 0 auto 18px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 18px; padding: 12px 22px; background: #151a62 url("/images/bglogin.png") center 18% / cover; box-shadow: 0 16px 36px rgba(35, 31, 110, .18); }
+  .formPanel { min-height: 100svh; align-content: center; padding: 20px 16px; background: radial-gradient(circle at 100% 0, rgba(194, 201, 255, .42), transparent 34%), #f7f8ff; }
+  .mobileBrand { display: flex; width: min(100%, 460px); align-items: center; justify-content: center; margin: 0 auto 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 16px; padding: 10px 20px; background: #151a62 url("/images/bglogin.png") center 18% / cover; box-shadow: 0 16px 36px rgba(35, 31, 110, .18); }
   .mobileBrand img { width: 190px; height: auto; }
-  .formContainer { border: 1px solid rgba(221, 225, 239, .94); border-radius: 24px; padding: 25px 20px; background: rgba(255, 255, 255, .97); box-shadow: 0 22px 56px rgba(28, 35, 86, .12); }
-  .formHeading h2 { margin-top: 16px; font-size: 31px; }
-  .formHeading p { margin-bottom: 24px; }
+  .formContainer { border-radius: 19px; padding: 22px 20px; background: rgba(255, 255, 255, .97); box-shadow: 0 20px 48px -18px rgba(28, 35, 86, .22); }
+  .registerContainer { padding-block: 19px; }
+  .formHeading > span { display: none; }
+  .formHeading h2 { margin: 0; font-size: 27px; }
+  .formHeading p { margin: 7px 0 17px; font-size: 12px; line-height: 1.55; }
+  .footerNote { margin-top: 17px; }
 }
 
 @media (max-height: 820px) and (min-width: 761px) {
@@ -202,7 +213,8 @@
   .brandMessage > p { line-height: 1.55; }
   .featureList { margin-top: 20px; }
   .formPanel { align-items: start; padding-block: 32px; }
-  .formContainer { margin-block: auto; }
+  .formContainer { margin-block: auto; padding-block: 26px; }
+  .registerContainer { padding-block: 22px; }
   .formHeading h2 { margin-top: 14px; }
   .formHeading p { margin-bottom: 20px; }
   .footerNote { margin-top: 22px; }

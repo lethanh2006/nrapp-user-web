@@ -3,18 +3,13 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import {
-  Bell,
-  CalendarDays,
   Check,
   CheckCircle2,
-  Clock3,
   Edit3,
   KeyRound,
   Laptop,
   LogOut,
   Mail,
-  MapPin,
-  Phone,
   Save,
   ShieldCheck,
   Trash2,
@@ -32,7 +27,7 @@ import styles from "./ho-so.module.css";
 export default function ProfilePage() {
   const router = useRouter();
   const { user, logout, refreshSession } = useAuthSession();
-  const [profile, setProfile] = useState({ name: user?.name ?? "Người dùng", email: user?.email ?? "", phone: "Backend chưa cung cấp" });
+  const [profile, setProfile] = useState({ name: user?.name ?? "Người dùng", email: user?.email ?? "" });
   const [draft, setDraft] = useState(profile);
   const [editing, setEditing] = useState(false);
   const [notice, setNotice] = useState("");
@@ -114,8 +109,7 @@ export default function ProfilePage() {
         </div>
         <div className={styles.heroMeta}>
           <div><span><UserRound size={17} /></span><p>Mã tài khoản<strong>{user?.id ?? "—"}</strong></p></div>
-          <div><span><CalendarDays size={17} /></span><p>Vai trò<strong>{roleLabel}</strong></p></div>
-          <div><span><MapPin size={17} /></span><p>Nguồn dữ liệu<strong>NRApp Gateway</strong></p></div>
+          <div><span><ShieldCheck size={17} /></span><p>Vai trò<strong>{roleLabel}</strong></p></div>
         </div>
       </section>
 
@@ -128,7 +122,6 @@ export default function ProfilePage() {
                 <div className={styles.formGrid}>
                   <label><span>Họ và tên</span><div><UserRound size={16} /><input value={draft.name} onChange={(event) => setDraft((value) => ({ ...value, name: event.target.value }))} autoComplete="name" required /></div></label>
                   <label><span>Email công việc</span><div><Mail size={16} /><input type="email" value={draft.email} onChange={(event) => setDraft((value) => ({ ...value, email: event.target.value }))} autoComplete="email" required /></div></label>
-                  <label><span>Số điện thoại</span><div><Phone size={16} /><input value={draft.phone} disabled title="Backend chưa có API số điện thoại" /></div></label>
                   <label><span>Vai trò</span><div><ShieldCheck size={16} /><input value={roleLabel} disabled /></div></label>
                 </div>
                 <div className={styles.formActions}><button type="button" className="button-ghost" onClick={cancelEdit}><X size={15} /> Hủy</button><button type="submit" className="button-primary"><Save size={15} /> Lưu thay đổi</button></div>
@@ -137,41 +130,29 @@ export default function ProfilePage() {
               <div className={styles.detailsGrid}>
                 <div><span><UserRound size={17} /></span><p><small>Họ và tên</small><strong>{profile.name}</strong></p></div>
                 <div><span><Mail size={17} /></span><p><small>Email công việc</small><strong>{profile.email}</strong></p></div>
-                <div><span><Phone size={17} /></span><p><small>Số điện thoại</small><strong>{profile.phone}</strong></p></div>
                 <div><span><ShieldCheck size={17} /></span><p><small>Vai trò hệ thống</small><strong>{roleLabel}</strong></p></div>
               </div>
             )}
-          </section>
-
-          <section className={`surface-card ${styles.preferencesCard}`}>
-            <header><div><p>Tùy chọn cá nhân</p><h2>Thông báo</h2></div><Badge tone="slate">Chưa hỗ trợ</Badge></header>
-            <div className={styles.notificationUnavailable}>
-              <span className={styles.headerIcon}><Bell size={18} /></span>
-              <div><strong>Backend chưa có API cài đặt thông báo</strong><p>Bộ đếm Công việc và Trò chuyện trên thanh điều hướng vẫn được lấy trực tiếp từ API, nhưng hiện chưa thể bật/tắt từng loại thông báo.</p></div>
-            </div>
           </section>
         </div>
 
         <aside className={styles.sideColumn}>
           <section className={`surface-card ${styles.securityCard}`}>
             <div className={styles.cardTitle}><span><KeyRound size={18} /></span><div><p>Bảo mật</p><h2>Tài khoản & mật khẩu</h2></div></div>
-            <div className={styles.securityStatus}><Check size={15} /><div><strong>Xác thực hai bước đang bật</strong><p>OTP được yêu cầu mỗi khi tạo phiên mới.</p></div></div>
-            <button className="button-secondary" onClick={() => showNotice("Backend hiện chưa cung cấp API đổi mật khẩu.")}>Đổi mật khẩu</button>
+            <div className={styles.securityStatus}><Check size={15} /><div><strong>Xác thực hai bước đang bật</strong><p>Mã OTP được gửi tới email khi bạn đăng nhập bằng mật khẩu.</p></div></div>
           </section>
 
           <section className={`surface-card ${styles.sessionsCard}`}>
-            <div className={styles.cardTitle}><span><Laptop size={18} /></span><div><p>Phiên đăng nhập</p><h2>Thiết bị gần đây</h2></div></div>
-            <article><span><Laptop size={18} /></span><div><strong>Trình duyệt hiện tại</strong><p>Phiên đang được bảo vệ bằng cookie HttpOnly</p></div><Badge tone="emerald">Phiên này</Badge></article>
-            <button className="button-ghost" onClick={() => void handleLogout()}>Đăng xuất phiên hiện tại</button>
+            <div className={styles.cardTitle}><span><Laptop size={18} /></span><div><p>Phiên đăng nhập</p><h2>Thiết bị hiện tại</h2></div></div>
+            <article><span><Laptop size={18} /></span><div><strong>Trình duyệt đang sử dụng</strong><p>Bạn đang đăng nhập trên thiết bị này.</p></div><Badge tone="emerald">Đang dùng</Badge></article>
+            <button className={`button-secondary ${styles.sessionLogout}`} onClick={() => void handleLogout()} disabled={logoutPending}><LogOut size={15} /> {logoutPending ? "Đang đăng xuất..." : "Đăng xuất khỏi thiết bị này"}</button>
           </section>
 
           <section className={styles.dangerCard}>
-            <span><Trash2 size={18} /></span><div><strong>Xóa tài khoản</strong><p>Thao tác này cần xác nhận và không thể hoàn tác sau khi backend xử lý.</p></div><button onClick={() => setDeleteOpen(true)}>Xem tùy chọn</button>
+            <span><Trash2 size={18} /></span><div><strong>Xóa tài khoản</strong><p>Tài khoản và dữ liệu cá nhân sẽ bị xóa vĩnh viễn.</p></div><button onClick={() => setDeleteOpen(true)}>Xem tùy chọn</button>
           </section>
         </aside>
       </div>
-
-      <footer className={styles.profileFooter}><Clock3 size={14} /> Hồ sơ được đồng bộ trực tiếp từ NRApp Gateway.</footer>
 
       {deleteOpen ? (
         <div className="modal-backdrop" onMouseDown={() => setDeleteOpen(false)}>

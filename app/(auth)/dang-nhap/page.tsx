@@ -60,9 +60,31 @@ function LoginForm() {
 
   return (
     <AuthFrame eyebrow="Chào mừng trở lại" title="Đăng nhập HDG Studio" description="Tiếp tục làm việc, sáng tạo và kết nối cùng đội ngũ. Với tài khoản nội bộ, mã OTP sẽ được gửi tới email của bạn." mode="login">
-      <form className={styles.form} onSubmit={submit} noValidate>
+      <div className={styles.providerBlock}>
         {params.get("registered") === "1" ? <div className={styles.notice} role="status"><ShieldCheck size={15} />Tạo tài khoản thành công. Hãy đăng nhập để nhận OTP.</div> : null}
         {error ? <div className={styles.error} role="alert"><ShieldCheck size={15} />{error}</div> : null}
+        <GoogleSignInButton
+          disabled={loading === "google"}
+          onUnavailable={setError}
+          onCredential={(token) => {
+            setError("");
+            setLoading("google");
+            void apiRequest<{ message: string; user: SessionUser }>("/api/auth/google", {
+              method: "POST",
+              json: { token },
+            }).then(({ user }) => {
+              setAuthenticatedUser(user);
+              router.replace(getSafeReturnPath(params.get("redirect")));
+              router.refresh();
+            }).catch((requestError: unknown) => {
+              setError(requestError instanceof Error ? requestError.message : "Không thể đăng nhập bằng Google.");
+              setLoading(null);
+            });
+          }}
+        />
+      </div>
+      <div className={styles.divider}>Hoặc đăng nhập bằng email</div>
+      <form className={styles.form} onSubmit={submit} noValidate>
         <div className={styles.fieldGroup}>
           <label htmlFor="email">Email công việc</label>
           <div className={styles.inputWrap}><Mail size={17} /><input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" placeholder="tenban@hdg.vn" disabled={loading !== null} /></div>
@@ -74,26 +96,6 @@ function LoginForm() {
         <div className={styles.formOptions}><label className={styles.checkLabel}><input type="checkbox" checked={rememberEmail} onChange={(event) => setRememberEmail(event.target.checked)} disabled={loading !== null} /> Ghi nhớ email</label><button type="button" className={styles.textButton} onClick={() => setError("Vui lòng liên hệ IT nội bộ để đặt lại mật khẩu.")}>Quên mật khẩu?</button></div>
         <button className={styles.submit} type="submit" disabled={loading !== null}>{loading === "password" ? <><span className={styles.spinner} /> Đang xác nhận...</> : <>Tiếp tục nhận OTP <ArrowRight size={17} /></>}</button>
       </form>
-      <div className={styles.divider}>Hoặc đăng nhập bằng</div>
-      <GoogleSignInButton
-        disabled={loading === "google"}
-        onUnavailable={setError}
-        onCredential={(token) => {
-          setError("");
-          setLoading("google");
-          void apiRequest<{ message: string; user: SessionUser }>("/api/auth/google", {
-            method: "POST",
-            json: { token },
-          }).then(({ user }) => {
-            setAuthenticatedUser(user);
-            router.replace(getSafeReturnPath(params.get("redirect")));
-            router.refresh();
-          }).catch((requestError: unknown) => {
-            setError(requestError instanceof Error ? requestError.message : "Không thể đăng nhập bằng Google.");
-            setLoading(null);
-          });
-        }}
-      />
       <p className={styles.authSwitch}>Chưa có tài khoản? <Link href="/dang-ky">Đăng ký ngay <ArrowRight size={13} /></Link></p>
     </AuthFrame>
   );

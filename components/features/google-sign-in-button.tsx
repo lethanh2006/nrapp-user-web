@@ -23,7 +23,7 @@ type GoogleAccountsId = {
     type: "standard";
     theme: "outline";
     size: "medium";
-    text: "signin_with";
+    text: "signin_with" | "signup_with";
     shape: "pill";
     logo_alignment: "center";
     locale: "vi";
@@ -42,10 +42,12 @@ let activeCredentialHandler: ((response: GoogleCredentialResponse) => void) | nu
 
 export function GoogleSignInButton({
   disabled = false,
+  mode = "signin",
   onCredential,
   onUnavailable,
 }: {
   disabled?: boolean;
+  mode?: "signin" | "signup";
   onCredential: (credential: string) => void;
   onUnavailable: (message: string) => void;
 }) {
@@ -91,13 +93,13 @@ export function GoogleSignInButton({
       type: "standard",
       theme: "outline",
       size: "medium",
-      text: "signin_with",
+      text: mode === "signup" ? "signup_with" : "signin_with",
       shape: "pill",
       logo_alignment: "center",
       locale: "vi",
       width,
     });
-  }, [clientId]);
+  }, [clientId, mode]);
 
   useEffect(() => {
     if (!scriptReady) return;

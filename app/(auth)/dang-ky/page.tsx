@@ -5,18 +5,22 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, KeyRound, Mail, UserRound } from "lucide-react";
 import { AuthFrame } from "@/components/features/auth-frame";
+import { GoogleSignInButton } from "@/components/features/google-sign-in-button";
+import { useAuthSession } from "@/components/providers/auth-session-provider";
 import { apiRequest } from "@/lib/api/client";
+import type { SessionUser } from "@/lib/auth/session-user";
 import styles from "../auth.module.css";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { setAuthenticatedUser } = useAuthSession();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<"register" | "google" | null>(null);
   const [error, setError] = useState("");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -28,7 +32,7 @@ export default function RegisterPage() {
     }
 
     setError("");
-    setLoading(true);
+    setLoading("register");
     try {
       await apiRequest<{ message: string; userId: string }>("/api/auth/register", {
         method: "POST",
@@ -37,20 +41,43 @@ export default function RegisterPage() {
       router.replace("/dang-nhap?registered=1");
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Không thể tạo tài khoản.");
-      setLoading(false);
+      setLoading(null);
     }
   }
 
   return (
     <AuthFrame eyebrow="Bắt đầu cùng HDG Studio" title="Tạo tài khoản mới" description="Tạo tài khoản nội bộ để bắt đầu làm việc." mode="register">
-      <form className={styles.form} onSubmit={submit} noValidate>
+      <div className={styles.providerBlock}>
         {error ? <div className={styles.error} role="alert">{error}</div> : null}
-        <div className={styles.fieldGroup}><label htmlFor="name">Họ và tên</label><div className={styles.inputWrap}><UserRound size={17} /><input id="name" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" placeholder="Nguyễn Văn A" disabled={loading} /></div></div>
-        <div className={styles.fieldGroup}><label htmlFor="register-email">Email công việc</label><div className={styles.inputWrap}><Mail size={17} /><input id="register-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" placeholder="tenban@hdg.vn" disabled={loading} /></div></div>
-        <div className={styles.fieldGroup}><label htmlFor="register-password">Mật khẩu</label><div className={styles.inputWrap}><KeyRound size={17} /><input id="register-password" type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" placeholder="Tối thiểu 8 ký tự" disabled={loading} /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"} disabled={loading}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div></div>
-        <div className={styles.fieldGroup}><label htmlFor="confirm-password">Xác nhận mật khẩu</label><div className={styles.inputWrap}><KeyRound size={17} /><input id="confirm-password" type={showPassword ? "text" : "password"} value={confirm} onChange={(event) => setConfirm(event.target.value)} autoComplete="new-password" placeholder="Nhập lại mật khẩu" disabled={loading} /></div></div>
-        <label className={styles.checkLabel}><input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} disabled={loading} /> Tôi đồng ý tuân thủ quy định sử dụng hệ thống nội bộ.</label>
-        <button className={styles.submit} type="submit" disabled={loading}>{loading ? <><span className={styles.spinner} /> Đang tạo tài khoản...</> : <>Tạo tài khoản <ArrowRight size={17} /></>}</button>
+        <GoogleSignInButton
+          mode="signup"
+          disabled={loading === "google"}
+          onUnavailable={setError}
+          onCredential={(token) => {
+            setError("");
+            setLoading("google");
+            void apiRequest<{ message: string; user: SessionUser }>("/api/auth/google", {
+              method: "POST",
+              json: { token },
+            }).then(({ user }) => {
+              setAuthenticatedUser(user);
+              router.replace("/trang-chu");
+              router.refresh();
+            }).catch((requestError: unknown) => {
+              setError(requestError instanceof Error ? requestError.message : "Không thể đăng ký bằng Google.");
+              setLoading(null);
+            });
+          }}
+        />
+      </div>
+      <div className={styles.divider}>Hoặc đăng ký bằng email</div>
+      <form className={styles.form} onSubmit={submit} noValidate>
+        <div className={styles.fieldGroup}><label htmlFor="name">Họ và tên</label><div className={styles.inputWrap}><UserRound size={17} /><input id="name" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" placeholder="Nguyễn Văn A" disabled={loading !== null} /></div></div>
+        <div className={styles.fieldGroup}><label htmlFor="register-email">Email công việc</label><div className={styles.inputWrap}><Mail size={17} /><input id="register-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" placeholder="tenban@hdg.vn" disabled={loading !== null} /></div></div>
+        <div className={styles.fieldGroup}><label htmlFor="register-password">Mật khẩu</label><div className={styles.inputWrap}><KeyRound size={17} /><input id="register-password" type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" placeholder="Tối thiểu 8 ký tự" disabled={loading !== null} /><button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"} disabled={loading !== null}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div></div>
+        <div className={styles.fieldGroup}><label htmlFor="confirm-password">Xác nhận mật khẩu</label><div className={styles.inputWrap}><KeyRound size={17} /><input id="confirm-password" type={showPassword ? "text" : "password"} value={confirm} onChange={(event) => setConfirm(event.target.value)} autoComplete="new-password" placeholder="Nhập lại mật khẩu" disabled={loading !== null} /></div></div>
+        <label className={styles.checkLabel}><input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} disabled={loading !== null} /> Tôi đồng ý tuân thủ quy định sử dụng hệ thống nội bộ.</label>
+        <button className={styles.submit} type="submit" disabled={loading !== null}>{loading === "register" ? <><span className={styles.spinner} /> Đang tạo tài khoản...</> : <>Tạo tài khoản <ArrowRight size={17} /></>}</button>
       </form>
       <p className={styles.authSwitch}>Đã có tài khoản? <Link href="/dang-nhap"><ArrowLeft size={13} /> Quay lại đăng nhập</Link></p>
     </AuthFrame>
