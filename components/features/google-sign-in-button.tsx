@@ -22,10 +22,10 @@ type GoogleAccountsId = {
   renderButton: (parent: HTMLElement, options: {
     type: "standard";
     theme: "outline";
-    size: "large";
+    size: "medium";
     text: "signin_with";
-    shape: "rectangular";
-    logo_alignment: "left";
+    shape: "pill";
+    logo_alignment: "center";
     locale: "vi";
     width: number;
   }) => void;
@@ -50,10 +50,17 @@ export function GoogleSignInButton({
   onUnavailable: (message: string) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const onCredentialRef = useRef(onCredential);
+  const onUnavailableRef = useRef(onUnavailable);
   const [scriptReady, setScriptReady] = useState(false);
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID?.trim() || DEFAULT_GOOGLE_WEB_CLIENT_ID;
 
-  const renderGoogleButton = useCallback(() => {
+  useEffect(() => {
+    onCredentialRef.current = onCredential;
+    onUnavailableRef.current = onUnavailable;
+  }, [onCredential, onUnavailable]);
+
+  const renderGoogleButton = useCallback((availableWidth?: number) => {
     const accounts = window.google?.accounts.id;
     const container = containerRef.current;
     if (!accounts || !container) return;
@@ -61,10 +68,10 @@ export function GoogleSignInButton({
     activeCredentialHandler = (response) => {
       const credential = response.credential?.trim();
       if (!credential) {
-        onUnavailable("Google không trả về thông tin xác thực. Vui lòng thử lại.");
+        onUnavailableRef.current("Google không trả về thông tin xác thực. Vui lòng thử lại.");
         return;
       }
-      onCredential(credential);
+      onCredentialRef.current(credential);
     };
 
     if (initializedClientId !== clientId) {
@@ -77,31 +84,33 @@ export function GoogleSignInButton({
       initializedClientId = clientId;
     }
 
+    const width = Math.min(400, Math.floor(availableWidth ?? container.clientWidth));
+    if (width <= 0) return;
     container.replaceChildren();
-    const width = Math.max(220, Math.min(400, Math.floor(container.getBoundingClientRect().width)));
     accounts.renderButton(container, {
       type: "standard",
       theme: "outline",
-      size: "large",
+      size: "medium",
       text: "signin_with",
-      shape: "rectangular",
-      logo_alignment: "left",
+      shape: "pill",
+      logo_alignment: "center",
       locale: "vi",
       width,
     });
-  }, [clientId, onCredential, onUnavailable]);
+  }, [clientId]);
 
   useEffect(() => {
     if (!scriptReady) return;
-    renderGoogleButton();
     const container = containerRef.current;
-    if (!container || typeof ResizeObserver === "undefined") return;
-    let previousWidth = Math.floor(container.getBoundingClientRect().width);
+    if (!container) return;
+    let previousWidth = Math.min(400, Math.floor(container.clientWidth));
+    renderGoogleButton(previousWidth);
+    if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(([entry]) => {
-      const width = Math.floor(entry.contentRect.width);
+      const width = Math.min(400, Math.floor(entry.contentRect.width));
       if (Math.abs(width - previousWidth) < 2) return;
       previousWidth = width;
-      renderGoogleButton();
+      renderGoogleButton(width);
     });
     observer.observe(container);
     return () => observer.disconnect();
@@ -117,7 +126,7 @@ export function GoogleSignInButton({
         src="https://accounts.google.com/gsi/client?hl=vi"
         strategy="afterInteractive"
         onReady={() => setScriptReady(true)}
-        onError={() => onUnavailable("Không thể tải dịch vụ đăng nhập Google. Vui lòng kiểm tra kết nối mạng.")}
+        onError={() => onUnavailableRef.current("Không thể tải dịch vụ đăng nhập Google. Vui lòng kiểm tra kết nối mạng.")}
       />
       <div ref={containerRef} className={styles.button} aria-label="Tiếp tục với Google" />
       {!scriptReady ? <span className={styles.placeholder}>Đang tải đăng nhập Google...</span> : null}
