@@ -13,13 +13,13 @@
   align-items: center;
   gap: 8px;
   border: 1px solid var(--brand-200);
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 11px 14px;
   background: var(--brand-50);
   box-shadow: var(--shadow-md);
   color: var(--brand-800);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   animation: toast-in 180ms ease-out;
 }
 
@@ -29,7 +29,7 @@
   align-items: stretch;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 20px;
+  border-radius: 12px;
   background: white;
   box-shadow: var(--shadow-sm);
 }
@@ -50,7 +50,7 @@
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--brand-100);
-  border-radius: 13px;
+  border-radius: 8px;
   background: white;
   color: var(--brand-700);
 }
@@ -63,18 +63,16 @@
 
 .summaryIntro small {
   color: var(--brand-700);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .summaryIntro strong {
   overflow: hidden;
   margin-top: 4px;
   color: var(--slate-900);
-  font-size: 17px;
-  font-weight: 850;
+  font-size: 18px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -100,7 +98,7 @@
 .summaryMetrics small {
   overflow: hidden;
   color: var(--slate-400);
-  font-size: 11px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -109,13 +107,13 @@
   margin-top: 5px;
   color: var(--slate-800);
   font-size: 20px;
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .summaryMetrics strong span {
   color: var(--slate-400);
-  font-size: 10px;
-  font-weight: 650;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .dataNotice {
@@ -124,11 +122,11 @@
   gap: 8px;
   margin-top: -12px;
   border: 1px solid var(--brand-100);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px 13px;
   background: var(--brand-50);
   color: var(--slate-600);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .dataNotice button {
@@ -136,7 +134,7 @@
   cursor: pointer;
   background: transparent;
   color: var(--brand-700);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .toolGrid {
@@ -151,7 +149,7 @@
   align-items: center;
   gap: 11px;
   border: 1px solid var(--slate-200);
-  border-radius: 17px;
+  border-radius: 12px;
   padding: 14px;
   cursor: pointer;
   background: white;
@@ -161,9 +159,8 @@
 }
 
 .toolCard:hover {
-  transform: translateY(-2px);
   border-color: var(--brand-200);
-  box-shadow: 0 12px 28px rgba(35, 72, 113, .08);
+  box-shadow: var(--shadow-sm);
 }
 
 .toolCard > span {
@@ -172,7 +169,7 @@
   height: 42px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 13px;
+  border-radius: 8px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -192,14 +189,14 @@
 .toolCard strong {
   display: block;
   color: var(--slate-800);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .toolCard p {
   margin: 4px 0 0;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .toolCard > svg {
@@ -246,7 +243,7 @@
   width: 37px;
   height: 37px;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -264,21 +261,21 @@
 
 .requestTable article > div strong {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .requestTable article > div p {
   margin: 4px 0 0;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .requestTable article > button {
   cursor: pointer;
   background: transparent;
   color: #dc2626;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .requestTable article > button:disabled {
@@ -292,8 +289,8 @@
   justify-content: flex-end;
   gap: 4px;
   color: var(--slate-500);
-  font-size: 11px;
-  font-weight: 750;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .emptyState {
@@ -310,7 +307,7 @@
   height: 44px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -323,14 +320,14 @@
 .emptyState strong,
 .emptyStateCompact strong {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .emptyState p,
 .emptyStateCompact p {
   margin: 4px 0 0;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -341,8 +338,8 @@
   cursor: pointer;
   background: transparent;
   color: var(--brand-700);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .loadingState {
@@ -352,7 +349,7 @@
   justify-content: center;
   gap: 8px;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .loadingState span {
@@ -392,13 +389,13 @@
 
 .attendanceHeader strong {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .attendanceHeader p {
   margin: 4px 0 0;
   color: var(--slate-500);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .attendanceRows article {
@@ -421,7 +418,7 @@
   height: 46px;
   place-items: center;
   align-content: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--slate-100);
 }
 
@@ -434,8 +431,8 @@
 .dateBox small {
   margin-top: 4px;
   color: var(--slate-400);
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .attendanceIdentity {
@@ -447,7 +444,7 @@
   margin-bottom: 5px;
   overflow: hidden;
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
   text-overflow: ellipsis;
   text-transform: capitalize;
   white-space: nowrap;
@@ -466,13 +463,13 @@
 
 .timePair small {
   color: var(--slate-400);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .timePair strong {
   margin-top: 2px;
   color: var(--slate-700);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .timePair i {
@@ -487,7 +484,7 @@
   justify-content: flex-end;
   gap: 5px;
   color: var(--slate-400);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .emptyStateCompact {
@@ -520,24 +517,23 @@
 
 .overviewHeader small {
   color: var(--slate-400);
-  font-size: 10px;
-  text-transform: uppercase;
+  font-size: 13px;
 }
 
 .overviewHeader > div strong {
   margin-top: 4px;
   color: var(--slate-800);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .overviewHeader > span {
   color: var(--brand-700);
   font-size: 24px;
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .overviewHeader > span small {
-  font-size: 10px;
+  font-size: 13px;
   text-transform: none;
 }
 
@@ -560,7 +556,7 @@
   width: 35px;
   height: 35px;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 8px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -573,25 +569,25 @@
 
 .overviewList strong {
   color: var(--slate-700);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .overviewList small {
   margin-top: 3px;
   color: var(--slate-400);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .overviewList b {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .pendingHint {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px;
   background: var(--brand-50);
   color: var(--brand-700);
@@ -600,7 +596,7 @@
 .pendingHint p {
   margin: 0;
   color: var(--slate-500);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -616,10 +612,10 @@
   gap: 6px;
   margin-top: 12px;
   border: 1px solid var(--slate-200);
-  border-radius: 11px;
+  border-radius: 8px;
   color: var(--slate-700);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .overviewAction:hover {
@@ -633,7 +629,7 @@
   align-items: flex-start;
   gap: 11px;
   border: 1px solid var(--brand-100);
-  border-radius: 17px;
+  border-radius: 12px;
   padding: 14px;
   background: var(--brand-50);
 }
@@ -644,20 +640,20 @@
   height: 39px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: white;
   color: var(--brand-700);
 }
 
 .mobileNote strong {
   color: var(--slate-800);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .mobileNote p {
   margin: 4px 0 0;
   color: var(--slate-500);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -676,7 +672,7 @@
   height: 35px;
   cursor: pointer;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 8px;
   background: var(--slate-100);
   color: var(--slate-600);
 }
@@ -684,23 +680,21 @@
 .modalEyebrow {
   margin: 0 0 5px;
   color: var(--brand-700);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .requestModal h2 {
   margin: 0;
-  font-size: 22px;
-  font-weight: 850;
-  letter-spacing: -.04em;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.02em;
 }
 
 .modalDescription {
   margin: 7px 0 19px;
   color: var(--slate-500);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .requestModal form {
@@ -718,8 +712,8 @@
 .requestModal legend {
   margin-bottom: 8px;
   color: var(--slate-600);
-  font-size: 12px;
-  font-weight: 750;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .requestTypeGrid {
@@ -733,7 +727,7 @@
   align-items: center;
   gap: 9px;
   border: 1px solid var(--slate-200);
-  border-radius: 13px;
+  border-radius: 8px;
   padding: 9px;
   cursor: pointer;
   background: white;
@@ -746,7 +740,7 @@
   height: 32px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--slate-100);
   color: var(--slate-500);
 }
@@ -757,7 +751,7 @@
 
 .requestTypeGrid strong {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .requestTypeGrid small {
@@ -765,7 +759,7 @@
   margin-top: 2px;
   overflow: hidden;
   color: var(--slate-400);
-  font-size: 11px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -865,7 +859,7 @@
   }
 
   .summaryMetrics strong {
-    font-size: 17px;
+    font-size: 18px;
   }
 
   .toolCard strong,

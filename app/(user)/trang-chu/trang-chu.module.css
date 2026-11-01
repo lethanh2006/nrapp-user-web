@@ -10,7 +10,7 @@
   align-items: stretch;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 22px;
+  border-radius: 12px;
   background: white;
   box-shadow: var(--shadow-sm);
 }
@@ -37,13 +37,13 @@
 .welcomeCopy p {
   margin: 0 0 4px;
   color: var(--brand-700);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .welcomeCopy p span {
   color: var(--slate-400);
-  font-weight: 650;
+  font-weight: 500;
   text-transform: capitalize;
 }
 
@@ -52,8 +52,8 @@
   margin: 0;
   color: var(--slate-900);
   font-size: clamp(23px, 2.4vw, 31px);
-  font-weight: 850;
-  letter-spacing: -.045em;
+  font-weight: 700;
+  letter-spacing: -.02em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -62,7 +62,7 @@
   display: block;
   margin-top: 6px;
   color: var(--slate-500);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -73,13 +73,13 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 0 15px;
   background: var(--brand-700);
   color: white;
-  font-size: 12px;
-  font-weight: 800;
-  box-shadow: 0 8px 18px rgba(15, 118, 110, .16);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: none;
 }
 
 .primaryAction:hover {
@@ -113,7 +113,7 @@
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--brand-100);
-  border-radius: 12px;
+  border-radius: 8px;
   background: white;
   color: var(--brand-700);
 }
@@ -127,8 +127,8 @@
 .summaryGrid small {
   overflow: hidden;
   color: var(--slate-400);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 13px;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -137,8 +137,8 @@
   overflow: hidden;
   margin-top: 4px;
   color: var(--slate-800);
-  font-size: 15px;
-  font-weight: 850;
+  font-size: 16px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -149,11 +149,11 @@
   gap: 10px;
   margin-top: -12px;
   border: 1px solid var(--brand-100);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px 13px;
   background: var(--brand-50);
   color: var(--slate-600);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .dataNotice button {
@@ -161,8 +161,8 @@
   cursor: pointer;
   background: transparent;
   color: var(--brand-700);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .shortcutSection {
@@ -181,7 +181,7 @@
   align-items: center;
   gap: 11px;
   border: 1px solid var(--slate-200);
-  border-radius: 17px;
+  border-radius: 12px;
   padding: 13px;
   background: white;
   box-shadow: var(--shadow-sm);
@@ -189,9 +189,8 @@
 }
 
 .shortcutCard:hover {
-  transform: translateY(-2px);
   border-color: var(--brand-200);
-  box-shadow: 0 12px 28px rgba(35, 72, 113, .08);
+  box-shadow: var(--shadow-sm);
 }
 
 .shortcutIcon {
@@ -200,7 +199,7 @@
   height: 40px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -221,14 +220,14 @@
 
 .shortcutCard strong {
   color: var(--slate-800);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .shortcutCard small {
   margin-top: 4px;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .shortcutCard > svg {
@@ -283,7 +282,7 @@
   width: 38px;
   height: 38px;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--slate-100);
   color: var(--slate-500);
 }
@@ -307,8 +306,8 @@
 .taskCopy strong {
   overflow: hidden;
   color: var(--slate-800);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -317,7 +316,7 @@
   overflow: hidden;
   margin: 5px 0 0;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -330,13 +329,13 @@
 
 .taskDeadline small {
   color: var(--slate-400);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .taskDeadline strong {
   margin-top: 3px;
   color: var(--slate-700);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .rowArrow {
@@ -361,7 +360,7 @@
   height: 45px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -373,13 +372,13 @@
 
 .emptyState strong {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .emptyState p {
   margin: 5px 0 0;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .emptyState > a {
@@ -387,8 +386,8 @@
   align-items: center;
   gap: 5px;
   color: var(--brand-700);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .loadingState {
@@ -398,7 +397,7 @@
   justify-content: center;
   gap: 9px;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .loadingState span {
@@ -432,10 +431,8 @@
 
 .scheduleHeader small {
   color: var(--brand-700);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .scheduleHeader strong {
@@ -451,7 +448,7 @@
   gap: 10px;
   margin-top: 15px;
   border: 1px solid var(--brand-100);
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 12px;
   background: var(--brand-50);
 }
@@ -462,14 +459,14 @@
   height: 39px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: white;
   color: var(--brand-700);
 }
 
 .currentSchedule strong {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .currentSchedule p {
@@ -478,7 +475,7 @@
   gap: 5px;
   margin: 4px 0 0;
   color: var(--slate-500);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .scheduleMeta {
@@ -487,7 +484,7 @@
   gap: 7px;
   padding: 11px 2px 14px;
   color: var(--slate-400);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -512,20 +509,20 @@
   height: 45px;
   place-items: center;
   align-content: center;
-  border-radius: 11px;
+  border-radius: 8px;
   background: var(--slate-100);
 }
 
 .nextDate strong {
   color: var(--slate-800);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1;
 }
 
 .nextDate small {
   margin-top: 3px;
   color: var(--slate-400);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .nextSchedule > div:nth-child(2) {
@@ -536,22 +533,22 @@
 
 .nextSchedule > div:nth-child(2) small {
   color: var(--slate-400);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .nextSchedule > div:nth-child(2) strong {
   overflow: hidden;
   margin-top: 3px;
   color: var(--slate-700);
-  font-size: 12px;
+  font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .nextSchedule > span {
   color: var(--slate-500);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .scheduleAction {
@@ -562,10 +559,10 @@
   gap: 6px;
   margin-top: 13px;
   border: 1px solid var(--slate-200);
-  border-radius: 11px;
+  border-radius: 8px;
   color: var(--slate-700);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .scheduleAction:hover {
@@ -607,23 +604,23 @@
   z-index: 1;
   grid-area: 1/1;
   color: var(--slate-900);
-  font-size: 17px;
-  font-weight: 850;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .progressRing small {
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .progressTop > div:last-child strong {
   color: var(--slate-800);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .progressTop > div:last-child p {
   margin: 4px 0 0;
   color: var(--slate-400);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .progressStats {
@@ -668,13 +665,13 @@
 
 .progressStats strong {
   color: var(--slate-800);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .progressStats small {
   grid-column: 2;
   color: var(--slate-400);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 @keyframes spin {
@@ -724,11 +721,11 @@
   }
 
   .welcomeCopy h1 {
-    font-size: 23px;
+    font-size: 24px;
   }
 
   .welcomeCopy small {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .primaryAction {
@@ -754,7 +751,7 @@
   }
 
   .summaryGrid strong {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .dataNotice {

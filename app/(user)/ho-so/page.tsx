@@ -91,7 +91,6 @@ export default function ProfilePage() {
     <div className={styles.page}>
       {notice ? <div className={styles.toast} role="status"><CheckCircle2 size={17} />{notice}</div> : null}
       <PageHeader
-        eyebrow="Tài khoản cá nhân"
         title="Hồ sơ của tôi"
         description="Quản lý thông tin liên hệ và bảo mật tài khoản."
         actions={<button type="button" className="button-secondary" onClick={() => void handleLogout()} disabled={logoutPending}><LogOut size={16} /> {logoutPending ? "Đang đăng xuất..." : "Đăng xuất"}</button>}

@@ -195,7 +195,6 @@ export default function MyTasksPage() {
       ) : null}
 
       <PageHeader
-        eyebrow="Không gian cá nhân / Công việc"
         title="Công việc của tôi"
         description="Theo dõi ưu tiên, cập nhật tiến độ và tập trung vào những đầu việc quan trọng nhất."
         actions={

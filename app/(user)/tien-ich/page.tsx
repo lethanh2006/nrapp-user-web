@@ -197,7 +197,6 @@ export default function UtilitiesPage() {
       {notice ? <div className={styles.toast} role="status"><CheckCircle2 size={17} />{notice}</div> : null}
 
       <PageHeader
-        eyebrow="Không gian cá nhân / Nhân sự"
         title="Đơn từ & nhân sự"
         description="Đăng ký lịch, theo dõi chấm công và xử lý các yêu cầu cá nhân."
         actions={<button className="button-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> Tạo đơn mới</button>}

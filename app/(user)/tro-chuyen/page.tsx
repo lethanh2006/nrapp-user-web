@@ -213,7 +213,6 @@ function ConversationWorkspace() {
   return (
     <div className={styles.page}>
       <PageHeader
-        eyebrow="Kết nối nội bộ"
         title="Trò chuyện"
         description="Trao đổi nhanh, giữ công việc liền mạch cùng đồng nghiệp trong HDG."
         actions={<Badge tone={chatLoadState === "error" ? "rose" : "slate"}>{chatLoadState === "loading" ? "Đang đồng bộ..." : chatLoadState === "error" ? "Không đồng bộ được" : `${conversationList.length} cuộc trò chuyện`}</Badge>}

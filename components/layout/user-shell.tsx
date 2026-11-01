@@ -65,14 +65,6 @@ function SidebarContent({
         </button>
       </div>
 
-      <div className={styles.workspaceCard}>
-        <span><Sparkles size={15} /></span>
-        <div>
-          <small>Không gian làm việc</small>
-          <strong>HDG Group</strong>
-        </div>
-        <ChevronRight size={15} />
-      </div>
 
       <nav className={styles.nav} aria-label="Điều hướng nhân viên">
         <p className={styles.navLabel}>Cá nhân</p>
@@ -82,7 +74,7 @@ function SidebarContent({
           const count = navigationCounts[item.href];
           return (
             <Link href={item.href} className={`${styles.navItem} ${active ? styles.navItemActive : ""}`} key={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined}>
-              <Icon size={19} strokeWidth={active ? 2.5 : 2} />
+              <Icon size={18} strokeWidth={2} />
               <span className={styles.navText}>{item.label}</span>
               {count ? <span className={styles.navBadge}>{count > 99 ? "99+" : count}</span> : null}
             </Link>
@@ -96,7 +88,7 @@ function SidebarContent({
           const count = navigationCounts[item.href];
           return (
             <Link href={item.href} className={`${styles.navItem} ${active ? styles.navItemActive : ""}`} key={item.href} onClick={onNavigate} title={collapsed ? item.label : undefined}>
-              <Icon size={19} strokeWidth={active ? 2.5 : 2} />
+              <Icon size={18} strokeWidth={2} />
               <span className={styles.navText}>{item.label}</span>
               {count ? <span className={styles.navBadge}>{count > 99 ? "99+" : count}</span> : null}
             </Link>
@@ -111,7 +103,6 @@ function SidebarContent({
             <strong>{user.name}</strong>
             <small>{roleLabel}</small>
           </span>
-          <Settings className={styles.userSettings} size={16} />
         </Link>
         <button type="button" className={styles.logoutButton} title="Đăng xuất" aria-label="Đăng xuất" onClick={onLogout} disabled={logoutPending}>
           <LogOut size={18} />
@@ -264,7 +255,6 @@ export function UserShell({ children }: { children: React.ReactNode }) {
           <div className={styles.topbarLeft}>
             <button className={styles.menuButton} onClick={() => setMobileOpen(true)} aria-label="Mở điều hướng"><Menu size={20} /></button>
             <div>
-              <p className={styles.topbarEyebrow}>Không gian nhân viên</p>
               <strong className={styles.topbarTitle}>{title}</strong>
             </div>
           </div>

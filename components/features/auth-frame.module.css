@@ -50,18 +50,16 @@
   padding: 9px 15px;
   background: rgba(13, 148, 136, .22);
   color: #ccfbf1;
-  font-size: 11px;
-  font-weight: 760;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
   backdrop-filter: blur(10px);
 }
 
 .brandMessage h1 {
   margin: 30px 0 22px;
   font-size: clamp(48px, 4.9vw, 76px);
-  font-weight: 820;
-  letter-spacing: -.065em;
+  font-weight: 700;
+  letter-spacing: -.02em;
   line-height: 1.02;
 }
 
@@ -90,7 +88,7 @@
 
 .featureList > span { display: flex; align-items: flex-start; gap: 11px; color: #5eead4; }
 .featureList svg { flex: 0 0 auto; margin-top: 2px; }
-.featureList small { color: rgba(240, 253, 250, .86); font-size: 11px; font-weight: 600; line-height: 1.55; }
+.featureList small { color: rgba(240, 253, 250, .86); font-size: 13px; font-weight: 500; line-height: 1.55; }
 
 .securityCard {
   position: relative;
@@ -100,15 +98,15 @@
   align-items: center;
   gap: 13px;
   border: 1px solid rgba(153, 246, 228, .2);
-  border-radius: 17px;
+  border-radius: 12px;
   padding: 14px 16px;
   background: rgba(13, 148, 136, .2);
   backdrop-filter: blur(14px);
 }
 
-.securityCard > span { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: rgba(153, 246, 228, .14); color: #99f6e4; }
-.securityCard strong { font-size: 11px; font-weight: 800; }
-.securityCard p { margin: 4px 0 0; color: rgba(240, 253, 250, .72); font-size: 9px; line-height: 1.45; }
+.securityCard > span { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 8px; background: rgba(153, 246, 228, .14); color: #99f6e4; }
+.securityCard strong { font-size: 13px; font-weight: 700; }
+.securityCard p { margin: 4px 0 0; color: rgba(240, 253, 250, .72); font-size: 12px; line-height: 1.45; }
 
 .formPanel {
   display: grid;
@@ -125,7 +123,7 @@
   width: min(100%, 460px);
   min-width: 0;
   border: 1px solid var(--slate-200);
-  border-radius: 24px;
+  border-radius: 12px;
   padding: 36px;
   background: rgba(255, 255, 255, .94);
   box-shadow: var(--shadow-sm);
@@ -143,23 +141,21 @@
   padding: 8px 13px;
   background: var(--brand-50);
   color: var(--brand-800);
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .formHeading h2 {
   margin: 18px 0 9px;
   color: var(--slate-950);
   font-size: clamp(31px, 2.6vw, 35px);
-  font-weight: 820;
-  letter-spacing: -.055em;
+  font-weight: 700;
+  letter-spacing: -.02em;
   line-height: 1.08;
 }
 
-.formHeading p { margin: 0 0 24px; color: var(--slate-500); font-size: 13px; line-height: 1.65; }
-.footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 23px; color: var(--slate-400); font-size: 10px; font-weight: 650; }
+.formHeading p { margin: 0 0 24px; color: var(--slate-500); font-size: 14px; line-height: 1.65; }
+.footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 23px; color: var(--slate-400); font-size: 13px; font-weight: 500; }
 
 @keyframes form-enter-back {
   from { opacity: 0; transform: translateX(-18px); }
@@ -185,7 +181,7 @@
   .brandPanel { padding: 36px 28px; }
   .brand { width: 210px; }
   .brandMessage h1 { font-size: 39px; }
-  .brandMessage > p { font-size: 12px; }
+  .brandMessage > p { font-size: 14px; }
   .featureList { grid-template-columns: 1fr; gap: 12px; }
   .featureList small br { display: none; }
   .securityCard { padding: 12px; }
@@ -197,13 +193,13 @@
   .page { display: block; min-height: 100svh; background: var(--canvas); }
   .brandPanel { display: none; }
   .formPanel { min-height: 100svh; align-content: center; padding: 20px 16px; background: var(--canvas); }
-  .mobileBrand { display: flex; width: min(100%, 460px); align-items: center; justify-content: center; margin: 0 auto 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 16px; padding: 10px 20px; background: var(--brand-900); box-shadow: 0 16px 36px rgba(15, 23, 42, .18); }
+  .mobileBrand { display: flex; width: min(100%, 460px); align-items: center; justify-content: center; margin: 0 auto 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 12px; padding: 10px 20px; background: var(--brand-900); box-shadow: 0 16px 36px rgba(15, 23, 42, .18); }
   .mobileBrand img { width: 190px; height: auto; }
-  .formContainer { border-radius: 19px; padding: 22px 20px; background: rgba(255, 255, 255, .97); box-shadow: var(--shadow-sm); }
+  .formContainer { border-radius: 12px; padding: 22px 20px; background: rgba(255, 255, 255, .97); box-shadow: var(--shadow-sm); }
   .registerContainer { padding-block: 19px; }
   .formHeading > span { display: none; }
-  .formHeading h2 { margin: 0; font-size: 27px; }
-  .formHeading p { margin: 7px 0 17px; font-size: 12px; line-height: 1.55; }
+  .formHeading h2 { margin: 0; font-size: 24px; }
+  .formHeading p { margin: 7px 0 17px; font-size: 14px; line-height: 1.55; }
   .footerNote { margin-top: 17px; }
 }
 

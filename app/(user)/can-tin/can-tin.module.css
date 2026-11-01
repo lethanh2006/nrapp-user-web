@@ -15,7 +15,7 @@
   gap: 38px;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 24px;
+  border-radius: 12px;
   padding: 29px 34px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
@@ -38,31 +38,29 @@
   padding: 0 10px;
   background: var(--brand-50);
   color: var(--brand-800);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .intro h1 {
   margin: 13px 0 0;
   font-size: clamp(30px, 3vw, 43px);
-  font-weight: 850;
-  letter-spacing: -.055em;
+  font-weight: 700;
+  letter-spacing: -.02em;
   line-height: .98;
 }
 
 .intro h1 em {
   color: var(--brand-700);
   font-style: normal;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .introCopy > p {
   max-width: 610px;
   margin: 14px 0 0;
   color: var(--slate-600);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.65;
 }
 
@@ -75,7 +73,7 @@
   margin: 0;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 18px;
+  border-radius: 12px;
   padding: 0;
   background: var(--slate-50);
   list-style: none;
@@ -101,10 +99,10 @@
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--slate-300);
-  border-radius: 10px;
+  border-radius: 8px;
   background: white;
-  font-size: 12px;
-  font-weight: 850;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .steps li > div {
@@ -114,17 +112,15 @@
 }
 
 .steps small {
-  font-size: 8px;
-  font-weight: 750;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .steps strong {
   margin-top: 3px;
   overflow: hidden;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -142,7 +138,7 @@
   gap: 5px;
   margin: 17px 0;
   border: 1px solid var(--slate-200);
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 4px;
   background: rgba(255, 255, 255, .8);
   box-shadow: var(--shadow-xs);
@@ -154,12 +150,12 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 0 15px;
   background: transparent;
   color: var(--slate-500);
-  font-size: 12px;
-  font-weight: 750;
+  font-size: 14px;
+  font-weight: 600;
   transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -170,12 +166,12 @@
   min-width: 20px;
   height: 20px;
   place-items: center;
-  border-radius: 7px;
+  border-radius: 6px;
   padding: 0 5px;
   background: var(--brand-100);
   color: var(--brand-800);
-  font-size: 9px;
-  font-weight: 850;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .serviceContext {
@@ -183,7 +179,7 @@
   grid-template-columns: minmax(0, 1fr) 250px;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 18px;
+  border-radius: 12px;
   background: white;
   box-shadow: var(--shadow-sm);
 }
@@ -205,7 +201,7 @@
   height: 42px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 13px;
+  border-radius: 8px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
@@ -215,24 +211,22 @@
 .contextPayment small {
   display: block;
   color: var(--brand-700);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .contextMain h2 {
   margin: 4px 0 0;
   color: var(--slate-900);
-  font-size: 17px;
-  font-weight: 820;
+  font-size: 18px;
+  font-weight: 700;
   letter-spacing: -.025em;
 }
 
 .contextMain p {
   margin: 3px 0 0;
   color: var(--slate-500);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
@@ -243,12 +237,12 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  border-radius: 11px;
+  border-radius: 8px;
   padding: 0 13px;
   background: var(--brand-700);
   color: white;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .contextMain > button:hover { background: var(--brand-800); }
@@ -269,8 +263,8 @@
   display: block;
   margin-top: 4px;
   color: var(--slate-800);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .activeOrderBanner {
@@ -282,7 +276,7 @@
   margin-top: 12px;
   cursor: pointer;
   border: 1px solid var(--brand-100);
-  border-radius: 15px;
+  border-radius: 12px;
   padding: 9px 14px;
   background: var(--brand-50);
   color: var(--brand-800);
@@ -296,13 +290,13 @@
   height: 34px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 8px;
   background: white;
 }
 .activeOrderBanner > div { display: flex; min-width: 0; flex: 1; flex-direction: column; }
-.activeOrderBanner small { font-size: 9px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
-.activeOrderBanner strong { margin-top: 3px; font-size: 12px; font-weight: 800; }
-.activeOrderBanner > b { display: flex; align-items: center; gap: 4px; font-size: 11px; }
+.activeOrderBanner small { font-size: 12px; font-weight: 600; }
+.activeOrderBanner strong { margin-top: 3px; font-size: 14px; font-weight: 700; }
+.activeOrderBanner > b { display: flex; align-items: center; gap: 4px; font-size: 13px; }
 
 .toolbar {
   display: flex;
@@ -310,7 +304,7 @@
   gap: 12px;
   margin-top: 17px;
   border: 1px solid var(--slate-200);
-  border-radius: 17px;
+  border-radius: 12px;
   padding: 8px;
   background: white;
   box-shadow: var(--shadow-xs);
@@ -325,14 +319,14 @@
   align-items: center;
   gap: 9px;
   border: 1px solid var(--slate-200);
-  border-radius: 11px;
+  border-radius: 8px;
   padding: 0 10px 0 13px;
   background: var(--slate-50);
   color: var(--slate-400);
 }
 
 .searchBox:focus-within { border-color: var(--brand-500); background: white; box-shadow: var(--focus-ring); }
-.searchBox input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--slate-800); font-size: 12px; }
+.searchBox input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--slate-800); font-size: 14px; }
 .searchBox input::placeholder { color: var(--slate-400); }
 .searchBox > button { display: grid; width: 28px; height: 28px; cursor: pointer; place-items: center; border-radius: 8px; background: transparent; color: var(--slate-400); }
 .searchBox > button:hover { background: var(--slate-100); color: var(--slate-700); }
@@ -352,12 +346,12 @@
   flex: 0 0 auto;
   cursor: pointer;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 0 13px;
   background: transparent;
   color: var(--slate-500);
-  font-size: 11px;
-  font-weight: 750;
+  font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
 }
 .categoryList button:hover { background: var(--brand-50); color: var(--brand-800); }
@@ -384,18 +378,16 @@
 .ordersHeading p {
   margin: 0 0 4px;
   color: var(--brand-700);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: .13em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
 }
 .sectionHeading h2,
 .ordersHeading h2 {
   margin: 0;
   color: var(--slate-950);
   font-size: 20px;
-  font-weight: 840;
-  letter-spacing: -.035em;
+  font-weight: 700;
+  letter-spacing: -.02em;
 }
 .sectionHeading > span {
   flex: 0 0 auto;
@@ -404,8 +396,8 @@
   padding: 5px 9px;
   background: white;
   color: var(--slate-500);
-  font-size: 9px;
-  font-weight: 750;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .menuGrid {
@@ -421,12 +413,12 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 18px;
+  border-radius: 12px;
   background: white;
   box-shadow: var(--shadow-sm);
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
-.menuCard:hover { transform: translateY(-2px); border-color: var(--brand-200); box-shadow: 0 16px 34px rgba(15, 23, 42, .11); }
+.menuCard:hover { border-color: var(--brand-200); box-shadow: 0 16px 34px rgba(15, 23, 42, .11); }
 
 .menuVisual {
   position: relative;
@@ -458,7 +450,7 @@
   height: 66px;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, .8);
-  border-radius: 21px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, .76);
   box-shadow: 0 12px 28px rgba(15, 23, 42, .1);
 }
@@ -474,11 +466,9 @@
 .cardTopline > span {
   overflow: hidden;
   color: var(--brand-700);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: .09em;
+  font-size: 12px;
+  font-weight: 700;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 .cardTopline > b {
@@ -490,36 +480,36 @@
   padding: 4px 7px;
   background: var(--brand-50);
   color: var(--brand-700);
-  font-size: 8px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
 }
-.menuCardBody h3 { margin: 8px 0 0; color: var(--slate-950); font-size: 17px; font-weight: 830; letter-spacing: -.025em; }
+.menuCardBody h3 { margin: 8px 0 0; color: var(--slate-950); font-size: 18px; font-weight: 700; letter-spacing: -.025em; }
 .menuCardBody > p {
   display: -webkit-box;
   min-height: 39px;
   margin: 6px 0 0;
   overflow: hidden;
   color: var(--slate-500);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.65;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
-.menuCardBody > small { margin-top: 9px; color: var(--slate-400); font-size: 9px; font-weight: 650; }
+.menuCardBody > small { margin-top: 9px; color: var(--slate-400); font-size: 12px; font-weight: 500; }
 .cardFooter { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 15px; }
-.cardFooter > strong { color: var(--brand-900); font-size: 16px; font-weight: 850; letter-spacing: -.025em; }
+.cardFooter > strong { color: var(--brand-900); font-size: 16px; font-weight: 700; letter-spacing: -.025em; }
 .cardFooter > button {
   display: flex;
   min-height: 38px;
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 0 12px;
   background: var(--brand-700);
   color: white;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
 }
 .cardFooter > button:hover { background: var(--brand-800); }
 
@@ -528,7 +518,7 @@
   top: 94px;
   overflow: hidden;
   border: 1px solid var(--slate-200);
-  border-radius: 20px;
+  border-radius: 12px;
   background: white;
   box-shadow: var(--shadow-sm);
 }
@@ -543,13 +533,13 @@
   height: 38px;
   flex: 0 0 auto;
   place-items: center;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--brand-50);
   color: var(--brand-700);
 }
 .cartTitle > div { min-width: 0; }
-.cartTitle h2 { margin: 0; color: var(--slate-900); font-size: 14px; font-weight: 820; }
-.cartTitle p { margin: 3px 0 0; color: var(--slate-400); font-size: 9px; }
+.cartTitle h2 { margin: 0; color: var(--slate-900); font-size: 14px; font-weight: 700; }
+.cartTitle p { margin: 3px 0 0; color: var(--slate-400); font-size: 12px; }
 .clearCart {
   display: flex;
   min-height: 33px;
@@ -557,12 +547,12 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  border-radius: 9px;
+  border-radius: 8px;
   padding: 0 8px;
   background: transparent;
   color: var(--slate-400);
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
 }
 .clearCart:hover { background: var(--danger-soft); color: var(--danger); }
 
@@ -575,18 +565,18 @@
   margin-top: 14px;
   cursor: pointer;
   border: 1px solid var(--brand-100);
-  border-radius: 13px;
+  border-radius: 8px;
   padding: 8px 10px;
   background: var(--brand-50);
   color: var(--brand-800);
   text-align: left;
 }
 .cartTable:hover { border-color: var(--brand-200); }
-.cartTable > span { display: grid; width: 31px; height: 31px; flex: 0 0 auto; place-items: center; border-radius: 9px; background: white; }
+.cartTable > span { display: grid; width: 31px; height: 31px; flex: 0 0 auto; place-items: center; border-radius: 8px; background: white; }
 .cartTable > div { display: flex; min-width: 0; flex: 1; flex-direction: column; }
-.cartTable small { font-size: 8px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-.cartTable strong { margin-top: 3px; font-size: 11px; font-weight: 820; }
-.cartTable > b { font-size: 9px; font-weight: 800; }
+.cartTable small { font-size: 12px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+.cartTable strong { margin-top: 3px; font-size: 13px; font-weight: 700; }
+.cartTable > b { font-size: 12px; font-weight: 700; }
 
 .cartLines { max-height: min(35vh, 330px); margin-top: 13px; overflow-y: auto; padding-right: 3px; }
 .cartLine {
@@ -598,23 +588,23 @@
   border-bottom: 1px solid var(--slate-100);
 }
 .cartLine:last-child { border-bottom: 0; }
-.menuVisualCompact { width: 46px; height: 46px; min-height: 46px; border-radius: 12px; }
+.menuVisualCompact { width: 46px; height: 46px; min-height: 46px; border-radius: 8px; }
 .menuVisualCompact::after { display: none; }
-.menuVisualCompact > span { width: 30px; height: 30px; border-radius: 9px; box-shadow: none; }
+.menuVisualCompact > span { width: 30px; height: 30px; border-radius: 8px; box-shadow: none; }
 .cartLineCopy { display: flex; min-width: 0; flex-direction: column; padding-top: 1px; }
-.cartLineCopy strong { overflow: hidden; color: var(--slate-800); font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.cartLineCopy strong { overflow: hidden; color: var(--slate-800); font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .cartLineCopy span,
-.cartLineCopy em { margin-top: 3px; overflow: hidden; color: var(--slate-500); font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.cartLineCopy em { margin-top: 3px; overflow: hidden; color: var(--slate-500); font-size: 12px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 .cartLineCopy em { color: var(--slate-400); font-style: italic; }
-.cartLineCopy b { margin-top: 5px; color: var(--brand-800); font-size: 10px; font-weight: 800; }
+.cartLineCopy b { margin-top: 5px; color: var(--brand-800); font-size: 13px; font-weight: 700; }
 .cartLineActions { display: flex; align-items: flex-end; flex-direction: column; gap: 8px; }
 .cartLineActions > button { display: grid; width: 28px; height: 28px; cursor: pointer; place-items: center; border-radius: 8px; background: var(--slate-50); color: var(--slate-500); }
 .cartLineActions > button:hover { background: var(--brand-50); color: var(--brand-700); }
 .quantitySmall,
-.quantity { display: flex; align-items: center; border: 1px solid var(--slate-200); border-radius: 9px; background: white; }
+.quantity { display: flex; align-items: center; border: 1px solid var(--slate-200); border-radius: 8px; background: white; }
 .quantitySmall button { display: grid; width: 27px; height: 28px; cursor: pointer; place-items: center; background: transparent; color: var(--slate-600); }
 .quantitySmall button:hover { background: var(--brand-50); color: var(--brand-700); }
-.quantitySmall span { min-width: 22px; color: var(--slate-800); font-size: 10px; font-weight: 800; text-align: center; }
+.quantitySmall span { min-width: 22px; color: var(--slate-800); font-size: 13px; font-weight: 700; text-align: center; }
 
 .cashNotice,
 .cashNoticeStrong {
@@ -622,7 +612,7 @@
   align-items: flex-start;
   gap: 9px;
   margin-top: 13px;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px 11px;
   background: var(--brand-50);
   color: var(--brand-700);
@@ -632,13 +622,13 @@
 .cashNotice > div,
 .cashNoticeStrong > div { display: flex; min-width: 0; flex-direction: column; }
 .cashNotice strong,
-.cashNoticeStrong strong { font-size: 10px; font-weight: 800; }
+.cashNoticeStrong strong { font-size: 13px; font-weight: 700; }
 .cashNotice span,
-.cashNoticeStrong span { margin-top: 3px; color: var(--brand-700); font-size: 9px; line-height: 1.4; }
+.cashNoticeStrong span { margin-top: 3px; color: var(--brand-700); font-size: 12px; line-height: 1.4; }
 .totalRow { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 13px; }
-.totalRow > span { display: flex; color: var(--slate-500); font-size: 10px; font-weight: 700; flex-direction: column; }
-.totalRow small { margin-top: 3px; color: var(--slate-400); font-size: 8px; font-weight: 500; }
-.totalRow > strong { color: var(--brand-900); font-size: 18px; font-weight: 860; letter-spacing: -.03em; }
+.totalRow > span { display: flex; color: var(--slate-500); font-size: 13px; font-weight: 600; flex-direction: column; }
+.totalRow small { margin-top: 3px; color: var(--slate-400); font-size: 12px; font-weight: 500; }
+.totalRow > strong { color: var(--brand-900); font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
 
 .primaryButton,
 .primaryButtonInline,
@@ -649,15 +639,15 @@
   justify-content: center;
   gap: 7px;
   cursor: pointer;
-  border-radius: 11px;
+  border-radius: 8px;
   padding: 0 14px;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
   transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
-.primaryButton { width: 100%; margin-top: 14px; background: var(--brand-700); color: white; box-shadow: 0 9px 20px rgba(15, 118, 110, .18); }
+.primaryButton { width: 100%; margin-top: 14px; background: var(--brand-700); color: white; box-shadow: none; }
 .primaryButton:hover,
-.primaryButtonInline:hover { background: var(--brand-800); transform: translateY(-1px); }
+.primaryButtonInline:hover { background: var(--brand-800); }
 .primaryButton:disabled { cursor: wait; opacity: .62; transform: none; }
 .primaryButtonInline { background: var(--brand-700); color: white; }
 .secondaryButton { border: 1px solid var(--slate-200); background: white; color: var(--slate-600); box-shadow: var(--shadow-xs); }
@@ -671,62 +661,62 @@
   justify-content: center;
   flex-direction: column;
   border: 1px dashed var(--slate-200);
-  border-radius: 18px;
+  border-radius: 12px;
   padding: 28px 22px;
   background: rgba(255, 255, 255, .66);
   text-align: center;
 }
-.emptyBlock > span { display: grid; width: 50px; height: 50px; place-items: center; border-radius: 15px; background: var(--brand-50); color: var(--brand-700); }
-.emptyBlock h3 { margin: 13px 0 0; color: var(--slate-800); font-size: 14px; font-weight: 820; }
-.emptyBlock p { max-width: 390px; margin: 7px auto 15px; color: var(--slate-500); font-size: 11px; line-height: 1.55; }
+.emptyBlock > span { display: grid; width: 50px; height: 50px; place-items: center; border-radius: 12px; background: var(--brand-50); color: var(--brand-700); }
+.emptyBlock h3 { margin: 13px 0 0; color: var(--slate-800); font-size: 14px; font-weight: 700; }
+.emptyBlock p { max-width: 390px; margin: 7px auto 15px; color: var(--slate-500); font-size: 13px; line-height: 1.55; }
 .cartContent .emptyBlock { min-height: 180px; margin-top: 13px; border: 0; padding-inline: 10px; background: var(--slate-50); }
 
-.loadingBlock { display: flex; min-height: 220px; align-items: center; justify-content: center; gap: 10px; color: var(--slate-500); font-size: 11px; font-weight: 700; }
+.loadingBlock { display: flex; min-height: 220px; align-items: center; justify-content: center; gap: 10px; color: var(--slate-500); font-size: 13px; font-weight: 600; }
 .loadingBlock svg,
 .inlineSpinner { animation: spin .75s linear infinite; }
 
 .menuSkeleton { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 340px)); justify-content: start; gap: 15px; }
-.menuSkeleton i { display: block; width: 100%; height: 360px; border-radius: 18px; background: linear-gradient(100deg, var(--slate-100) 20%, white 35%, var(--slate-100) 50%); background-size: 260% 100%; animation: skeleton 1.35s ease infinite; }
+.menuSkeleton i { display: block; width: 100%; height: 360px; border-radius: 12px; background: linear-gradient(100deg, var(--slate-100) 20%, white 35%, var(--slate-100) 50%); background-size: 260% 100%; animation: skeleton 1.35s ease infinite; }
 
 .ordersView { min-height: 520px; }
 .ordersHeading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--slate-200); padding: 6px 0 17px; }
-.ordersHeading > div > span { display: block; margin-top: 6px; color: var(--slate-500); font-size: 11px; }
-.ordersInfo { display: flex; align-items: center; gap: 9px; margin: 15px 0; border: 1px solid var(--brand-100); border-radius: 13px; padding: 11px 13px; background: var(--brand-50); color: var(--brand-700); }
+.ordersHeading > div > span { display: block; margin-top: 6px; color: var(--slate-500); font-size: 13px; }
+.ordersInfo { display: flex; align-items: center; gap: 9px; margin: 15px 0; border: 1px solid var(--brand-100); border-radius: 8px; padding: 11px 13px; background: var(--brand-50); color: var(--brand-700); }
 .ordersInfo svg { flex: 0 0 auto; }
-.ordersInfo p { margin: 0; font-size: 10px; line-height: 1.5; }
+.ordersInfo p { margin: 0; font-size: 13px; line-height: 1.5; }
 .orderGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 15px; }
-.orderCard { overflow: hidden; border: 1px solid var(--slate-200); border-radius: 18px; background: white; box-shadow: var(--shadow-sm); }
+.orderCard { overflow: hidden; border: 1px solid var(--slate-200); border-radius: 12px; background: white; box-shadow: var(--shadow-sm); }
 .orderCard > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 16px; border-bottom: 1px solid var(--slate-100); }
 .orderCard > header > div:first-child { min-width: 0; }
-.orderCard h3 { margin: 8px 0 0; color: var(--slate-900); font-size: 15px; font-weight: 830; }
-.orderCard header p { margin: 4px 0 0; color: var(--slate-400); font-size: 9px; }
+.orderCard h3 { margin: 8px 0 0; color: var(--slate-900); font-size: 16px; font-weight: 700; }
+.orderCard header p { margin: 4px 0 0; color: var(--slate-400); font-size: 12px; }
 .statusBadge,
-.paymentBadge { display: inline-flex; width: fit-content; min-height: 22px; align-items: center; border-radius: 999px; padding: 0 8px; font-size: 8px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.paymentBadge { display: inline-flex; width: fit-content; min-height: 22px; align-items: center; border-radius: 999px; padding: 0 8px; font-size: 12px; font-weight: 700; }
 .status_created { border: 1px solid var(--brand-200); background: var(--brand-50); color: var(--brand-700); }
 .status_completed { border: 1px solid #b8dfd2; background: var(--success-soft); color: var(--success); }
 .status_cancelled { border: 1px solid var(--slate-200); background: var(--slate-100); color: var(--slate-600); }
-.orderTableName { display: flex; max-width: 46%; align-items: center; gap: 6px; border-radius: 9px; padding: 7px 9px; background: var(--slate-50); color: var(--slate-600); font-size: 9px; font-weight: 750; }
+.orderTableName { display: flex; max-width: 46%; align-items: center; gap: 6px; border-radius: 8px; padding: 7px 9px; background: var(--slate-50); color: var(--slate-600); font-size: 12px; font-weight: 600; }
 .orderTableName span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .orderItems { padding: 8px 16px; }
 .orderItem { display: grid; grid-template-columns: 27px minmax(0, 1fr) auto; align-items: start; gap: 9px; padding: 9px 0; border-bottom: 1px dashed var(--slate-200); }
 .orderItem:last-child { border-bottom: 0; }
-.orderItem > span { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 8px; background: var(--brand-50); color: var(--brand-700); font-size: 9px; font-weight: 800; }
+.orderItem > span { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 8px; background: var(--brand-50); color: var(--brand-700); font-size: 12px; font-weight: 700; }
 .orderItem > div { display: flex; min-width: 0; flex-direction: column; }
-.orderItem strong { color: var(--slate-700); font-size: 11px; font-weight: 780; }
+.orderItem strong { color: var(--slate-700); font-size: 13px; font-weight: 600; }
 .orderItem small,
-.orderItem em { margin-top: 3px; color: var(--slate-400); font-size: 9px; font-style: normal; line-height: 1.35; }
+.orderItem em { margin-top: 3px; color: var(--slate-400); font-size: 12px; font-style: normal; line-height: 1.35; }
 .orderItem em { font-style: italic; }
-.orderItem > b { color: var(--slate-700); font-size: 10px; font-weight: 800; white-space: nowrap; }
-.cancelReason { display: flex; align-items: flex-start; gap: 7px; margin: 0 16px 12px; border-radius: 10px; padding: 8px 10px; background: var(--slate-50); color: var(--slate-500); font-size: 9px; line-height: 1.4; }
+.orderItem > b { color: var(--slate-700); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.cancelReason { display: flex; align-items: flex-start; gap: 7px; margin: 0 16px 12px; border-radius: 8px; padding: 8px 10px; background: var(--slate-50); color: var(--slate-500); font-size: 12px; line-height: 1.4; }
 .cancelReason svg { flex: 0 0 auto; }
 .orderCard > footer { display: flex; min-height: 65px; align-items: center; gap: 12px; border-top: 1px solid var(--slate-100); padding: 11px 16px; background: var(--slate-50); }
 .orderCard footer > div { display: flex; flex-direction: column; }
-.orderCard footer small { color: var(--slate-400); font-size: 8px; font-weight: 700; text-transform: uppercase; }
+.orderCard footer small { color: var(--slate-400); font-size: 12px; font-weight: 600; }
 .paymentBadge { min-height: 20px; margin-top: 4px; background: var(--warning-soft); color: var(--warning); letter-spacing: 0; text-transform: none; }
 .paymentPaid { background: var(--success-soft); color: var(--success); }
 .paymentCancelled { background: var(--slate-100); color: var(--slate-600); }
-.orderCard footer > strong { margin-left: auto; color: var(--brand-900); font-size: 16px; font-weight: 850; }
-.orderCard footer > button { min-height: 34px; cursor: pointer; border: 1px solid #fecaca; border-radius: 9px; padding: 0 10px; background: var(--danger-soft); color: var(--danger); font-size: 9px; font-weight: 800; }
+.orderCard footer > strong { margin-left: auto; color: var(--brand-900); font-size: 16px; font-weight: 700; }
+.orderCard footer > button { min-height: 34px; cursor: pointer; border: 1px solid #fecaca; border-radius: 8px; padding: 0 10px; background: var(--danger-soft); color: var(--danger); font-size: 12px; font-weight: 700; }
 .orderCard footer > button:hover { background: #fee2e2; }
 
 .mobileCartBar { display: none; }
@@ -742,7 +732,7 @@
   align-items: center;
   gap: 9px;
   border: 1px solid var(--slate-200);
-  border-radius: 13px;
+  border-radius: 8px;
   padding: 9px 10px 9px 13px;
   background: white;
   box-shadow: 0 18px 45px rgba(15, 23, 42, .2);
@@ -750,7 +740,7 @@
   animation: toastIn 180ms ease-out;
 }
 .toast > svg { flex: 0 0 auto; }
-.toast > span { flex: 1; font-size: 11px; font-weight: 700; line-height: 1.4; }
+.toast > span { flex: 1; font-size: 13px; font-weight: 600; line-height: 1.4; }
 .toast > button { display: grid; width: 28px; height: 28px; flex: 0 0 auto; cursor: pointer; place-items: center; border-radius: 8px; background: transparent; color: currentColor; opacity: .66; }
 .toast_success { border-color: #b8dfd2; color: var(--success); }
 .toast_error { border-color: #fecaca; color: var(--danger); }
@@ -773,7 +763,7 @@
   max-height: min(91vh, 820px);
   overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, .68);
-  border-radius: 24px;
+  border-radius: 12px;
   padding: 26px;
   background: white;
   box-shadow: 0 28px 90px rgba(15, 23, 42, .34);
@@ -790,38 +780,38 @@
   height: 36px;
   cursor: pointer;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 8px;
   background: var(--slate-100);
   color: var(--slate-600);
 }
 .dialogClose:hover { background: var(--brand-50); color: var(--brand-700); }
 .dialogClose:disabled { cursor: wait; opacity: .52; }
 .dialogHeading { padding-inline: 35px; text-align: center; }
-.dialogHeading > span { display: grid; width: 46px; height: 46px; margin: 0 auto 10px; place-items: center; border-radius: 14px; background: var(--brand-50); color: var(--brand-700); }
+.dialogHeading > span { display: grid; width: 46px; height: 46px; margin: 0 auto 10px; place-items: center; border-radius: 12px; background: var(--brand-50); color: var(--brand-700); }
 .dialogHeading > p,
 .successDialog > p,
-.cancelDialog > p { margin: 0 0 4px; color: var(--brand-700); font-size: 9px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.cancelDialog > p { margin: 0 0 4px; color: var(--brand-700); font-size: 12px; font-weight: 700; }
 .dialogHeading h2,
 .successDialog h2,
-.cancelDialog h2 { margin: 0; color: var(--slate-900); font-size: 21px; font-weight: 850; letter-spacing: -.035em; }
+.cancelDialog h2 { margin: 0; color: var(--slate-900); font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
 .dialogHeading > small,
 .successDialog > small,
-.cancelDialog > small { display: block; max-width: 440px; margin: 7px auto 0; color: var(--slate-500); font-size: 11px; line-height: 1.55; }
+.cancelDialog > small { display: block; max-width: 440px; margin: 7px auto 0; color: var(--slate-500); font-size: 13px; line-height: 1.55; }
 
-.tableLegend { display: flex; align-items: center; justify-content: center; gap: 17px; margin-top: 17px; color: var(--slate-500); font-size: 9px; font-weight: 700; }
+.tableLegend { display: flex; align-items: center; justify-content: center; gap: 17px; margin-top: 17px; color: var(--slate-500); font-size: 12px; font-weight: 600; }
 .tableLegend span { display: flex; align-items: center; gap: 6px; }
 .tableLegend i { width: 8px; height: 8px; border-radius: 50%; }
 .dotEmpty { background: var(--success); }
 .dotOccupied { background: var(--warning); }
 .dotReserved { background: var(--slate-400); }
 .tableGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; max-height: min(55vh, 480px); margin-top: 16px; overflow-y: auto; padding: 2px; }
-.tableOption { display: flex; min-height: 104px; align-items: stretch; flex-direction: column; cursor: pointer; border: 1px solid var(--slate-200); border-radius: 14px; padding: 12px; background: white; color: var(--slate-700); text-align: left; }
+.tableOption { display: flex; min-height: 104px; align-items: stretch; flex-direction: column; cursor: pointer; border: 1px solid var(--slate-200); border-radius: 12px; padding: 12px; background: white; color: var(--slate-700); text-align: left; }
 .tableOption:hover { border-color: var(--brand-300, var(--brand-200)); background: var(--brand-50); }
 .tableOption > span { display: flex; align-items: center; justify-content: space-between; color: var(--brand-700); }
-.tableOption > strong { margin-top: 11px; color: var(--slate-900); font-size: 13px; font-weight: 820; }
-.tableOption > small { margin-top: 4px; color: var(--success); font-size: 8px; font-weight: 700; line-height: 1.35; }
+.tableOption > strong { margin-top: 11px; color: var(--slate-900); font-size: 14px; font-weight: 700; }
+.tableOption > small { margin-top: 4px; color: var(--success); font-size: 12px; font-weight: 600; line-height: 1.35; }
 .tableOption[data-status="occupied"] > small { color: var(--warning); }
-.tableOptionSelected { border-color: var(--brand-700); background: var(--brand-700); color: white; box-shadow: 0 9px 20px rgba(15, 118, 110, .2); }
+.tableOptionSelected { border-color: var(--brand-700); background: var(--brand-700); color: white; box-shadow: none; }
 .tableOptionSelected > span,
 .tableOptionSelected > strong,
 .tableOptionSelected > small { color: white; }
@@ -831,83 +821,83 @@
 .tableOptionDisabled > small { color: var(--slate-400); }
 
 .itemDialogHeader { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 16px; padding-right: 28px; }
-.itemDialogHeader > .menuVisual { min-height: 130px; border-radius: 16px; }
+.itemDialogHeader > .menuVisual { min-height: 130px; border-radius: 12px; }
 .itemDialogHeader > div { display: flex; min-width: 0; flex-direction: column; justify-content: center; }
-.itemDialogHeader > div > span { color: var(--brand-700); font-size: 8px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
-.itemDialogHeader h2 { margin: 6px 0 0; color: var(--slate-900); font-size: 20px; font-weight: 850; letter-spacing: -.035em; }
-.itemDialogHeader p { display: -webkit-box; margin: 6px 0 0; overflow: hidden; color: var(--slate-500); font-size: 10px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.itemDialogHeader > div > strong { margin-top: 9px; color: var(--brand-900); font-size: 16px; font-weight: 850; }
+.itemDialogHeader > div > span { color: var(--brand-700); font-size: 12px; font-weight: 700; }
+.itemDialogHeader h2 { margin: 6px 0 0; color: var(--slate-900); font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.itemDialogHeader p { display: -webkit-box; margin: 6px 0 0; overflow: hidden; color: var(--slate-500); font-size: 13px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.itemDialogHeader > div > strong { margin-top: 9px; color: var(--brand-900); font-size: 16px; font-weight: 700; }
 .optionGroup { margin: 20px 0 0; padding: 0; border: 0; }
 .optionGroup legend,
-.noteField > span { display: block; margin-bottom: 8px; color: var(--slate-700); font-size: 10px; font-weight: 800; }
+.noteField > span { display: block; margin-bottom: 8px; color: var(--slate-700); font-size: 13px; font-weight: 700; }
 .optionGroup legend small,
-.noteField > span small { margin-left: 5px; color: var(--slate-400); font-weight: 600; }
+.noteField > span small { margin-left: 5px; color: var(--slate-400); font-weight: 500; }
 .optionList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.optionList label { display: grid; min-height: 48px; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 8px; cursor: pointer; border: 1px solid var(--slate-200); border-radius: 12px; padding: 8px 10px; background: white; }
+.optionList label { display: grid; min-height: 48px; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 8px; cursor: pointer; border: 1px solid var(--slate-200); border-radius: 8px; padding: 8px 10px; background: white; }
 .optionList label:hover { border-color: var(--brand-200); }
 .optionList input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .optionList label > span { display: grid; width: 19px; height: 19px; place-items: center; border: 1px solid var(--slate-300); border-radius: 6px; color: white; }
-.optionList label > strong { overflow: hidden; color: var(--slate-700); font-size: 10px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
-.optionList label > b { color: var(--slate-500); font-size: 9px; font-weight: 750; white-space: nowrap; }
+.optionList label > strong { overflow: hidden; color: var(--slate-700); font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.optionList label > b { color: var(--slate-500); font-size: 12px; font-weight: 600; white-space: nowrap; }
 .optionList .optionSelected { border-color: var(--brand-500); background: var(--brand-50); }
 .optionList .optionSelected > span { border-color: var(--brand-700); background: var(--brand-700); }
 .optionList .optionSelected > strong,
 .optionList .optionSelected > b { color: var(--brand-800); }
 
 .noteField { position: relative; display: block; margin-top: 17px; }
-.noteField textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px solid var(--slate-200); border-radius: 12px; outline: 0; padding: 11px 12px 24px; background: var(--slate-50); color: var(--slate-800); font-size: 11px; line-height: 1.5; }
+.noteField textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px solid var(--slate-200); border-radius: 8px; outline: 0; padding: 11px 12px 24px; background: var(--slate-50); color: var(--slate-800); font-size: 13px; line-height: 1.5; }
 .noteField textarea:focus { border-color: var(--brand-500); background: white; box-shadow: var(--focus-ring); }
-.noteField > small { position: absolute; right: 10px; bottom: 8px; color: var(--slate-400); font-size: 8px; }
+.noteField > small { position: absolute; right: 10px; bottom: 8px; color: var(--slate-400); font-size: 12px; }
 .itemDialogFooter { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; margin-top: 17px; }
 .itemDialogFooter .primaryButton { display: flex; margin: 0; justify-content: space-between; }
-.itemDialogFooter .primaryButton strong { font-size: 11px; }
-.quantity { min-height: 43px; border-radius: 11px; }
+.itemDialogFooter .primaryButton strong { font-size: 13px; }
+.quantity { min-height: 43px; border-radius: 8px; }
 .quantity button { display: grid; width: 39px; height: 41px; cursor: pointer; place-items: center; background: transparent; color: var(--slate-600); }
 .quantity button:hover { background: var(--brand-50); color: var(--brand-700); }
-.quantity span { min-width: 31px; color: var(--slate-900); font-size: 12px; font-weight: 850; text-align: center; }
+.quantity span { min-width: 31px; color: var(--slate-900); font-size: 14px; font-weight: 700; text-align: center; }
 
 .cartDialog { padding-top: 5px; }
 .cartContentModal .cartLines { max-height: min(44vh, 400px); }
-.checkoutTable { display: flex; align-items: center; gap: 10px; margin-top: 18px; border: 1px solid var(--brand-100); border-radius: 13px; padding: 10px 12px; background: var(--brand-50); color: var(--brand-800); }
-.checkoutTable > span { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: white; }
+.checkoutTable { display: flex; align-items: center; gap: 10px; margin-top: 18px; border: 1px solid var(--brand-100); border-radius: 8px; padding: 10px 12px; background: var(--brand-50); color: var(--brand-800); }
+.checkoutTable > span { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 8px; background: white; }
 .checkoutTable > div { display: flex; flex: 1; flex-direction: column; }
-.checkoutTable small { font-size: 8px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-.checkoutTable strong { margin-top: 3px; font-size: 11px; font-weight: 820; }
-.checkoutTable button { cursor: pointer; background: transparent; color: var(--brand-700); font-size: 9px; font-weight: 800; }
-.checkoutLines { max-height: 260px; margin-top: 12px; overflow-y: auto; border: 1px solid var(--slate-200); border-radius: 13px; padding: 6px 12px; }
+.checkoutTable small { font-size: 12px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+.checkoutTable strong { margin-top: 3px; font-size: 13px; font-weight: 700; }
+.checkoutTable button { cursor: pointer; background: transparent; color: var(--brand-700); font-size: 12px; font-weight: 700; }
+.checkoutLines { max-height: 260px; margin-top: 12px; overflow-y: auto; border: 1px solid var(--slate-200); border-radius: 8px; padding: 6px 12px; }
 .checkoutLines > div { display: grid; grid-template-columns: 25px minmax(0, 1fr) auto; align-items: start; gap: 9px; padding: 9px 0; border-bottom: 1px dashed var(--slate-200); }
 .checkoutLines > div:last-child { border-bottom: 0; }
-.checkoutLines > div > span { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 7px; background: var(--slate-100); color: var(--slate-600); font-size: 8px; font-weight: 800; }
+.checkoutLines > div > span { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 6px; background: var(--slate-100); color: var(--slate-600); font-size: 12px; font-weight: 700; }
 .checkoutLines > div > div { display: flex; min-width: 0; flex-direction: column; }
-.checkoutLines strong { color: var(--slate-700); font-size: 10px; font-weight: 800; }
+.checkoutLines strong { color: var(--slate-700); font-size: 13px; font-weight: 700; }
 .checkoutLines small,
-.checkoutLines em { margin-top: 3px; color: var(--slate-400); font-size: 8px; font-style: normal; }
+.checkoutLines em { margin-top: 3px; color: var(--slate-400); font-size: 12px; font-style: normal; }
 .checkoutLines em { font-style: italic; }
-.checkoutLines b { color: var(--slate-700); font-size: 10px; font-weight: 800; white-space: nowrap; }
+.checkoutLines b { color: var(--slate-700); font-size: 13px; font-weight: 700; white-space: nowrap; }
 .checkoutTotal { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 12px; padding: 0 2px; }
-.checkoutTotal span { color: var(--slate-500); font-size: 11px; font-weight: 700; }
-.checkoutTotal strong { color: var(--brand-900); font-size: 19px; font-weight: 860; }
+.checkoutTotal span { color: var(--slate-500); font-size: 13px; font-weight: 600; }
+.checkoutTotal strong { color: var(--brand-900); font-size: 20px; font-weight: 700; }
 .cashNoticeStrong { margin-top: 14px; padding: 11px 12px; }
-.cashNoticeStrong strong { font-size: 11px; }
-.cashNoticeStrong span { font-size: 9px; }
+.cashNoticeStrong strong { font-size: 13px; }
+.cashNoticeStrong span { font-size: 12px; }
 
 .successDialog,
 .cancelDialog { padding-top: 8px; text-align: center; }
 .successIcon,
-.dangerIcon { display: grid; width: 62px; height: 62px; margin: 0 auto 15px; place-items: center; border-radius: 20px; background: var(--success-soft); color: var(--success); box-shadow: 0 0 0 8px rgba(237, 248, 244, .7); }
-.successTicket { margin-top: 20px; border: 1px solid var(--slate-200); border-radius: 15px; padding: 5px 13px; background: var(--slate-50); text-align: left; }
+.dangerIcon { display: grid; width: 62px; height: 62px; margin: 0 auto 15px; place-items: center; border-radius: 12px; background: var(--success-soft); color: var(--success); box-shadow: 0 0 0 8px rgba(237, 248, 244, .7); }
+.successTicket { margin-top: 20px; border: 1px solid var(--slate-200); border-radius: 12px; padding: 5px 13px; background: var(--slate-50); text-align: left; }
 .successTicket > div { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 10px 0; border-bottom: 1px dashed var(--slate-200); }
 .successTicket > div:last-child { border-bottom: 0; }
-.successTicket span { color: var(--slate-500); font-size: 10px; }
-.successTicket strong { color: var(--slate-800); font-size: 11px; font-weight: 820; text-align: right; }
+.successTicket span { color: var(--slate-500); font-size: 13px; }
+.successTicket strong { color: var(--slate-800); font-size: 13px; font-weight: 700; text-align: right; }
 .successTicket > div:last-child strong { color: var(--brand-900); font-size: 14px; }
-.textButton { display: block; width: 100%; min-height: 39px; margin-top: 5px; cursor: pointer; border-radius: 10px; background: transparent; color: var(--brand-700); font-size: 10px; font-weight: 800; }
+.textButton { display: block; width: 100%; min-height: 39px; margin-top: 5px; cursor: pointer; border-radius: 8px; background: transparent; color: var(--brand-700); font-size: 13px; font-weight: 700; }
 .textButton:hover { background: var(--brand-50); }
 .dangerIcon { background: var(--danger-soft); color: var(--danger); box-shadow: 0 0 0 8px rgba(255, 241, 243, .72); }
 .cancelDialog > p { color: var(--danger); }
 .cancelDialog .noteField { text-align: left; }
 .cancelActions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 17px; }
-.cancelActions button { display: flex; min-height: 43px; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid var(--slate-200); border-radius: 11px; background: white; color: var(--slate-600); font-size: 10px; font-weight: 800; }
+.cancelActions button { display: flex; min-height: 43px; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: 1px solid var(--slate-200); border-radius: 8px; background: white; color: var(--slate-600); font-size: 13px; font-weight: 700; }
 .cancelActions button:last-child { border-color: #fecaca; background: var(--danger); color: white; }
 .cancelActions button:disabled { cursor: wait; opacity: .6; }
 
@@ -942,16 +932,16 @@
     gap: 10px;
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, .2);
-    border-radius: 15px;
+    border-radius: 12px;
     padding: 0 15px;
     background: var(--brand-700);
     box-shadow: 0 16px 38px rgba(15, 23, 42, .2);
     color: white;
   }
   .mobileCartBar > span { position: relative; }
-  .mobileCartBar i { position: absolute; top: -10px; right: -10px; display: grid; min-width: 17px; height: 17px; place-items: center; border: 2px solid var(--brand-700); border-radius: 50%; padding: 0 3px; background: white; color: var(--brand-800); font-size: 8px; font-style: normal; font-weight: 850; }
-  .mobileCartBar strong { font-size: 11px; text-align: left; }
-  .mobileCartBar b { font-size: 11px; }
+  .mobileCartBar i { position: absolute; top: -10px; right: -10px; display: grid; min-width: 17px; height: 17px; place-items: center; border: 2px solid var(--brand-700); border-radius: 50%; padding: 0 3px; background: white; color: var(--brand-800); font-size: 12px; font-style: normal; font-weight: 700; }
+  .mobileCartBar strong { font-size: 13px; text-align: left; }
+  .mobileCartBar b { font-size: 13px; }
   .toast { bottom: 87px; }
 }
 
@@ -964,13 +954,13 @@
 
 @media (max-width: 680px) {
   .page { padding-bottom: 48px; }
-  .intro { gap: 14px; border-radius: 20px; padding: 20px; }
-  .intro h1 { margin-top: 10px; font-size: 29px; }
+  .intro { gap: 14px; border-radius: 12px; padding: 20px; }
+  .intro h1 { margin-top: 10px; font-size: 24px; }
   .introCopy > p { display: none; }
   .steps li { min-height: 54px; gap: 7px; padding: 8px; }
   .steps li > span { width: 27px; height: 27px; border-radius: 8px; }
   .steps small { display: none; }
-  .steps strong { margin: 0; font-size: 9px; }
+  .steps strong { margin: 0; font-size: 12px; }
   .viewTabs { width: 100%; }
   .viewTabs > button { flex: 1; }
   .serviceContext { grid-template-columns: 1fr; }
@@ -991,7 +981,7 @@
   .menuCard { display: grid; grid-template-columns: 110px minmax(0, 1fr); }
   .menuCard > .menuVisual { min-height: 220px; }
   .menuCardBody { min-height: 220px; padding: 14px; }
-  .menuCardBody h3 { font-size: 15px; }
+  .menuCardBody h3 { font-size: 16px; }
   .cardTopline > b { display: none; }
   .cardFooter { align-items: flex-start; flex-direction: column; }
   .cardFooter > button { width: 100%; justify-content: center; }
@@ -1006,13 +996,13 @@
   .tableGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .itemDialogHeader { grid-template-columns: 98px minmax(0, 1fr); gap: 12px; }
   .itemDialogHeader > .menuVisual { min-height: 104px; }
-  .itemDialogHeader h2 { font-size: 17px; }
+  .itemDialogHeader h2 { font-size: 18px; }
   .itemDialogHeader p { display: none; }
   .optionList { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 420px) {
-  .intro h1 { font-size: 28px; }
+  .intro h1 { font-size: 24px; }
   .steps li > div { display: none; }
   .steps li { justify-content: center; }
   .contextMain { display: grid; grid-template-columns: 38px minmax(0, 1fr); }
@@ -1022,7 +1012,7 @@
   .menuCardBody { min-height: 228px; }
   .cardFooter > strong { font-size: 14px; }
   .tableLegend { gap: 9px; }
-  .tableLegend span { font-size: 8px; }
+  .tableLegend span { font-size: 12px; }
   .tableOption { min-height: 98px; padding: 10px; }
   .itemDialogFooter { grid-template-columns: 1fr; }
   .quantity { width: fit-content; margin: 0 auto; }
