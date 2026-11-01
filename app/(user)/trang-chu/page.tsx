@@ -207,8 +207,8 @@ export default function HomePage() {
                   <div className={styles.taskCopy}>
                     <div>
                       <strong>{task.title}</strong>
-                      <Badge tone={task.priority === "high" ? "rose" : task.priority === "medium" ? "amber" : "slate"}>
-                        {task.priority === "high" ? "Cao" : task.priority === "medium" ? "Trung bình" : "Thấp"}
+                      <Badge tone={task.priority === "urgent" || task.priority === "high" ? "rose" : task.priority === "medium" ? "amber" : "slate"}>
+                        {task.priority === "urgent" ? "Khẩn cấp" : task.priority === "high" ? "Cao" : task.priority === "medium" ? "Trung bình" : "Thấp"}
                       </Badge>
                     </div>
                     <p>{task.description?.trim() || "Không có mô tả"}</p>

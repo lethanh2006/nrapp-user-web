@@ -12,7 +12,7 @@ export type ApiTask = {
   title: string;
   description?: string;
   status: ApiTaskStatus;
-  priority: "low" | "medium" | "high";
+  priority: "low" | "medium" | "high" | "urgent";
   assignedTo?: string | ApiUser;
   createdBy?: string | ApiUser;
   deadline?: string;
