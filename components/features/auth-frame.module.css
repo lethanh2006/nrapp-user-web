@@ -20,13 +20,14 @@
   z-index: -3;
   object-fit: cover;
   object-position: center;
+  filter: hue-rotate(-90deg) saturate(.75);
 }
 
 .brandShade {
   position: absolute;
   z-index: -2;
   inset: 0;
-  background: linear-gradient(90deg, rgba(4, 13, 50, .24), transparent 62%), linear-gradient(180deg, rgba(6, 12, 45, .08), rgba(4, 10, 39, .28));
+  background: linear-gradient(90deg, rgba(4, 47, 46, .3), transparent 62%), linear-gradient(180deg, rgba(4, 47, 46, .08), rgba(4, 47, 46, .3));
 }
 
 .brand { position: relative; z-index: 2; display: block; width: clamp(220px, 20vw, 310px); }
@@ -44,11 +45,11 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  border: 1px solid rgba(183, 197, 255, .34);
+  border: 1px solid rgba(153, 246, 228, .34);
   border-radius: 999px;
   padding: 9px 15px;
-  background: rgba(78, 91, 185, .22);
-  color: #c9d2ff;
+  background: rgba(13, 148, 136, .22);
+  color: #ccfbf1;
   font-size: 11px;
   font-weight: 760;
   letter-spacing: .12em;
@@ -65,7 +66,7 @@
 }
 
 .brandMessage h1 em {
-  background: linear-gradient(100deg, #d8deff 10%, #9eb2ff 84%);
+  background: linear-gradient(100deg, #ccfbf1 10%, #5eead4 84%);
   background-clip: text;
   color: transparent;
   font-style: normal;
@@ -74,7 +75,7 @@
 .brandMessage > p {
   max-width: 620px;
   margin: 0;
-  color: rgba(226, 232, 255, .76);
+  color: rgba(240, 253, 250, .82);
   font-size: 16px;
   line-height: 1.75;
 }
@@ -87,9 +88,9 @@
   margin-top: 32px;
 }
 
-.featureList > span { display: flex; align-items: flex-start; gap: 11px; color: #aebdff; }
+.featureList > span { display: flex; align-items: flex-start; gap: 11px; color: #5eead4; }
 .featureList svg { flex: 0 0 auto; margin-top: 2px; }
-.featureList small { color: rgba(235, 238, 255, .82); font-size: 11px; font-weight: 600; line-height: 1.55; }
+.featureList small { color: rgba(240, 253, 250, .86); font-size: 11px; font-weight: 600; line-height: 1.55; }
 
 .securityCard {
   position: relative;
@@ -98,16 +99,16 @@
   width: min(100%, 450px);
   align-items: center;
   gap: 13px;
-  border: 1px solid rgba(196, 206, 255, .2);
+  border: 1px solid rgba(153, 246, 228, .2);
   border-radius: 17px;
   padding: 14px 16px;
-  background: rgba(96, 108, 188, .2);
+  background: rgba(13, 148, 136, .2);
   backdrop-filter: blur(14px);
 }
 
-.securityCard > span { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: rgba(190, 201, 255, .14); color: #bdc9ff; }
+.securityCard > span { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: rgba(153, 246, 228, .14); color: #99f6e4; }
 .securityCard strong { font-size: 11px; font-weight: 800; }
-.securityCard p { margin: 4px 0 0; color: rgba(226, 232, 255, .58); font-size: 9px; line-height: 1.45; }
+.securityCard p { margin: 4px 0 0; color: rgba(240, 253, 250, .72); font-size: 9px; line-height: 1.45; }
 
 .formPanel {
   display: grid;
@@ -115,7 +116,7 @@
   overflow-y: auto;
   place-items: center;
   padding: 42px clamp(36px, 5vw, 76px);
-  background: radial-gradient(circle at 100% 0, rgba(224, 229, 255, .62), transparent 34%), #f8f9ff;
+  background: var(--canvas);
 }
 
 .mobileBrand { display: none; }
@@ -123,11 +124,11 @@
 .formContainer {
   width: min(100%, 460px);
   min-width: 0;
-  border: 1px solid rgba(191, 197, 225, .68);
+  border: 1px solid var(--slate-200);
   border-radius: 24px;
   padding: 36px;
   background: rgba(255, 255, 255, .94);
-  box-shadow: 0 24px 60px -18px rgba(28, 30, 91, .22), 0 10px 28px -14px rgba(28, 30, 91, .14), 0 0 0 1px rgba(45, 49, 116, .03);
+  box-shadow: var(--shadow-sm);
   will-change: transform, opacity;
 }
 
@@ -140,8 +141,8 @@
   display: inline-flex;
   border-radius: 999px;
   padding: 8px 13px;
-  background: #f0f2ff;
-  color: #3944bd;
+  background: var(--brand-50);
+  color: var(--brand-800);
   font-size: 10px;
   font-weight: 850;
   letter-spacing: .14em;
@@ -150,15 +151,15 @@
 
 .formHeading h2 {
   margin: 18px 0 9px;
-  color: #0d1026;
+  color: var(--slate-950);
   font-size: clamp(31px, 2.6vw, 35px);
   font-weight: 820;
   letter-spacing: -.055em;
   line-height: 1.08;
 }
 
-.formHeading p { margin: 0 0 24px; color: #727d9e; font-size: 13px; line-height: 1.65; }
-.footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 23px; color: #9ca6bf; font-size: 10px; font-weight: 650; }
+.formHeading p { margin: 0 0 24px; color: var(--slate-500); font-size: 13px; line-height: 1.65; }
+.footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 23px; color: var(--slate-400); font-size: 10px; font-weight: 650; }
 
 @keyframes form-enter-back {
   from { opacity: 0; transform: translateX(-18px); }
@@ -193,12 +194,12 @@
 }
 
 @media (max-width: 760px) {
-  .page { display: block; min-height: 100svh; background: #f6f7ff; }
+  .page { display: block; min-height: 100svh; background: var(--canvas); }
   .brandPanel { display: none; }
-  .formPanel { min-height: 100svh; align-content: center; padding: 20px 16px; background: radial-gradient(circle at 100% 0, rgba(194, 201, 255, .42), transparent 34%), #f7f8ff; }
-  .mobileBrand { display: flex; width: min(100%, 460px); align-items: center; justify-content: center; margin: 0 auto 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 16px; padding: 10px 20px; background: #151a62 url("/images/bglogin.png") center 18% / cover; box-shadow: 0 16px 36px rgba(35, 31, 110, .18); }
+  .formPanel { min-height: 100svh; align-content: center; padding: 20px 16px; background: var(--canvas); }
+  .mobileBrand { display: flex; width: min(100%, 460px); align-items: center; justify-content: center; margin: 0 auto 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 16px; padding: 10px 20px; background: var(--brand-900); box-shadow: 0 16px 36px rgba(15, 23, 42, .18); }
   .mobileBrand img { width: 190px; height: auto; }
-  .formContainer { border-radius: 19px; padding: 22px 20px; background: rgba(255, 255, 255, .97); box-shadow: 0 20px 48px -18px rgba(28, 35, 86, .22); }
+  .formContainer { border-radius: 19px; padding: 22px 20px; background: rgba(255, 255, 255, .97); box-shadow: var(--shadow-sm); }
   .registerContainer { padding-block: 19px; }
   .formHeading > span { display: none; }
   .formHeading h2 { margin: 0; font-size: 27px; }

@@ -35,7 +35,7 @@
   min-height: 32px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #d8deea;
+  border: 1px solid var(--slate-300);
   border-radius: 999px;
   background: white;
   color: var(--slate-500);
@@ -45,14 +45,14 @@
 
 .overlay {
   gap: 8px;
-  color: var(--blue-800);
+  color: var(--brand-800);
 }
 
 .overlay > span {
   width: 16px;
   height: 16px;
-  border: 2px solid var(--blue-100);
-  border-top-color: var(--blue-700);
+  border: 2px solid var(--brand-100);
+  border-top-color: var(--brand-700);
   border-radius: 50%;
   animation: google-spin .7s linear infinite;
 }
