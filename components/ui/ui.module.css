@@ -79,3 +79,17 @@
   .pageHeader { margin-bottom: 16px; }
   .pageHeader h1 { font-size: 22px; }
 }
+
+/* Điện thoại: tiêu đề đã có ở topbar nên ẩn phần lặp, vẫn giữ cho trình đọc màn hình */
+@media (max-width: 900px) {
+  .sectionLink { min-height: 40px; }
+}
+
+@media (max-width: 640px) {
+  .pageHeader { align-items: stretch; gap: 0; margin-bottom: 12px; }
+  .pageHeader > div:first-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .headerActions { justify-content: stretch; }
+  .headerActions > a, .headerActions > button { flex: 1 1 auto; justify-content: center; }
+  .sectionHeading { align-items: flex-start; }
+  .sectionHeading p { display: none; }
+}

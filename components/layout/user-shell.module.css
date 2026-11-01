@@ -180,3 +180,24 @@
   .mobileBottomNav { right: 0; bottom: 0; left: 0; height: 64px; border-width: 1px 0 0; border-radius: 0; padding-bottom: env(safe-area-inset-bottom); background: white; box-shadow: none; backdrop-filter: none; }
   .mobileBottomNav a { font-size: 12px; font-weight: 500; }
 }
+
+/* Điện thoại và máy bảng: thanh dưới 5 mục, nội dung chừa chỗ cho thanh dưới */
+.shell, .contentColumn { min-height: 100dvh; }
+
+@media (max-width: 900px) {
+  .main { padding: 20px 20px 96px; }
+  .mobileBottomNav { position: fixed; z-index: 45; right: 0; bottom: 0; left: 0; display: grid; height: calc(64px + env(safe-area-inset-bottom)); grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: stretch; border: 0; border-top: 1px solid var(--slate-200); border-radius: 0; padding: 0 0 env(safe-area-inset-bottom); background: white; box-shadow: none; backdrop-filter: none; }
+  .mobileBottomNav a { display: flex; height: auto; min-width: 0; align-items: center; justify-content: center; flex-direction: column; gap: 3px; border-radius: 0; color: var(--slate-600); font-size: 12px; font-weight: 500; }
+  .mobileBottomNav a:first-child, .mobileBottomNav a:last-child { justify-self: stretch; }
+  .mobileBottomNav a:hover { background: transparent; }
+  .mobileBottomNav .mobileNavActive { color: var(--brand-700); font-weight: 600; }
+  .iconButton, .menuButton { width: 40px; height: 40px; }
+  .navItem { height: 44px; }
+  .logoutButton { width: 44px; height: 44px; }
+}
+
+@media (max-width: 680px) {
+  .topbar { height: 56px; padding: 0 16px; }
+  .main { padding: 16px 16px 96px; }
+  .topbarAvatar { display: block; }
+}

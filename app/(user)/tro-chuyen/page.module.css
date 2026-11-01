@@ -97,3 +97,9 @@
   .composerIcon, .sendButton { width: 39px; height: 39px; }
   .threadIntro { margin-bottom: 16px; }
 }
+
+@media (max-width: 760px) {
+  .page > header { display: none; }
+  .chatShell { min-height: 420px; height: calc(100dvh - 168px); border-radius: 12px; }
+  .threadActions button { width: 40px; height: 40px; }
+}

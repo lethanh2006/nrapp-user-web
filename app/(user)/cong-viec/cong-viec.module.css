@@ -150,3 +150,7 @@
   .listHeading { padding-inline: 14px; }
   .emptyState { min-height: 260px; }
 }
+
+@media (max-width: 900px) {
+  .taskAction > button { min-height: 40px; padding: 0 14px; }
+}

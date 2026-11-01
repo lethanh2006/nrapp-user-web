@@ -224,3 +224,16 @@ img, svg { display: block; }
 @media (max-width: 767px) {
   .button-primary, .button-secondary, .button-ghost, .button-danger { min-height: 40px; }
 }
+
+/* Điện thoại và máy bảng */
+@media (max-width: 900px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea { font-size: 16px !important; text-overflow: ellipsis; }
+  .button-primary, .button-secondary, .button-ghost, .button-danger { min-height: 40px; }
+}
+
+@media (max-width: 640px) {
+  .modal-backdrop { place-items: end center; padding: 0; }
+  .modal-backdrop > .modal-card { width: 100%; max-width: none; max-height: 92dvh; border-width: 1px 0 0; border-radius: 12px 12px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+}

@@ -918,3 +918,12 @@
 }
 
 .dateBox small { white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .attendanceRows article { grid-template-columns: auto minmax(0, 1fr) auto; }
+}
+
+@media (max-width: 580px) {
+  .attendanceRows article { grid-template-columns: auto minmax(0, 1fr); }
+  .timePair { grid-column: 2; }
+}

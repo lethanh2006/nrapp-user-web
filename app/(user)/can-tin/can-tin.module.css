@@ -1061,3 +1061,13 @@
   .steps li { justify-content: flex-start; gap: 6px; padding: 8px 6px; }
   .steps strong { overflow: visible; white-space: normal; }
 }
+
+@media (max-width: 680px) {
+  .menuCard { grid-template-columns: 84px minmax(0, 1fr); }
+  .menuCard > .menuVisual { min-height: 0; }
+  .menuCardBody { padding: 12px; }
+  .menuCardBody > p { -webkit-line-clamp: 1; }
+  .cardFooter { align-items: center; flex-direction: row; padding-top: 10px; }
+  .cardFooter > button { width: auto; min-height: 40px; }
+  .contextMain > button { min-height: 40px; }
+}

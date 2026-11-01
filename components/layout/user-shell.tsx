@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
-  CalendarDays,
   CheckSquare2,
   ChevronRight,
   CircleHelp,
@@ -14,8 +13,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Search,
-  Settings,
-  Sparkles,
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -327,9 +324,15 @@ export function UserShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <nav className={styles.mobileBottomNav} aria-label="Điều hướng nhanh">
-        <Link href="/trang-chu" className={pathname === "/trang-chu" ? styles.mobileNavActive : ""}><Sparkles size={21} /><span>Trang chủ</span></Link>
-        <Link href="/lich-lam" className={pathname.startsWith("/lich-lam") ? styles.mobileNavActive : ""}><CalendarDays size={21} /><span>Lịch làm</span></Link>
-        <Link href="/ho-so" className={pathname === "/ho-so" ? styles.mobileNavActive : ""}><Settings size={21} /><span>Hồ sơ</span></Link>
+        {userNavigation.slice(0, 5).map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link href={item.href} className={pathname.startsWith(item.href) ? styles.mobileNavActive : ""} key={item.href}>
+              <Icon size={21} />
+              <span>{item.shortLabel}</span>
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );
