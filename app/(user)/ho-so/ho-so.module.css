@@ -36,3 +36,7 @@
 .profileHero { min-height: 0; border-radius: 12px; padding: 20px 24px; }
 .infoCard header p, .cardTitle p { font-size: 13px; font-weight: 500; }
 .infoCard h2, .cardTitle h2 { font-size: 16px; font-weight: 600; letter-spacing: 0; }
+
+@media (max-width: 900px) {
+  .dangerCard button { min-height: 40px; }
+}

@@ -1071,3 +1071,22 @@
   .cardFooter > button { width: auto; min-height: 40px; }
   .contextMain > button { min-height: 40px; }
 }
+
+@media (max-width: 680px) {
+  .introCopy > p { display: none; }
+  .modalBackdrop { padding: 0; }
+  .dialog, .dialogWide { border-radius: 12px 12px 0 0; }
+}
+
+/* Ảnh món trong giỏ giữ đúng cỡ nhỏ */
+.menuVisualCompact { height: 46px; min-height: 46px; }
+
+@media (max-width: 900px) {
+  .quantitySmall button { width: 36px; height: 36px; }
+  .quantitySmall span { min-width: 24px; }
+  .clearCart { min-height: 40px; }
+}
+
+@media (max-width: 680px) {
+  .clearCart { margin-right: 44px; }
+}

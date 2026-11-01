@@ -154,3 +154,10 @@
 @media (max-width: 900px) {
   .taskAction > button { min-height: 40px; padding: 0 14px; }
 }
+
+@media (max-width: 1180px) {
+  .toolbar { align-items: stretch; flex-wrap: wrap; }
+  .searchBox { width: 100%; }
+  .statusFilters { order: 3; width: 100%; flex-basis: 100%; }
+  .prioritySelect { margin-left: auto; }
+}

@@ -103,3 +103,24 @@
   .chatShell { min-height: 420px; height: calc(100dvh - 168px); border-radius: 12px; }
   .threadActions button { width: 40px; height: 40px; }
 }
+
+/* Khung chat: hàng lưới bám chiều cao khung, nút gửi không tràn */
+.chatShell { grid-template-rows: minmax(0, 1fr); }
+.conversationPanel, .threadPanel { min-height: 0; }
+.messageInput { min-width: 0; }
+
+@media (max-width: 900px) {
+  .chatShell { height: calc(100dvh - 256px); min-height: 420px; }
+}
+
+@media (max-width: 760px) {
+  .chatShell { height: calc(100dvh - 168px); }
+  .composer { padding: 10px; }
+  .messageInput button { width: 36px; height: 36px; }
+}
+
+.messageInput textarea::placeholder { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 760px) {
+  .backButton { width: 40px; height: 40px; }
+}

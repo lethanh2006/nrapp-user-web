@@ -927,3 +927,7 @@
   .attendanceRows article { grid-template-columns: auto minmax(0, 1fr); }
   .timePair { grid-column: 2; }
 }
+
+@media (max-width: 900px) {
+  .requestIcon ~ button { min-height: 40px; padding: 0 8px; }
+}

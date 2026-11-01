@@ -201,3 +201,11 @@
   .main { padding: 16px 16px 96px; }
   .topbarAvatar { display: block; }
 }
+
+@media (max-width: 680px) {
+  .topbarAvatar { display: grid; width: 40px; height: 40px; place-items: center; }
+}
+
+@media (max-width: 900px) {
+  .mobileClose { width: 40px; height: 40px; }
+}
