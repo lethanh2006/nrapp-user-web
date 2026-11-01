@@ -17,12 +17,10 @@ import {
   Soup,
 } from "lucide-react";
 import { useAuthSession } from "@/components/providers/auth-session-provider";
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { gatewayApi } from "@/lib/api/gateway";
 import { unwrapData, type ApiScheduleRequest, type ApiTask, type ApiTaskPage } from "@/lib/api/domain";
-import { getUserInitials } from "@/lib/auth/session-user";
 import styles from "./trang-chu.module.css";
 
 const shortcuts = [
@@ -140,10 +138,9 @@ export default function HomePage() {
     <div className={styles.page}>
       <section className={styles.welcomePanel} aria-labelledby="welcome-title">
         <div className={styles.welcomeMain}>
-          <Avatar initials={getUserInitials(user?.name ?? "Người dùng")} size="lg" />
           <div className={styles.welcomeCopy}>
-            <p>{greeting} · <span>{fullDate}</span></p>
-            <h1 id="welcome-title">{user?.name ?? "Người dùng"}</h1>
+            <p>{fullDate}</p>
+            <h1 id="welcome-title">{greeting}, {user?.name ?? "bạn"}</h1>
             <small>
               {loading
                 ? "Đang cập nhật không gian làm việc của bạn..."

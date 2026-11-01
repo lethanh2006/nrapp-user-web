@@ -1,32 +1,22 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 24px;
 }
 
 .welcomePanel {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(430px, .72fr);
-  align-items: stretch;
-  overflow: hidden;
-  border: 1px solid var(--slate-200);
-  border-radius: 12px;
-  background: white;
-  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .welcomeMain {
   display: flex;
+  flex-wrap: wrap;
   min-width: 0;
-  align-items: center;
-  gap: 14px;
-  padding: 24px 26px;
-}
-
-.welcomeMain > :first-child {
-  border-color: var(--brand-100);
-  background: var(--brand-50);
-  color: var(--brand-800);
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .welcomeCopy {
@@ -35,51 +25,44 @@
 }
 
 .welcomeCopy p {
-  margin: 0 0 4px;
-  color: var(--brand-700);
+  margin: 0 0 2px;
+  color: var(--slate-600);
   font-size: 14px;
-  font-weight: 700;
 }
 
-.welcomeCopy p span {
-  color: var(--slate-400);
-  font-weight: 500;
-  text-transform: capitalize;
+.welcomeCopy p::first-letter {
+  text-transform: uppercase;
 }
 
 .welcomeCopy h1 {
-  overflow: hidden;
   margin: 0;
   color: var(--slate-900);
-  font-size: clamp(23px, 2.4vw, 31px);
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -.02em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
 }
 
 .welcomeCopy small {
   display: block;
-  margin-top: 6px;
-  color: var(--slate-500);
+  margin-top: 4px;
+  color: var(--slate-600);
   font-size: 14px;
-  line-height: 1.55;
 }
 
 .primaryAction {
   display: inline-flex;
-  min-height: 42px;
+  min-height: 36px;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   border-radius: 8px;
-  padding: 0 15px;
+  padding: 0 14px;
   background: var(--brand-700);
   color: white;
   font-size: 14px;
-  font-weight: 700;
-  box-shadow: none;
+  font-weight: 500;
 }
 
 .primaryAction:hover {
@@ -89,32 +72,31 @@
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-left: 1px solid var(--slate-100);
-  background: var(--slate-50);
+  gap: 16px;
 }
 
 .summaryGrid article {
   display: flex;
   min-width: 0;
-  align-items: center;
-  gap: 10px;
-  padding: 20px 14px;
-  border-right: 1px solid var(--slate-100);
-}
-
-.summaryGrid article:last-child {
-  border-right: 0;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--slate-200);
+  border-radius: 12px;
+  padding: 20px;
+  background: white;
+  box-shadow: var(--shadow-sm);
 }
 
 .summaryGrid article > span {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid var(--brand-100);
   border-radius: 8px;
-  background: white;
+  background: var(--brand-50);
   color: var(--brand-700);
 }
 
@@ -122,25 +104,21 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
+  gap: 8px;
 }
 
 .summaryGrid small {
-  overflow: hidden;
-  color: var(--slate-400);
-  font-size: 13px;
+  color: var(--slate-600);
+  font-size: 14px;
   font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .summaryGrid strong {
-  overflow: hidden;
-  margin-top: 4px;
-  color: var(--slate-800);
-  font-size: 16px;
+  color: var(--slate-900);
+  font-size: 24px;
   font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  letter-spacing: -.02em;
+  line-height: 1.2;
 }
 
 .dataNotice {
@@ -505,8 +483,10 @@
 
 .nextDate {
   display: grid;
-  width: 43px;
-  height: 45px;
+  flex: 0 0 auto;
+  min-width: 64px;
+  height: 48px;
+  padding: 0 8px;
   place-items: center;
   align-content: center;
   border-radius: 8px;
@@ -521,6 +501,7 @@
 
 .nextDate small {
   margin-top: 3px;
+  white-space: nowrap;
   color: var(--slate-400);
   font-size: 12px;
 }
@@ -679,15 +660,6 @@
 }
 
 @media (max-width: 1180px) {
-  .welcomePanel {
-    grid-template-columns: 1fr;
-  }
-
-  .summaryGrid {
-    border-top: 1px solid var(--slate-100);
-    border-left: 0;
-  }
-
   .shortcutGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -710,50 +682,7 @@
     gap: 22px;
   }
 
-  .welcomeMain {
-    display: grid;
-    grid-template-columns: 46px 1fr;
-    padding: 18px;
-  }
-
-  .welcomeCopy p span {
-    display: none;
-  }
-
-  .welcomeCopy h1 {
-    font-size: 24px;
-  }
-
-  .welcomeCopy small {
-    font-size: 14px;
-  }
-
-  .primaryAction {
-    grid-column: 1 / -1;
-    width: 100%;
-  }
-
-  .summaryGrid article {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
-    padding: 14px 10px;
-  }
-
-  .summaryGrid article > span {
-    width: 34px;
-    height: 34px;
-  }
-
   .summaryGrid small,
-  .summaryGrid strong {
-    white-space: normal;
-  }
-
-  .summaryGrid strong {
-    font-size: 14px;
-  }
-
   .dataNotice {
     align-items: flex-start;
     flex-direction: column;
@@ -820,4 +749,11 @@
   .sideColumn {
     display: flex;
   }
+}
+
+@media (max-width: 620px) {
+  .summaryGrid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .summaryGrid article { padding: 16px; }
+  .summaryGrid article:last-child { grid-column: 1 / -1; }
+  .primaryAction { width: 100%; }
 }
