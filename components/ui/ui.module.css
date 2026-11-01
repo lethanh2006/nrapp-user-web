@@ -4,10 +4,10 @@
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--blue-200);
+  border: 1px solid var(--brand-200);
   border-radius: 13px;
-  background: var(--blue-50);
-  color: var(--blue-800);
+  background: var(--brand-50);
+  color: var(--brand-800);
   font-weight: 800;
   letter-spacing: -.02em;
 }
@@ -16,33 +16,33 @@
 .avatar_md { width: 44px; height: 44px; font-size: 13px; }
 .avatar_lg { width: 52px; height: 52px; border-radius: 16px; font-size: 15px; }
 .avatar_xl { width: 96px; height: 96px; border-width: 4px; border-radius: 50%; font-size: 30px; }
-.avatar_blue, .avatar_emerald, .avatar_violet, .avatar_cyan { background: #e8f0fd; color: var(--blue-700); }
-.avatar_amber, .avatar_rose { background: #f2f5fa; color: var(--blue-900); }
+.avatar_blue, .avatar_emerald, .avatar_violet, .avatar_cyan { background: var(--brand-50); color: var(--brand-700); }
+.avatar_amber, .avatar_rose { background: var(--slate-100); color: var(--brand-900); }
 .avatar_slate { border-color: var(--slate-200); background: var(--slate-50); color: var(--slate-600); }
-.onlineDot { position: absolute; right: -2px; bottom: -2px; width: 11px; height: 11px; border: 2px solid white; border-radius: 50%; background: var(--blue-600); }
+.onlineDot { position: absolute; right: -2px; bottom: -2px; width: 11px; height: 11px; border: 2px solid white; border-radius: 50%; background: var(--brand-700); }
 
 .badge {
   display: inline-flex;
   min-height: 26px;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 999px;
   padding: 4px 10px;
-  background: var(--blue-50);
-  color: var(--blue-800);
+  background: var(--brand-50);
+  color: var(--brand-800);
   font-size: 10px;
   font-weight: 750;
   white-space: nowrap;
 }
 
 .badgeDot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.badge_blue, .badge_emerald, .badge_violet, .badge_cyan, .badge_amber { border-color: var(--blue-100); background: var(--blue-50); color: var(--blue-800); }
-.badge_rose { border-color: #f1c6ce; background: var(--danger-soft); color: var(--danger); }
+.badge_blue, .badge_emerald, .badge_violet, .badge_cyan, .badge_amber { border-color: var(--brand-100); background: var(--brand-50); color: var(--brand-800); }
+.badge_rose { border-color: #fecaca; background: var(--danger-soft); color: var(--danger); }
 .badge_slate { border-color: var(--slate-200); background: var(--slate-50); color: var(--slate-600); }
 
 .pageHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
-.eyebrow { margin: 0 0 7px; color: var(--blue-700); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 7px; color: var(--brand-700); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .pageHeader h1 { margin: 0; color: var(--slate-950); font-size: clamp(27px, 3vw, 35px); font-weight: 800; letter-spacing: -.045em; }
 .pageDescription { max-width: 700px; margin: 8px 0 0; color: var(--slate-500); font-size: 13px; line-height: 1.65; }
 .headerActions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 9px; }
@@ -50,8 +50,8 @@
 .sectionHeading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
 .sectionHeading h2 { margin: 0; color: var(--slate-950); font-size: 18px; font-weight: 800; letter-spacing: -.025em; }
 .sectionHeading p { margin: 5px 0 0; color: var(--slate-500); font-size: 12px; line-height: 1.55; }
-.sectionLink { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 5px; border-radius: 9px; padding: 8px 10px; color: var(--blue-700); font-size: 12px; font-weight: 750; transition: background 160ms ease; }
-.sectionLink:hover { background: var(--blue-50); }
+.sectionLink { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 5px; border-radius: 9px; padding: 8px 10px; color: var(--brand-700); font-size: 12px; font-weight: 750; transition: background 160ms ease; }
+.sectionLink:hover { background: var(--brand-50); }
 
 @media (max-width: 640px) {
   .pageHeader { align-items: stretch; flex-direction: column; margin-bottom: 20px; }
