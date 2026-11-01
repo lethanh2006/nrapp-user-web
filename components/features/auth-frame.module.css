@@ -1,6 +1,7 @@
 .page {
   display: grid;
-  min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
   grid-template-columns: minmax(560px, 1.08fr) minmax(540px, .92fr);
   background: white;
 }
@@ -8,9 +9,10 @@
 .brandPanel {
   position: relative;
   display: flex;
-  min-height: 100svh;
+  min-height: 0;
   overflow: hidden;
   flex-direction: column;
+  background: var(--brand-950);
   padding: 50px clamp(48px, 5.2vw, 82px);
   color: white;
   isolation: isolate;
@@ -110,10 +112,11 @@
 
 .formPanel {
   display: grid;
-  min-height: 100svh;
+  min-height: 0;
   overflow-y: auto;
-  place-items: center;
-  padding: 42px clamp(36px, 5vw, 76px);
+  scrollbar-gutter: stable;
+  place-items: start center;
+  padding: clamp(24px, 6vh, 56px) clamp(36px, 5vw, 76px);
   background: var(--canvas);
 }
 
@@ -127,13 +130,10 @@
   padding: 36px;
   background: rgba(255, 255, 255, .94);
   box-shadow: var(--shadow-sm);
-  will-change: transform, opacity;
 }
 
-.registerContainer { padding-block: 30px; }
-
-.enterBack { animation: form-enter-back 420ms cubic-bezier(.22, 1, .36, 1) both; }
-.enterForward { animation: form-enter-forward 420ms cubic-bezier(.22, 1, .36, 1) both; }
+.enterBack { animation: form-enter-back 180ms ease-out both; }
+.enterForward { animation: form-enter-forward 180ms ease-out both; }
 
 .formHeading > span {
   display: inline-flex;
@@ -158,12 +158,12 @@
 .footerNote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 23px; color: var(--slate-400); font-size: 13px; font-weight: 500; }
 
 @keyframes form-enter-back {
-  from { opacity: 0; transform: translateX(-18px); }
+  from { opacity: 0; transform: translateX(-6px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes form-enter-forward {
-  from { opacity: 0; transform: translateX(18px); }
+  from { opacity: 0; transform: translateX(6px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
@@ -190,13 +190,12 @@
 }
 
 @media (max-width: 760px) {
-  .page { display: block; min-height: 100svh; background: var(--canvas); }
+  .page { display: block; height: auto; min-height: 100svh; overflow: visible; background: var(--canvas); }
   .brandPanel { display: none; }
-  .formPanel { min-height: 100svh; align-content: center; padding: 20px 16px; background: var(--canvas); }
+  .formPanel { min-height: 100svh; overflow: visible; scrollbar-gutter: auto; align-content: start; padding: 20px 16px; background: var(--canvas); }
   .mobileBrand { display: flex; width: min(100%, 460px); align-items: center; justify-content: center; margin: 0 auto 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 12px; padding: 10px 20px; background: var(--brand-900); box-shadow: 0 16px 36px rgba(15, 23, 42, .18); }
   .mobileBrand img { width: 190px; height: auto; }
   .formContainer { border-radius: 12px; padding: 22px 20px; background: rgba(255, 255, 255, .97); box-shadow: var(--shadow-sm); }
-  .registerContainer { padding-block: 19px; }
   .formHeading > span { display: none; }
   .formHeading h2 { margin: 0; font-size: 24px; }
   .formHeading p { margin: 7px 0 17px; font-size: 14px; line-height: 1.55; }
@@ -209,9 +208,7 @@
   .brandMessage h1 { margin-block: 20px 14px; }
   .brandMessage > p { line-height: 1.55; }
   .featureList { margin-top: 20px; }
-  .formPanel { align-items: start; padding-block: 32px; }
-  .formContainer { margin-block: auto; padding-block: 26px; }
-  .registerContainer { padding-block: 22px; }
+  .formContainer { padding-block: 26px; }
   .formHeading h2 { margin-top: 14px; }
   .formHeading p { margin-bottom: 20px; }
   .footerNote { margin-top: 22px; }
@@ -219,4 +216,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .enterBack, .enterForward { animation: none; }
+}
+
+/* Màn hình thấp: panel trái không cuộn nên bớt nội dung phụ */
+@media (max-height: 760px) and (min-width: 761px) {
+  .brandMessage h1 { font-size: clamp(36px, 3.6vw, 48px); }
+  .securityCard { display: none; }
+}
+
+@media (max-height: 600px) and (min-width: 761px) {
+  .featureList { display: none; }
 }

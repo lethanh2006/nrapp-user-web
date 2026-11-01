@@ -65,3 +65,11 @@
 @keyframes google-spin {
   to { transform: rotate(360deg); }
 }
+
+.placeholder {
+  gap: 8px;
+  color: var(--slate-700);
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+}

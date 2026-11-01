@@ -1,21 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BriefcaseBusiness, Layers3, Lightbulb, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
+import { AuthFormPanel } from "./auth-form-panel";
 import styles from "./auth-frame.module.css";
 
-export function AuthFrame({
-  eyebrow,
-  title,
-  description,
-  mode = "login",
-  children,
-}: {
-  eyebrow: string;
-  title: string;
-  description: string;
-  mode?: "login" | "register" | "verify";
-  children: React.ReactNode;
-}) {
+export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <main className={styles.page}>
       <section className={styles.brandPanel}>
@@ -56,20 +45,38 @@ export function AuthFrame({
         </div>
       </section>
 
-      <section className={styles.formPanel}>
+      <AuthFormPanel>
         <div className={styles.mobileBrand}>
           <Image src="/images/logo.png" alt="HDG Studio" width={2172} height={724} priority />
         </div>
-        <div className={`${styles.formContainer} ${mode === "register" ? `${styles.registerContainer} ${styles.enterForward}` : styles.enterBack}`}>
-          <div className={styles.formHeading}>
-            <span>{eyebrow}</span>
-            <h2>{title}</h2>
-            <p>{description}</p>
-          </div>
-          {children}
-          <footer className={styles.footerNote}><LockKeyhole size={14} /> Phiên làm việc được bảo vệ bởi HDG Studio</footer>
-        </div>
-      </section>
+        {children}
+      </AuthFormPanel>
     </main>
+  );
+}
+
+export function AuthFrame({
+  eyebrow,
+  title,
+  description,
+  mode = "login",
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  mode?: "login" | "register" | "verify";
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`${styles.formContainer} ${mode === "register" ? styles.enterForward : styles.enterBack}`}>
+      <div className={styles.formHeading}>
+        <span>{eyebrow}</span>
+        <h2>{title}</h2>
+        <p>{description}</p>
+      </div>
+      {children}
+      <footer className={styles.footerNote}><LockKeyhole size={14} /> Phiên làm việc được bảo vệ bởi HDG Studio</footer>
+    </div>
   );
 }
