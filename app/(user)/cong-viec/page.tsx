@@ -60,6 +60,7 @@ const priorityMeta: Record<
   TaskPriority,
   { label: string; tone: BadgeTone; order: number }
 > = {
+  urgent: { label: "Khẩn cấp", tone: "rose", order: -1 },
   high: { label: "Ưu tiên cao", tone: "rose", order: 0 },
   medium: { label: "Trung bình", tone: "amber", order: 1 },
   low: { label: "Ưu tiên thấp", tone: "slate", order: 2 },
@@ -79,7 +80,7 @@ function toUserTask(task: ApiTask): UserTask | null {
     title: task.title,
     description: task.description?.trim() || "Không có mô tả.",
     status: task.status,
-    priority: task.priority,
+    priority: task.priority in priorityMeta ? task.priority : "medium",
     dueLabel: formatDeadline(task.deadline),
     category: "Công việc được giao",
   };
@@ -253,6 +254,7 @@ export default function MyTasksPage() {
             <span className="sr-only">Lọc mức ưu tiên</span>
             <select value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value as PriorityFilter)}>
               <option value="all">Mọi ưu tiên</option>
+              <option value="urgent">Khẩn cấp</option>
               <option value="high">Ưu tiên cao</option>
               <option value="medium">Trung bình</option>
               <option value="low">Ưu tiên thấp</option>

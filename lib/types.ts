@@ -8,7 +8,7 @@ export type BadgeTone =
   | "slate";
 
 export type TaskStatus = "todo" | "in_progress" | "done";
-export type TaskPriority = "low" | "medium" | "high";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
 
 export type UserTask = {
   id: string;
