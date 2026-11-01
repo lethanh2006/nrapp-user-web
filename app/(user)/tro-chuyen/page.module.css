@@ -13,7 +13,7 @@
 .chatSearch input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--slate-800); font-size: 14px; }
 .chatSearch input::placeholder { color: var(--slate-400); }
 .chatSearch button { display: grid; width: 25px; height: 25px; cursor: pointer; place-items: center; border-radius: 8px; background: transparent; color: var(--slate-400); }
-.quickStatus { display: flex; flex: 0 0 auto; align-items: center; gap: 9px; margin: 0 13px 9px; border: 1px solid var(--brand-100); border-radius: 12px; padding: 9px; background: linear-gradient(105deg, var(--brand-50), white); }
+.quickStatus { display: flex; flex: 0 0 auto; align-items: center; gap: 9px; margin: 0 13px 9px; border: 1px solid var(--brand-100); border-radius: 12px; padding: 9px; background: var(--brand-50); }
 .quickStatus > div { min-width: 0; flex: 1; }
 .quickStatus strong { display: block; overflow: hidden; color: var(--slate-700); font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .quickStatus p { margin: 3px 0 0; color: var(--slate-400); font-size: 14px; }
@@ -45,7 +45,7 @@
 .threadActions button { display: grid; width: 36px; height: 36px; cursor: pointer; place-items: center; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--slate-500); }
 .threadActions button:hover { border-color: var(--slate-200); background: var(--slate-50); color: var(--brand-700); }
 
-.messageArea { min-height: 0; flex: 1; overflow-y: auto; padding: 12px 24px 22px; background: radial-gradient(circle at 90% 5%, rgba(219, 234, 254, .55), transparent 22%), linear-gradient(180deg, var(--surface-soft), var(--surface-soft)); }
+.messageArea { min-height: 0; flex: 1; overflow-y: auto; padding: 12px 24px 22px; background: transparent; }
 .dayDivider { display: flex; align-items: center; justify-content: center; margin: 4px 0 14px; }
 .dayDivider::before, .dayDivider::after { height: 1px; flex: 1; background: var(--slate-200); content: ""; }
 .dayDivider span { padding: 0 11px; color: var(--slate-400); font-size: 14px; font-weight: 700; }
@@ -58,7 +58,7 @@
 .messageGroup { min-width: 0; }
 .messageGroup p { margin: 0; border: 1px solid var(--slate-200); border-radius: 16px 16px 16px 5px; padding: 10px 13px; background: white; box-shadow: var(--shadow-sm); color: var(--slate-700); font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
 .messageGroup span { display: flex; align-items: center; gap: 4px; margin-top: 4px; color: var(--slate-400); font-size: 14px; }
-.myMessageRow .messageGroup p { border-color: var(--brand-700); border-radius: 16px 16px 5px; background: linear-gradient(135deg, var(--brand-700), var(--brand-700)); color: white; box-shadow: var(--shadow-sm); }
+.myMessageRow .messageGroup p { border-color: var(--brand-700); border-radius: 16px 16px 5px; background: var(--brand-700); color: white; box-shadow: var(--shadow-sm); }
 .myMessageRow .messageGroup span { justify-content: flex-end; color: var(--brand-700); }
 
 .composer { display: flex; min-height: 76px; flex: 0 0 auto; align-items: flex-end; gap: 8px; border-top: 1px solid var(--slate-200); padding: 13px 17px; background: white; }

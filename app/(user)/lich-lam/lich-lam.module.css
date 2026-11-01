@@ -108,7 +108,7 @@
   border: 1px solid var(--brand-100);
   border-radius: 12px;
   padding: 14px 17px;
-  background: linear-gradient(110deg, var(--brand-50), white 72%);
+  background: var(--brand-50);
   box-shadow: var(--shadow-xs);
 }
 
@@ -874,4 +874,19 @@
   .confirmActions { grid-template-columns: 1fr; }
   .confirmActions :global(.button-primary) { grid-row: 1; }
   .mobileActionBar button { min-width: 102px; }
+}
+
+/* Đầu trang và ô ngày: bỏ chữ phụ khi ngày chưa chọn để không bị cắt */
+.pageHeader { gap: 16px; }
+.pageHeader h1 { color: var(--slate-900); font-size: 24px; line-height: 1.25; }
+.pageHeader > div:first-child > p:last-child { margin-top: 4px; line-height: 1.5; }
+.dayButton { min-height: 84px; padding: 8px 10px; }
+.dayEmpty .dayEntry > i { display: none; }
+.dayEmpty .dayEntry b { color: var(--slate-500); font-weight: 400; }
+.dayEntry b { font-weight: 500; }
+
+@media (max-width: 680px) {
+  .pageHeader h1 { font-size: 22px; }
+  .dayButton { min-height: 60px; padding: 6px; }
+  .dayEmpty .dayEntry { display: none; }
 }

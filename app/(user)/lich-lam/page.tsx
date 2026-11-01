@@ -553,7 +553,6 @@ export default function WorkSchedulePage() {
 
       <header className={styles.pageHeader}>
         <div>
-          <p className={styles.eyebrow}>Không gian cá nhân</p>
           <h1>Đăng ký lịch làm việc</h1>
           <p>Chọn những ngày và ca bạn đến văn phòng, sau đó gửi một lần cho cả tháng.</p>
         </div>
@@ -631,7 +630,6 @@ export default function WorkSchedulePage() {
             <section className={styles.calendarCard} aria-labelledby="month-calendar-title">
               <div className={styles.calendarHeader}>
                 <div>
-                  <p className={styles.sectionKicker}>Lịch đăng ký</p>
                   <h2 id="month-calendar-title">{formatMonth(displayMonth)}</h2>
                   <span>Chọn một ngày để xem hoặc chỉnh ca làm.</span>
                 </div>
@@ -703,7 +701,7 @@ export default function WorkSchedulePage() {
                           <i><EntryIcon size={15} /></i>
                           <span>
                             <b>{stateLabel}</b>
-                            <small>{entry ? PERIOD_LABELS[period] : "Không gửi ngày này"}</small>
+                            {entry ? <small>{PERIOD_LABELS[period]}</small> : null}
                           </span>
                         </span>
                       </button>
@@ -727,7 +725,6 @@ export default function WorkSchedulePage() {
                   <strong>{Number(selectedKey.slice(-2))}</strong>
                 </span>
                 <div>
-                  <p className={styles.sectionKicker}>Chi tiết ngày</p>
                   <h2 id="day-editor-title">{formatLongDate(selectedKey)}</h2>
                   <span className={`${styles.entryBadge} ${selectedEntry ? styles[`entryBadge_${selectedEntry.type}`] : styles.entryBadge_empty}`}>
                     {selectedEntry ? ENTRY_LABELS[selectedEntry.type] : "Chưa chọn ca"}
@@ -888,7 +885,6 @@ export default function WorkSchedulePage() {
               <X size={19} />
             </button>
             <span className={styles.confirmIcon}><CalendarClock size={25} /></span>
-            <p className={styles.sectionKicker}>Kiểm tra lần cuối</p>
             <h2 id="confirm-title">Gửi lịch {formatMonth(displayMonth)}?</h2>
             <p>Sau khi gửi, lịch sẽ chuyển sang chờ quản lý duyệt và bạn chưa thể chỉnh sửa.</p>
             <div className={styles.confirmStats}>

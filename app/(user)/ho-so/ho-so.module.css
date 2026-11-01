@@ -4,7 +4,7 @@
 .identity { position: relative; z-index: 1; display: flex; align-items: center; gap: 18px; }
 .identity > span { border-color: var(--brand-200); background: var(--brand-50); color: var(--brand-800); }
 .identity p { margin: 0 0 4px; color: var(--brand-700); font-size: 14px; font-weight: 600; }
-.identity h2 { margin: 0; font-size: clamp(23px, 3vw, 31px); font-weight: 700; letter-spacing: -.02em; }
+.identity h2 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
 .identity div > div { display: flex; align-items: center; gap: 9px; margin-top: 9px; }.identity div > div > span:last-child { color: var(--slate-600); font-size: 14px; }
 .heroMeta { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 9px; }
 .heroMeta > div { display: flex; min-width: 0; align-items: center; gap: 9px; border: 1px solid var(--slate-200); border-radius: 12px; padding: 10px; background: var(--slate-50); }
@@ -32,3 +32,7 @@
 @media (max-width: 1080px) { .profileHero { align-items: flex-start; flex-direction: column; }.heroMeta { width: 100%; }.layout { grid-template-columns: minmax(0, 1.15fr) minmax(270px, .85fr); } }
 @media (max-width: 760px) { .layout { grid-template-columns: 1fr; }.heroMeta { grid-template-columns: 1fr; }.profileHero { padding: 23px 19px; }.identity { align-items: flex-start; }.identity > span { width: 70px; height: 70px; font-size: 20px; } }
 @media (max-width: 520px) { .toast { top: 76px; right: 12px; left: 12px; }.detailsGrid, .formGrid { grid-template-columns: 1fr; }.detailsGrid > div:last-child, .formGrid > label:last-child { grid-column: auto; }.infoCard, .securityCard, .sessionsCard { padding: 15px; }.profileHero { border-radius: 12px; }.identity h2 { font-size: 24px; }.formActions > button { flex: 1; }.sessionsCard article { align-items: flex-start; flex-wrap: wrap; }.sessionsCard article > div { min-width: 160px; }.sessionsCard article > :last-child { margin-left: 44px; }.deleteModal > div { flex-direction: column; }.deleteModal a { width: 100%; } }
+
+.profileHero { min-height: 0; border-radius: 12px; padding: 20px 24px; }
+.infoCard header p, .cardTitle p { font-size: 13px; font-weight: 500; }
+.infoCard h2, .cardTitle h2 { font-size: 16px; font-weight: 600; letter-spacing: 0; }

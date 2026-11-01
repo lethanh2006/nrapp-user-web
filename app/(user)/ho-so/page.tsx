@@ -100,7 +100,6 @@ export default function ProfilePage() {
         <div className={styles.identity}>
           <Avatar initials={getUserInitials(profile.name)} size="xl" />
           <div>
-            <p>Hồ sơ nhân viên</p>
             <h2>{profile.name}</h2>
             <div><Badge tone="cyan" dot>{roleLabel}</Badge><span>Hồ sơ NRApp</span></div>
           </div>
@@ -114,7 +113,7 @@ export default function ProfilePage() {
       <div className={styles.layout}>
         <div className={styles.primaryColumn}>
           <section className={`surface-card ${styles.infoCard}`}>
-            <header><div><p>Thông tin cá nhân</p><h2>Chi tiết liên hệ</h2></div>{!editing ? <button className="button-secondary" onClick={() => { setDraft(profile); setEditing(true); }}><Edit3 size={15} /> Chỉnh sửa</button> : null}</header>
+            <header><div><h2>Chi tiết liên hệ</h2></div>{!editing ? <button className="button-secondary" onClick={() => { setDraft(profile); setEditing(true); }}><Edit3 size={15} /> Chỉnh sửa</button> : null}</header>
             {editing ? (
               <form onSubmit={saveProfile}>
                 <div className={styles.formGrid}>
@@ -136,12 +135,12 @@ export default function ProfilePage() {
 
         <aside className={styles.sideColumn}>
           <section className={`surface-card ${styles.securityCard}`}>
-            <div className={styles.cardTitle}><span><KeyRound size={18} /></span><div><p>Bảo mật</p><h2>Tài khoản & mật khẩu</h2></div></div>
+            <div className={styles.cardTitle}><span><KeyRound size={18} /></span><div><h2>Tài khoản & mật khẩu</h2></div></div>
             <div className={styles.securityStatus}><Check size={15} /><div><strong>Xác thực hai bước đang bật</strong><p>Mã OTP được gửi tới email khi bạn đăng nhập bằng mật khẩu.</p></div></div>
           </section>
 
           <section className={`surface-card ${styles.sessionsCard}`}>
-            <div className={styles.cardTitle}><span><Laptop size={18} /></span><div><p>Phiên đăng nhập</p><h2>Thiết bị hiện tại</h2></div></div>
+            <div className={styles.cardTitle}><span><Laptop size={18} /></span><div><h2>Thiết bị hiện tại</h2></div></div>
             <article><span><Laptop size={18} /></span><div><strong>Trình duyệt đang sử dụng</strong><p>Bạn đang đăng nhập trên thiết bị này.</p></div><Badge tone="emerald">Đang dùng</Badge></article>
             <button className={`button-secondary ${styles.sessionLogout}`} onClick={() => void handleLogout()} disabled={logoutPending}><LogOut size={15} /> {logoutPending ? "Đang đăng xuất..." : "Đăng xuất khỏi thiết bị này"}</button>
           </section>

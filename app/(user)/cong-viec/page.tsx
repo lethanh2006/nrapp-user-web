@@ -213,7 +213,6 @@ export default function MyTasksPage() {
             <span><strong>{loading ? "—" : `${completion}%`}</strong><small>hoàn tất</small></span>
           </div>
           <div className={styles.progressCopy}>
-            <p className={styles.kicker}>Tiến độ công việc</p>
             <h2>{loading ? "Đang đồng bộ công việc..." : taskItems.length ? `${counts.todo + counts.in_progress} việc cần bạn xử lý` : "Bạn chưa có công việc cần theo dõi"}</h2>
             <p>{loading ? "Dữ liệu mới nhất đang được lấy từ hệ thống." : `${counts.done}/${taskItems.length} công việc đã hoàn thành trong danh sách hiện tại.`}</p>
           </div>

@@ -18,7 +18,6 @@ import {
   RefreshCw,
   Search,
   ShoppingBag,
-  Store,
   Trash2,
   UtensilsCrossed,
   X,
@@ -772,8 +771,7 @@ export function CanteenExperience() {
     <div className={styles.page}>
       <section className={styles.intro}>
         <div className={styles.introCopy}>
-          <span className={styles.eyebrow}><Store size={14} /> Căn tin HDG</span>
-          <h1>Gọi món tại bàn,<br /><em>nhanh và rõ ràng.</em></h1>
+          <h1>Gọi món tại bàn</h1>
           <p>Chọn đúng bàn đang ngồi, tùy chỉnh món và gửi đơn. Bạn thanh toán tiền mặt tại quầy.</p>
         </div>
         <ol className={styles.steps} aria-label="Quy trình gọi món">
@@ -864,7 +862,6 @@ export function CanteenExperience() {
             <section className={styles.menuSection} aria-labelledby="menu-title" aria-busy={menuState === "loading"}>
               <div className={styles.sectionHeading}>
                 <div>
-                  <p>Bước 2 · Chọn món</p>
                   <h2 id="menu-title">{query.trim() ? `Kết quả cho “${query.trim()}”` : "Thực đơn đang phục vụ"}</h2>
                 </div>
                 {menuState === "ready" ? <span>{filteredItems.length} món</span> : null}
@@ -930,7 +927,6 @@ export function CanteenExperience() {
         <section className={styles.ordersView} aria-labelledby="orders-title" aria-busy={orderState === "loading"}>
           <div className={styles.ordersHeading}>
             <div>
-              <p>Lịch sử gọi món</p>
               <h2 id="orders-title">Đơn của tôi</h2>
               <span>Theo dõi trạng thái, số bàn và thanh toán của từng đơn.</span>
             </div>
@@ -1000,7 +996,6 @@ export function CanteenExperience() {
               <div className={styles.tableDialog}>
                 <div className={styles.dialogHeading}>
                   <span><LayoutGrid size={21} /></span>
-                  <p>Bước 1</p>
                   <h2 id="canteen-dialog-title">Chọn bàn đang ngồi</h2>
                   <small>Bàn trống và bàn đang dùng đều có thể gọi món. Bàn tạm khóa không thể chọn.</small>
                 </div>
@@ -1108,7 +1103,6 @@ export function CanteenExperience() {
               <div className={styles.checkoutDialog}>
                 <div className={styles.dialogHeading}>
                   <span><ReceiptText size={21} /></span>
-                  <p>Bước 3</p>
                   <h2 id="canteen-dialog-title">Kiểm tra trước khi gửi</h2>
                   <small>Giá cuối cùng được máy chủ xác nhận khi đơn được tạo.</small>
                 </div>
@@ -1146,7 +1140,6 @@ export function CanteenExperience() {
             {dialog === "success" && createdOrder ? (
               <div className={styles.successDialog}>
                 <span className={styles.successIcon}><Check size={30} /></span>
-                <p>Gửi đơn thành công</p>
                 <h2 id="canteen-dialog-title">Đơn đã được ghi nhận</h2>
                 <small>Vui lòng thanh toán tiền mặt tại quầy. Trạng thái đơn sẽ được cập nhật sau khi nhân viên thu tiền.</small>
                 <div className={styles.successTicket}>
@@ -1163,7 +1156,6 @@ export function CanteenExperience() {
             {dialog === "cancel" && orderToCancel ? (
               <form className={styles.cancelDialog} onSubmit={cancelOrder}>
                 <span className={styles.dangerIcon}><AlertCircle size={24} /></span>
-                <p>Xác nhận thao tác</p>
                 <h2 id="canteen-dialog-title">Hủy đơn {orderToCancel.orderNumber}?</h2>
                 <small>Chỉ đơn mới tạo và chưa thanh toán mới có thể hủy. Thao tác này không thể hoàn tác.</small>
                 <label className={styles.noteField}>
