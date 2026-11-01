@@ -24,9 +24,9 @@
 }
 
 .welcomeMain > :first-child {
-  border-color: var(--blue-100);
-  background: var(--blue-50);
-  color: var(--blue-800);
+  border-color: var(--brand-100);
+  background: var(--brand-50);
+  color: var(--brand-800);
 }
 
 .welcomeCopy {
@@ -36,7 +36,7 @@
 
 .welcomeCopy p {
   margin: 0 0 4px;
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 12px;
   font-weight: 800;
 }
@@ -75,15 +75,15 @@
   gap: 7px;
   border-radius: 12px;
   padding: 0 15px;
-  background: var(--blue-700);
+  background: var(--brand-700);
   color: white;
   font-size: 12px;
   font-weight: 800;
-  box-shadow: 0 8px 18px rgba(36, 87, 167, .16);
+  box-shadow: 0 8px 18px rgba(15, 118, 110, .16);
 }
 
 .primaryAction:hover {
-  background: var(--blue-800);
+  background: var(--brand-800);
 }
 
 .summaryGrid {
@@ -112,10 +112,10 @@
   height: 38px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 12px;
   background: white;
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .summaryGrid article > div {
@@ -148,10 +148,10 @@
   align-items: center;
   gap: 10px;
   margin-top: -12px;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 12px;
   padding: 10px 13px;
-  background: var(--blue-50);
+  background: var(--brand-50);
   color: var(--slate-600);
   font-size: 12px;
 }
@@ -160,7 +160,7 @@
   margin-left: auto;
   cursor: pointer;
   background: transparent;
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 12px;
   font-weight: 800;
 }
@@ -190,7 +190,7 @@
 
 .shortcutCard:hover {
   transform: translateY(-2px);
-  border-color: var(--blue-200);
+  border-color: var(--brand-200);
   box-shadow: 0 12px 28px rgba(35, 72, 113, .08);
 }
 
@@ -201,8 +201,8 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 12px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .shortcutCard > span:nth-child(2) {
@@ -289,8 +289,8 @@
 }
 
 .taskStatusActive {
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .taskCopy {
@@ -344,7 +344,7 @@
 }
 
 .taskRow:hover .rowArrow {
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .emptyState {
@@ -362,8 +362,8 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 14px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .emptyState > div {
@@ -386,7 +386,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 12px;
   font-weight: 800;
 }
@@ -404,8 +404,8 @@
 .loadingState span {
   width: 17px;
   height: 17px;
-  border: 2px solid var(--blue-100);
-  border-top-color: var(--blue-600);
+  border: 2px solid var(--brand-100);
+  border-top-color: var(--brand-700);
   border-radius: 50%;
   animation: spin 700ms linear infinite;
 }
@@ -431,7 +431,7 @@
 }
 
 .scheduleHeader small {
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -450,10 +450,10 @@
   align-items: center;
   gap: 10px;
   margin-top: 15px;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 14px;
   padding: 12px;
-  background: var(--blue-50);
+  background: var(--brand-50);
 }
 
 .currentSchedule > span {
@@ -464,7 +464,7 @@
   place-items: center;
   border-radius: 12px;
   background: white;
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .currentSchedule strong {
@@ -569,9 +569,9 @@
 }
 
 .scheduleAction:hover {
-  border-color: var(--blue-200);
-  background: var(--blue-50);
-  color: var(--blue-700);
+  border-color: var(--brand-200);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .progressCard {
@@ -591,7 +591,7 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
-  background: conic-gradient(var(--blue-600) var(--progress), var(--blue-100) 0);
+  background: conic-gradient(var(--brand-600) var(--progress), var(--brand-100) 0);
 }
 
 .progressRing::before {
@@ -659,7 +659,7 @@
 
 .dotActive,
 .dotDone {
-  background: var(--blue-600);
+  background: var(--brand-700);
 }
 
 .dotTodo {

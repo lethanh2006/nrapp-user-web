@@ -98,7 +98,6 @@ export default function ProfilePage() {
       />
 
       <section className={styles.profileHero}>
-        <div className={styles.profileGlow} />
         <div className={styles.identity}>
           <Avatar initials={getUserInitials(profile.name)} size="xl" />
           <div>

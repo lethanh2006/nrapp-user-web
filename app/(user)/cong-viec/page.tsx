@@ -209,7 +209,7 @@ export default function MyTasksPage() {
         <div className={styles.progressSummary}>
           <div
             className={styles.progressRing}
-            style={{ background: `conic-gradient(var(--blue-700) ${completion * 3.6}deg, var(--slate-200) 0deg)` }}
+            style={{ background: `conic-gradient(var(--brand-700) ${completion * 3.6}deg, var(--slate-200) 0deg)` }}
           >
             <span><strong>{loading ? "—" : `${completion}%`}</strong><small>hoàn tất</small></span>
           </div>

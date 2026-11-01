@@ -12,12 +12,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--blue-200);
+  border: 1px solid var(--brand-200);
   border-radius: 14px;
   padding: 11px 14px;
-  background: var(--blue-50);
+  background: var(--brand-50);
   box-shadow: var(--shadow-md);
-  color: var(--blue-800);
+  color: var(--brand-800);
   font-size: 13px;
   font-weight: 800;
   animation: toast-in 180ms ease-out;
@@ -40,7 +40,7 @@
   gap: 11px;
   padding: 20px 22px;
   border-right: 1px solid var(--slate-100);
-  background: var(--blue-50);
+  background: var(--brand-50);
 }
 
 .summaryIntro > span {
@@ -49,10 +49,10 @@
   height: 42px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 13px;
   background: white;
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .summaryIntro > div {
@@ -62,7 +62,7 @@
 }
 
 .summaryIntro small {
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -123,10 +123,10 @@
   align-items: center;
   gap: 8px;
   margin-top: -12px;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 12px;
   padding: 10px 13px;
-  background: var(--blue-50);
+  background: var(--brand-50);
   color: var(--slate-600);
   font-size: 12px;
 }
@@ -135,7 +135,7 @@
   margin-left: auto;
   cursor: pointer;
   background: transparent;
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-weight: 800;
 }
 
@@ -162,7 +162,7 @@
 
 .toolCard:hover {
   transform: translateY(-2px);
-  border-color: var(--blue-200);
+  border-color: var(--brand-200);
   box-shadow: 0 12px 28px rgba(35, 72, 113, .08);
 }
 
@@ -173,8 +173,8 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 13px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .toolCard > div {
@@ -247,8 +247,8 @@
   height: 37px;
   place-items: center;
   border-radius: 12px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .requestTable article > div {
@@ -276,7 +276,7 @@
 .requestTable article > button {
   cursor: pointer;
   background: transparent;
-  color: #e11d48;
+  color: #dc2626;
   font-size: 11px;
   font-weight: 800;
 }
@@ -311,8 +311,8 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 14px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .emptyState > div {
@@ -340,7 +340,7 @@
   gap: 5px;
   cursor: pointer;
   background: transparent;
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 12px;
   font-weight: 800;
 }
@@ -358,8 +358,8 @@
 .loadingState span {
   width: 16px;
   height: 16px;
-  border: 2px solid var(--blue-100);
-  border-top-color: var(--blue-600);
+  border: 2px solid var(--brand-100);
+  border-top-color: var(--brand-700);
   border-radius: 50%;
   animation: spin 700ms linear infinite;
 }
@@ -386,8 +386,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--blue-600);
-  box-shadow: 0 0 0 4px rgba(50, 105, 200, .1);
+  background: var(--brand-700);
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, .1);
 }
 
 .attendanceHeader strong {
@@ -497,7 +497,7 @@
   justify-content: center;
   gap: 11px;
   padding: 18px;
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .overviewCard {
@@ -531,7 +531,7 @@
 }
 
 .overviewHeader > span {
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 24px;
   font-weight: 850;
 }
@@ -561,8 +561,8 @@
   height: 35px;
   place-items: center;
   border-radius: 11px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .overviewList > div > div {
@@ -593,8 +593,8 @@
   gap: 8px;
   border-radius: 12px;
   padding: 10px;
-  background: var(--blue-50);
-  color: var(--blue-700);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .pendingHint p {
@@ -623,19 +623,19 @@
 }
 
 .overviewAction:hover {
-  border-color: var(--blue-200);
-  background: var(--blue-50);
-  color: var(--blue-700);
+  border-color: var(--brand-200);
+  background: var(--brand-50);
+  color: var(--brand-700);
 }
 
 .mobileNote {
   display: flex;
   align-items: flex-start;
   gap: 11px;
-  border: 1px solid var(--blue-100);
+  border: 1px solid var(--brand-100);
   border-radius: 17px;
   padding: 14px;
-  background: var(--blue-50);
+  background: var(--brand-50);
 }
 
 .mobileNote > span {
@@ -646,7 +646,7 @@
   place-items: center;
   border-radius: 12px;
   background: white;
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .mobileNote strong {
@@ -683,7 +683,7 @@
 
 .modalEyebrow {
   margin: 0 0 5px;
-  color: var(--blue-700);
+  color: var(--brand-700);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .14em;
@@ -771,14 +771,14 @@
 }
 
 .requestTypeGrid .requestTypeActive {
-  border-color: var(--blue-200);
-  background: var(--blue-50);
+  border-color: var(--brand-200);
+  background: var(--brand-50);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, .06);
 }
 
 .requestTypeGrid .requestTypeActive > span {
   background: white;
-  color: var(--blue-700);
+  color: var(--brand-700);
 }
 
 .modalActions {
